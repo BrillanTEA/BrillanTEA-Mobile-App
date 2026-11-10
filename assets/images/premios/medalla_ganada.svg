@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="88" height="88" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Medalla">
+<path id="Vector" d="M27.5 52.25L17.875 82.5L35.75 72.875L44 82.5L45.375 55L27.5 52.25Z" fill="#6FA3B3" stroke-width="3.3" stroke-linejoin="round" stroke="#3D6D7E"/>
+<path id="Vector_2" d="M60.5 52.25L70.125 82.5L52.25 72.875L44 82.5L42.625 55L60.5 52.25Z" fill="#8FBBC8" stroke-width="3.3" stroke-linejoin="round" stroke="#3D6D7E"/>
+<path id="Vector_3" d="M44 64.625C59.9472 64.625 72.875 51.6972 72.875 35.75C72.875 19.8028 59.9472 6.875 44 6.875C28.0528 6.875 15.125 19.8028 15.125 35.75C15.125 51.6972 28.0528 64.625 44 64.625Z" fill="#F7C531" stroke-width="4.4" stroke="#B8801A"/>
+<path id="Vector_4" d="M44 55.6875C55.0112 55.6875 63.9375 46.7612 63.9375 35.75C63.9375 24.7388 55.0112 15.8125 44 15.8125C32.9888 15.8125 24.0625 24.7388 24.0625 35.75C24.0625 46.7612 32.9888 55.6875 44 55.6875Z" fill="#FCE08A" stroke-width="2.75" stroke="#B8801A"/>
+<path id="Vector_5" d="M33.6875 36.4375L41.25 44L55 28.1875" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" stroke="#B8801A"/>
+<g id="Vector_6">
+<path d="M9.625 8.25V17.875ZM4.8125 13.0625H14.4375ZM78.375 5.5V13.75ZM74.25 9.625H82.5ZM82.5 49.5V56.375ZM79.0625 52.9375H85.9375Z" fill="black"/>
+<path d="M9.625 8.25V17.875M4.8125 13.0625H14.4375M78.375 5.5V13.75M74.25 9.625H82.5M82.5 49.5V56.375M79.0625 52.9375H85.9375" stroke-width="3.025" stroke-linecap="round" stroke="#3D6D7E"/>
+</g>
+</g>
+</svg>
