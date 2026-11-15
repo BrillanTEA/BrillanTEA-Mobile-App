@@ -8,6 +8,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../datos/base_datos.dart';
 import 'favoritos_service.dart';
+import 'reporte_service.dart';
 
 class PerfilAdulto {
   final String nombres;
@@ -472,8 +473,10 @@ class AuthService {
   }
 
   /// Borra todos los datos de la aplicación: la base SQLite completa (perfiles, PIN, configuración,
-  /// favoritos, progreso, registro de uso y notas) y cualquier resto en SharedPreferences.
+  /// favoritos, progreso, registro de uso y notas), cualquier resto en SharedPreferences
+  /// y las copias temporales del reporte PDF.
   Future<void> reiniciarTodo() async {
+    await ReporteService.borrarTodos();
     try {
       final sp = await SharedPreferences.getInstance();
       await sp.clear();
