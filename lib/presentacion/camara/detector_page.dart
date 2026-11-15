@@ -15,6 +15,7 @@ import '../../dominio/catalogo_service.dart';
 import '../../dominio/registro_uso_service.dart';
 import '../../dominio/rutinas_app.dart';
 import '../../infraestructura/detector_worker.dart';
+import '../../infraestructura/modo_compilacion.dart';
 import '../../infraestructura/perfil_yolo26.dart';
 import '../../infraestructura/servicio_voz.dart';
 import '../../infraestructura/stats.dart';
@@ -23,10 +24,8 @@ import '../rutinas/rutinas_page.dart';
 /// Umbral del proyecto: latencia de extremo a extremo por frame.
 const double kObjetivoMs = 150;
 
-/// Panel técnico (modelo, CPU/GPU, hilos, benchmark, CSV): solo para las pruebas de la tesis.
-/// La versión final se compila con:  bash publicar_apk.sh --final   (MODO_TECNICO=false)
-const bool kModoTecnico =
-    bool.fromEnvironment('MODO_TECNICO', defaultValue: true);
+// Panel técnico (modelo, CPU/GPU, hilos, benchmark, CSV): kModoTecnico, definido en
+// modo_compilacion.dart. Solo aparece en la versión QA (--dart-define=QA=true).
 
 /// Tamaño de la tarjeta de realidad aumentada que acompaña a cada objeto.
 const double _anchoTarjetaRA = 172;
@@ -203,6 +202,7 @@ class _DetectorPageState extends State<DetectorPage>
   String? _persistedFoco;
   int _framesSinDeteccion = 0;
   DetectedObjectItem? _objetoDetectadoTutorial;
+  bool _noReconocidoTutorial = false; // modo tutorial: se tocó el botón y no se reconoció ningún objeto
   String? _focusedClave;
   int _maxObjetosSimultaneos = 2; // TEA Nivel 2: máximo 2 objetos en pantalla
   bool _mostrarPanelMetricas = false;
@@ -807,7 +807,9 @@ class _DetectorPageState extends State<DetectorPage>
                         if (esTutorial) ...[
                           // En modo tutorial:
                           // Al pulsar el botón obturador se muestra la tarjeta informativa abajo, manteniendo la cámara limpia.
-                          if (_objetoDetectadoTutorial != null) ...[
+                          if (_noReconocidoTutorial)
+                            Positioned.fill(child: _buildNoReconocido())
+                          else if (_objetoDetectadoTutorial != null) ...[
                             Positioned(
                               left: 12,
                               right: 12,
@@ -836,7 +838,7 @@ class _DetectorPageState extends State<DetectorPage>
             ),
 
             // 3. Botón del modo tutorial
-            if (esTutorial) _buildBotonCamaraTutorial(),
+            if (esTutorial && !_noReconocidoTutorial) _buildBotonCamaraTutorial(),
 
             // 4. Panel técnico (solo en modo técnico)
             if (kModoTecnico && _mostrarPanelMetricas)
@@ -964,7 +966,10 @@ class _DetectorPageState extends State<DetectorPage>
               InkWell(
                 onTap: () {
                   final nuevo = !esTutorial;
-                  setState(() => _objetoDetectadoTutorial = null);
+                  setState(() {
+                    _objetoDetectadoTutorial = null;
+                    _noReconocidoTutorial = false;
+                  });
                   AccesibilidadService().setTutorialCamara(nuevo);
                 },
                 borderRadius: BorderRadius.circular(16),
@@ -1125,15 +1130,135 @@ class _DetectorPageState extends State<DetectorPage>
       }
     }
 
-    _speak('Apunta la cámara hacia un objeto');
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Apunta la cámara hacia un objeto para detectarlo'),
-          duration: Duration(seconds: 2),
+    // Ningún objeto del catálogo: pantalla «No lo pude ver bien» (Figma «Cámara · No reconocido»).
+    setState(() => _noReconocidoTutorial = true);
+    _speak('No lo pude ver bien. Probemos otra vez.');
+  }
+
+  /// Modo tutorial sin objeto reconocido: consejos y botón «Intentar otra vez».
+  Widget _buildNoReconocido() {
+    const teal = Color(0xFF3D6D7E);
+    const texto = Color(0xFF3A3A3A);
+    const textoSec = Color(0xFF6B6B66);
+    const borde = Color(0xFFDDD6C9);
+    const fuente = 'Atkinson Hyperlegible Next';
+    Widget consejo(IconData icono, String t) => Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+          child: Row(
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: const BoxDecoration(
+                    color: Color(0xFFDDE9EC), shape: BoxShape.circle),
+                child: Icon(icono, color: teal, size: 18),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(t,
+                    style: const TextStyle(
+                        fontFamily: fuente, fontSize: 13.5, color: texto)),
+              ),
+            ],
+          ),
+        );
+    return Container(
+      color: Colors.white,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+        child: Column(
+          children: [
+            Semantics(
+              excludeSemantics: true,
+              child: Container(
+                width: 100,
+                height: 100,
+                decoration: const BoxDecoration(
+                    color: Color(0xFFF3E4DA), shape: BoxShape.circle),
+                child: Center(
+                  child: Container(
+                    width: 46,
+                    height: 46,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                          color: const Color(0xFFB06B47), width: 2.6),
+                    ),
+                    child: const Center(
+                      child: Text('?',
+                          style: TextStyle(
+                              fontFamily: fuente,
+                              fontSize: 28,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xFFB06B47))),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Semantics(
+              liveRegion: true,
+              child: const Text('No lo pude ver bien',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontFamily: fuente,
+                      fontSize: 19,
+                      fontWeight: FontWeight.w700,
+                      color: texto)),
+            ),
+            const SizedBox(height: 8),
+            const Text('Probemos otra vez.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontFamily: fuente, fontSize: 13, color: textoSec)),
+            const SizedBox(height: 24),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: borde, width: 1.5),
+              ),
+              child: Column(
+                children: [
+                  consejo(Icons.wb_sunny_outlined, 'Busca un lugar con luz'),
+                  const Divider(
+                      height: 1, thickness: 1, indent: 14, endIndent: 14, color: borde),
+                  consejo(Icons.crop_square_rounded,
+                      'Pon solo un objeto en el cuadro'),
+                  const Divider(
+                      height: 1, thickness: 1, indent: 14, endIndent: 14, color: borde),
+                  consejo(Icons.smartphone_rounded, 'Mantén el teléfono quieto'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 28),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: teal,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+                onPressed: () {
+                  AccesibilidadService().feedbackInteraccion();
+                  setState(() => _noReconocidoTutorial = false);
+                },
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: const Text('Intentar otra vez',
+                    style: TextStyle(
+                        fontFamily: fuente,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700)),
+              ),
+            ),
+          ],
         ),
-      );
-    }
+      ),
+    );
   }
 
   /// Marco de guía para apuntar en modo tutorial antes de pulsar el botón
@@ -1485,7 +1610,7 @@ class _DetectorPageState extends State<DetectorPage>
   Future<void> _mostrarResultadoFigma(CatalogoItem item) async {
     final nombreUpper = item.nombre.toUpperCase();
     _speak(item.frasePeticion ?? item.fraseApoyo ?? item.nombre);
-    // «Ir a la rutina» solo si el objeto es el del PRIMER paso de alguna rutina activa (US407, RF-03)
+    // «Ir a la rutina» solo si el objeto es el del PRIMER paso de alguna rutina activa (US405, RF-03)
     final rutinasDelObjeto = await rutinasQueEmpiezanCon(item.assetPath);
     final tieneRutina = rutinasDelObjeto.isNotEmpty;
     if (!mounted) return;
