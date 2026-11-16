@@ -26,10 +26,15 @@ class _FavoritosPageState extends State<FavoritosPage> {
   final ServicioVoz _tts = ServicioVoz();
   final FavoritosService _favoritosService = FavoritosService();
 
+  /// Orden que se muestra. Se calcula al entrar y cuando se agrega o quita un favorito; un toque
+  /// solo suma uso, así la tarjeta no cambia de lugar bajo el dedo del niño (se reordena al volver).
+  List<FavoritoItem> _items = [];
+
   @override
   void initState() {
     super.initState();
     _initTts();
+    _items = _favoritosService.favoritos;
     _favoritosService.addListener(_onFavoritosChanged);
     _favoritosService.init();
   }
@@ -42,7 +47,14 @@ class _FavoritosPageState extends State<FavoritosPage> {
   }
 
   void _onFavoritosChanged() {
-    if (mounted) setState(() {});
+    if (!mounted) return;
+    final actuales = _favoritosService.favoritos;
+    final idsActuales = actuales.map((f) => f.id).toSet();
+    final idsMostrados = _items.map((f) => f.id).toSet();
+    final cambioLista = idsActuales.length != idsMostrados.length || !idsActuales.containsAll(idsMostrados);
+    setState(() {
+      if (cambioLista) _items = actuales;
+    });
   }
 
   Future<void> _initTts() async {
@@ -70,7 +82,7 @@ class _FavoritosPageState extends State<FavoritosPage> {
 
   @override
   Widget build(BuildContext context) {
-    final items = _favoritosService.favoritos;
+    final items = _items;
 
     return Scaffold(
       backgroundColor: colorFondo,

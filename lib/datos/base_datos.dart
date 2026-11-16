@@ -15,6 +15,10 @@ import 'package:sqflite/sqflite.dart';
 ///                  configuracion_premios (v3).
 ///   Seguimiento: progreso_rutina, registro_uso, nota_especialista.
 ///
+/// Integridad referencial (v6): FOREIGN KEY sin ON DELETE CASCADE en rutina y objeto → pictograma,
+/// objeto, cierre_rutina, configuracion_rutina y progreso_rutina → rutina. PRAGMA foreign_keys se
+/// activa en onConfigure. registro_uso.clave es polimórfica (objeto o rutina según tipo) y no lleva FK.
+///
 /// Si la app tenía datos en SharedPreferences (versiones anteriores), se copian una sola vez
 /// a SQLite al abrir la base y luego se borran de SharedPreferences.
 class BaseDatos {
@@ -23,7 +27,7 @@ class BaseDatos {
   BaseDatos._internal();
 
   static const String archivo = 'catalogo.db'; // nombre de la base de datos local
-  static const int _version = 5; // 1 = solo registro de uso y notas; 2 = todo en SQLite; 3 = premios; 4 = tutoriales; 5 = una sola clase del modelo (YOLO26s, 35 clases)
+  static const int _version = 6; // 1 = solo registro de uso y notas; 2 = todo en SQLite; 3 = premios; 4 = tutoriales; 5 = una sola clase del modelo (YOLO26s, 35 clases); 6 = claves foráneas (FOREIGN KEY)
   Future<Database>? _db;
 
   /// Tabla OBJETO (v5): id_modelo es la clase que entrega YOLO26s (0 a 34, mismo orden que
@@ -32,7 +36,8 @@ class BaseDatos {
   static const String _sqlObjeto =
       'CREATE TABLE objeto (clave TEXT PRIMARY KEY, tipo TEXT NOT NULL, nombre TEXT NOT NULL, '
       'termino_arasaac TEXT, frase_apoyo TEXT, frase_fuera_rutina TEXT, frase_peticion TEXT, '
-      'id_modelo INTEGER, categoria TEXT, archivo_pictograma TEXT, rutina_id INTEGER, paso INTEGER, '
+      'id_modelo INTEGER, categoria TEXT, archivo_pictograma TEXT REFERENCES pictograma(archivo), '
+      'rutina_id INTEGER REFERENCES rutina(id), paso INTEGER, '
       'aviso_anticipacion TEXT, orden INTEGER NOT NULL DEFAULT 0)';
 
   Future<Database> get db => _db ??= _abrir();
@@ -44,6 +49,7 @@ class BaseDatos {
       final db = await openDatabase(
         await _ruta,
         version: _version,
+        onConfigure: (db) => db.execute('PRAGMA foreign_keys = ON'),
         onCreate: (db, version) => _crearTablas(db, desde: 0),
         onUpgrade: (db, viejo, nuevo) => _crearTablas(db, desde: viejo),
       );
@@ -92,9 +98,9 @@ class BaseDatos {
       // Catálogo
       b.execute('CREATE TABLE pictograma (archivo TEXT PRIMARY KEY, termino_arasaac TEXT)');
       b.execute('CREATE TABLE rutina (id INTEGER PRIMARY KEY, nombre TEXT NOT NULL, ambito TEXT, '
-          'termino_arasaac TEXT, archivo_pictograma TEXT, orden INTEGER NOT NULL DEFAULT 0)');
+          'termino_arasaac TEXT, archivo_pictograma TEXT REFERENCES pictograma(archivo), orden INTEGER NOT NULL DEFAULT 0)');
       b.execute(_sqlObjeto);
-      b.execute('CREATE TABLE cierre_rutina (rutina_id INTEGER PRIMARY KEY, mensaje TEXT, opcion_a TEXT, '
+      b.execute('CREATE TABLE cierre_rutina (rutina_id INTEGER PRIMARY KEY REFERENCES rutina(id), mensaje TEXT, opcion_a TEXT, '
           'opcion_b TEXT, criterio TEXT)');
       // Perfiles
       b.execute('CREATE TABLE perfil_adulto (id INTEGER PRIMARY KEY CHECK (id = 1), '
@@ -118,13 +124,14 @@ class BaseDatos {
           'vibracion INTEGER NOT NULL DEFAULT 1, leer_voz_alta INTEGER NOT NULL DEFAULT 0, '
           'tutorial_camara INTEGER NOT NULL DEFAULT 1)');
       b.insert('preferencia_accesibilidad', {'id': 1});
-      b.execute('CREATE TABLE configuracion_rutina (rutina_id INTEGER PRIMARY KEY, activa INTEGER NOT NULL)');
+      b.execute('CREATE TABLE configuracion_rutina (rutina_id INTEGER PRIMARY KEY REFERENCES rutina(id), activa INTEGER NOT NULL)');
       b.execute('CREATE TABLE favorito (id TEXT PRIMARY KEY, nombre TEXT NOT NULL, modulo TEXT NOT NULL, '
           'color INTEGER NOT NULL, asset_path TEXT, simbolo_texto TEXT, silabas TEXT, frase_voz TEXT NOT NULL, '
           'contador_uso INTEGER NOT NULL DEFAULT 0, creado_ts INTEGER NOT NULL)');
       // Seguimiento
       b.execute('CREATE TABLE progreso_rutina (rutina_id INTEGER NOT NULL, fecha TEXT NOT NULL, '
-          'paso_actual INTEGER NOT NULL, completada INTEGER NOT NULL, PRIMARY KEY (rutina_id, fecha))');
+          'paso_actual INTEGER NOT NULL, completada INTEGER NOT NULL, PRIMARY KEY (rutina_id, fecha), '
+          'FOREIGN KEY (rutina_id) REFERENCES rutina(id))');
     }
     if (desde < 3) {
       // Las medallas no se guardan aparte: 1 medalla = 1 rutina completada en un día (progreso_rutina).
@@ -143,6 +150,53 @@ class BaseDatos {
       b.execute(_sqlObjeto);
       b.execute('UPDATE ajuste SET catalogo_hash = NULL WHERE id = 1');
     }
+    if (desde >= 2 && desde < 6) {
+      // v6: SQLite no permite agregar FOREIGN KEY con ALTER TABLE, así que cada tabla se rehace
+      // (crear nueva, copiar, borrar la vieja y renombrar), primero los padres y luego los hijos.
+      // Las filas huérfanas no se copian. Se conservan el progreso y la configuración del niño.
+      b.execute('PRAGMA defer_foreign_keys = ON');
+      void rehacer(String tabla, String sqlNueva, String columnas, [String filtro = '']) {
+        b.execute(sqlNueva.replaceFirst('CREATE TABLE $tabla ', 'CREATE TABLE ${tabla}_v6 '));
+        b.execute('INSERT INTO ${tabla}_v6 ($columnas) SELECT $columnas FROM $tabla $filtro');
+        b.execute('DROP TABLE $tabla');
+        b.execute('ALTER TABLE ${tabla}_v6 RENAME TO $tabla');
+      }
+      rehacer('pictograma', 'CREATE TABLE pictograma (archivo TEXT PRIMARY KEY, termino_arasaac TEXT)',
+          'archivo, termino_arasaac');
+      rehacer(
+          'rutina',
+          'CREATE TABLE rutina (id INTEGER PRIMARY KEY, nombre TEXT NOT NULL, ambito TEXT, termino_arasaac TEXT, '
+              'archivo_pictograma TEXT REFERENCES pictograma(archivo), orden INTEGER NOT NULL DEFAULT 0)',
+          'id, nombre, ambito, termino_arasaac, archivo_pictograma, orden',
+          'WHERE archivo_pictograma IS NULL OR archivo_pictograma IN (SELECT archivo FROM pictograma)');
+      rehacer(
+          'objeto',
+          _sqlObjeto,
+          'clave, tipo, nombre, termino_arasaac, frase_apoyo, frase_fuera_rutina, frase_peticion, id_modelo, '
+              'categoria, archivo_pictograma, rutina_id, paso, aviso_anticipacion, orden',
+          'WHERE (rutina_id IS NULL OR rutina_id IN (SELECT id FROM rutina)) '
+              'AND (archivo_pictograma IS NULL OR archivo_pictograma IN (SELECT archivo FROM pictograma))');
+      const soloRutinasExistentes = 'WHERE rutina_id IN (SELECT id FROM rutina)';
+      rehacer(
+          'cierre_rutina',
+          'CREATE TABLE cierre_rutina (rutina_id INTEGER PRIMARY KEY REFERENCES rutina(id), mensaje TEXT, '
+              'opcion_a TEXT, opcion_b TEXT, criterio TEXT)',
+          'rutina_id, mensaje, opcion_a, opcion_b, criterio',
+          soloRutinasExistentes);
+      rehacer(
+          'configuracion_rutina',
+          'CREATE TABLE configuracion_rutina (rutina_id INTEGER PRIMARY KEY REFERENCES rutina(id), '
+              'activa INTEGER NOT NULL)',
+          'rutina_id, activa',
+          soloRutinasExistentes);
+      rehacer(
+          'progreso_rutina',
+          'CREATE TABLE progreso_rutina (rutina_id INTEGER NOT NULL, fecha TEXT NOT NULL, '
+              'paso_actual INTEGER NOT NULL, completada INTEGER NOT NULL, PRIMARY KEY (rutina_id, fecha), '
+              'FOREIGN KEY (rutina_id) REFERENCES rutina(id))',
+          'rutina_id, fecha, paso_actual, completada',
+          soloRutinasExistentes);
+    }
     await b.commit(noResult: true);
   }
 
@@ -157,7 +211,10 @@ class BaseDatos {
 
     await db.transaction((txn) async {
       final b = txn.batch();
-      for (final t in const ['objeto', 'rutina', 'cierre_rutina', 'pictograma']) {
+      // Las FK se revisan al confirmar la transacción: así se puede borrar y volver a insertar el
+      // catálogo sin perder el progreso ni la configuración de las rutinas (no hay ON DELETE CASCADE).
+      b.execute('PRAGMA defer_foreign_keys = ON');
+      for (final t in const ['cierre_rutina', 'objeto', 'rutina', 'pictograma']) {
         b.delete(t);
       }
       final pictos = <String, Object?>{};
@@ -237,6 +294,9 @@ class BaseDatos {
         b.insert('pictograma', {'archivo': archivo, 'termino_arasaac': termino},
             conflictAlgorithm: ConflictAlgorithm.replace);
       });
+      // Si una rutina salió del catálogo, se borra su progreso y su configuración (filas huérfanas).
+      b.execute('DELETE FROM progreso_rutina WHERE rutina_id NOT IN (SELECT id FROM rutina)');
+      b.execute('DELETE FROM configuracion_rutina WHERE rutina_id NOT IN (SELECT id FROM rutina)');
       b.update('ajuste', {'catalogo_hash': huella}, where: 'id = 1');
       await b.commit(noResult: true);
     });

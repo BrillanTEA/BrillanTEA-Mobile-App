@@ -90,10 +90,16 @@ class FavoritosService extends ChangeNotifier {
   final List<FavoritoItem> _favoritos = [];
   bool _initialized = false;
 
+  /// Favoritos ordenados por uso (US706): primero los más usados y, si empatan, el más antiguo.
+  /// _favoritos ya está en orden de creación (creado_ts ASC), así que el índice sirve de desempate;
+  /// List.sort de Dart no es estable y sin él los empates cambiaban de lugar.
   List<FavoritoItem> get favoritos {
-    final copy = List<FavoritoItem>.from(_favoritos);
-    copy.sort((a, b) => b.contadorUso.compareTo(a.contadorUso));
-    return copy;
+    final indices = List<int>.generate(_favoritos.length, (i) => i);
+    indices.sort((a, b) {
+      final porUso = _favoritos[b].contadorUso.compareTo(_favoritos[a].contadorUso);
+      return porUso != 0 ? porUso : a.compareTo(b);
+    });
+    return [for (final i in indices) _favoritos[i]];
   }
 
   bool get isEmpty => _favoritos.isEmpty;
