@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../dominio/auth_service.dart';
+import '../../infraestructura/modo_compilacion.dart';
 import '../area_padres/area_padres_page.dart';
 import '../area_padres/login_pin_page.dart';
 import '../calma/calma_page.dart';
@@ -231,10 +232,12 @@ class _InicioPageState extends State<InicioPage> {
                 _abrirAreaPadresConPin();
               },
             ),
+            // Solo en la versión QA. En la oficial el niño no ve ninguna opción para borrar (US1206).
+            if (kModoQA)
             ListTile(
               leading: const Icon(Icons.restart_alt_rounded, color: Color(0xFFD32F2F)),
               title: const Text(
-                'Restablecer onboarding',
+                'Restablecer onboarding (QA)',
                 style: TextStyle(
                   fontFamily: 'Atkinson Hyperlegible Next',
                   fontWeight: FontWeight.w600,

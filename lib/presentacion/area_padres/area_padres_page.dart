@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import '../../dominio/accesibilidad_service.dart';
 import '../../dominio/auth_service.dart';
 import '../../infraestructura/bloqueo_service.dart';
+import '../../infraestructura/modo_compilacion.dart';
 import '../registro/bienvenida_page.dart';
+import 'borrar_datos_dialogo.dart';
 import 'configuracion_cuenta_page.dart';
 import 'perfil_menor_page.dart';
 import 'seguimiento_page.dart';
@@ -179,10 +181,22 @@ class _AreaPadresPageState extends State<AreaPadresPage> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Opción adicional para testing/desarrollo: Restablecer primer uso
+                    // Opción definitiva para el adulto (US1007): pide el PIN otra vez antes de borrar.
                     _buildFilaMenu(
-                      titulo: 'Restablecer primer uso',
-                      subtitulo: 'Limpiar credenciales y probar flujo de registro inicial',
+                      titulo: 'Borrar los datos',
+                      subtitulo: 'Eliminar toda la información guardada en este dispositivo',
+                      icono: Icons.delete_forever_rounded,
+                      colorIconoFondo: const Color(0xFFFDE8E8),
+                      colorIcono: Colors.red.shade700,
+                      onTap: () => confirmarBorrarDatos(context),
+                    ),
+
+                    // Solo en la versión QA (--dart-define=QA=true): reinicio rápido sin PIN.
+                    if (kModoQA) ...[
+                    const SizedBox(height: 12),
+                    _buildFilaMenu(
+                      titulo: 'Restablecer primer uso (QA)',
+                      subtitulo: 'Solo pruebas: volver al registro inicial',
                       icono: Icons.restart_alt_rounded,
                       colorIconoFondo: const Color(0xFFFDE8E8),
                       colorIcono: Colors.red.shade700,
@@ -224,6 +238,7 @@ class _AreaPadresPageState extends State<AreaPadresPage> {
                         );
                       },
                     ),
+                    ],
                     const SizedBox(height: 24),
                   ],
                 ),
@@ -1051,6 +1066,13 @@ class AyudaSoportePage extends StatelessWidget {
                             titulo: 'Política de privacidad',
                             contenido:
                                 'Los datos son tratados con estricta confidencialidad clínica y no se comparten con terceros.',
+                          ),
+                          const Divider(height: 1.5, color: colorBorde),
+                          _buildFilaSimple(
+                            context,
+                            titulo: 'Pictogramas ARASAAC',
+                            contenido:
+                                'Los símbolos pictográficos utilizados son propiedad del Gobierno de Aragón y han sido creados por Sergio Palao para ARASAAC (https://arasaac.org), que los distribuye bajo Licencia Creative Commons BY-NC-SA.',
                           ),
                         ],
                       ),
