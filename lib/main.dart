@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'dominio/accesibilidad_service.dart';
+import 'dominio/reporte_service.dart';
 import 'presentacion/registro/bienvenida_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // RNF-04: borra las copias temporales del reporte PDF que quedaron de exportaciones anteriores.
+  ReporteService.limpiarViejos();
   await AccesibilidadService().init();
   runApp(const SpikeApp());
 }

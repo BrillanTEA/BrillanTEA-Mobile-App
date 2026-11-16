@@ -29,6 +29,17 @@ class ReporteService {
     } catch (_) {}
   }
 
+  /// Borra todas las copias temporales del reporte, sin esperar los 10 minutos
+  /// (Configuración → borrar los datos de la aplicación; RNF-04 y Ley N.° 29733).
+  static Future<void> borrarTodos() async {
+    try {
+      final dir = await getTemporaryDirectory();
+      for (final f in dir.listSync().whereType<File>()) {
+        if (f.uri.pathSegments.last.startsWith(_prefijo)) f.deleteSync();
+      }
+    } catch (_) {}
+  }
+
   static String _fecha(DateTime d) =>
       '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}/${d.year}';
 
