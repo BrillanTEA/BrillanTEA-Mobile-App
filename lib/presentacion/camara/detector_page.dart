@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:camera/camera.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import '../../dominio/catalogo_service.dart';
 import '../../dominio/registro_uso_service.dart';
 import '../../dominio/rutinas_app.dart';
 import '../../infraestructura/detector_worker.dart';
+import '../../infraestructura/perfil_yolo26.dart';
 import '../../infraestructura/servicio_voz.dart';
 import '../../infraestructura/stats.dart';
 import '../rutinas/rutinas_page.dart';
@@ -23,7 +25,8 @@ const double kObjetivoMs = 150;
 
 /// Panel técnico (modelo, CPU/GPU, hilos, benchmark, CSV): solo para las pruebas de la tesis.
 /// La versión final se compila con:  bash publicar_apk.sh --final   (MODO_TECNICO=false)
-const bool kModoTecnico = bool.fromEnvironment('MODO_TECNICO', defaultValue: true);
+const bool kModoTecnico =
+    bool.fromEnvironment('MODO_TECNICO', defaultValue: true);
 
 /// Tamaño de la tarjeta de realidad aumentada que acompaña a cada objeto.
 const double _anchoTarjetaRA = 172;
@@ -49,7 +52,8 @@ class DetectorPage extends StatefulWidget {
   State<DetectorPage> createState() => _DetectorPageState();
 }
 
-class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
+class _DetectorPageState extends State<DetectorPage>
+    with AutomaticKeepAliveClientMixin, WidgetsBindingObserver {
   CameraController? _cam;
   DetectorWorker? _worker;
   DetectorWorker? _worker2; // segundo modelo del modo DOBLE
@@ -58,22 +62,32 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
   // Modo DOBLE: YOLO11s original de COCO para las 23 clases de COCO + YOLO26s propio para las 11 clases
   // restantes (examen: 90,5 % de precisión). Las clases que no se usan van como "-" en los .txt.
   static const _dual = 'DOBLE: COCO + propio (recomendado)';
-  static const _fCocoBase16 = 'assets/models/coco_base_fp16.tflite'; // mismo modelo en FP16 (mitad de peso)
-  static const _fCocoBase = 'assets/models/coco_base_fp32.tflite'; // YOLO11s COCO elegido por paso8
-  static const _fCocoS = 'assets/models/yolo11s_640_fp32.tflite'; // YOLO11s COCO (más preciso, se usa si existe)
-  static const _fCocoN = 'assets/models/yolo11n_640_fp32.tflite'; // YOLO11n COCO (respaldo)
+  static const _fCocoBase16 =
+      'assets/models/coco_base_fp16.tflite'; // mismo modelo en FP16 (mitad de peso)
+  static const _fCocoBase =
+      'assets/models/coco_base_fp32.tflite'; // YOLO11s COCO elegido por paso8
+  static const _fCocoS =
+      'assets/models/yolo11s_640_fp32.tflite'; // YOLO11s COCO (más preciso, se usa si existe)
+  static const _fCocoN =
+      'assets/models/yolo11n_640_fp32.tflite'; // YOLO11n COCO (respaldo)
   String _fCoco = _fCocoN;
   // Modelo propio: el de 11 clases (paso8) si está en assets; si no, el anterior de 34 clases.
-  static const _fProp11_16 = 'assets/models/propio11_fp16.tflite'; // modelo propio en FP16 (exportar_fp16.py)
+  static const _fProp11_16 =
+      'assets/models/propio11_fp16.tflite'; // modelo propio en FP16 (exportar_fp16.py)
   static const _fProp11 = 'assets/models/propio11_fp32.tflite';
   static const _lProp11 = 'assets/models/propio11.txt';
   String _actualFProp = 'assets/models/yolo11n_propio_fp32.tflite';
-  static const _fUmbrales = 'assets/models/umbrales_app.json'; // umbral por objeto (umbrales_combo.py)
-  Map<String, double> _umbralClase = {}; // clave del catálogo -> umbral mínimo para mostrarlo
+  static const _fUmbrales =
+      'assets/models/umbrales_app.json'; // umbral por objeto (umbrales_combo.py)
+  Map<String, double> _umbralClase =
+      {}; // clave del catálogo -> umbral mínimo para mostrarlo
   bool _worker2Activo = false;
-  static const _lCoco = 'assets/models/dual_coco.txt'; // 80 líneas: clave del catálogo o "-"
-  String _lProp = 'assets/models/dual_propio.txt'; // 34 líneas (modelo anterior) o 11 (propio11.txt)
-  int _offset2 = 0; // las clases del 2.º modelo van después de las del 1.º en _labels
+  static const _lCoco =
+      'assets/models/dual_coco.txt'; // 80 líneas: clave del catálogo o "-"
+  String _lProp =
+      'assets/models/dual_propio.txt'; // 34 líneas (modelo anterior) o 11 (propio11.txt)
+  int _offset2 =
+      0; // las clases del 2.º modelo van después de las del 1.º en _labels
 
   /// El modelo devuelve todo lo que supere el umbral más bajo; luego cada objeto se filtra con el suyo.
   double get _umbralWorker {
@@ -84,24 +98,47 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
     return m;
   }
 
+  bool _deteccionDelCatalogo(Detection d) {
+    if (!PerfilYolo26.permite(d.cls, d.score) || d.cls >= _labels.length)
+      return false;
+    if (![d.left, d.top, d.right, d.bottom].every((v) => v.isFinite) ||
+        d.right <= d.left ||
+        d.bottom <= d.top) return false;
+    return _catalogo.findByClave(_labels[d.cls]) != null &&
+        PerfilYolo26.claves.contains(_labels[d.cls]);
+  }
+
   double _umbralDe(Detection d) => _umbralClase[_labels[d.cls]] ?? _threshold;
 
   // Objetos grandes de COCO que el modelo propio confunde con una clase suya (laptop -> cuaderno, tele -> caja...).
-  static const _cocoQueTapan = {'laptop', 'televisor', 'mochila', 'refrigeradora', 'silla', 'sofa'};
+  static const _cocoQueTapan = {
+    'laptop',
+    'televisor',
+    'mochila',
+    'refrigeradora',
+    'silla',
+    'sofa'
+  };
 
   /// Si el modelo COCO (más preciso) ya ve un objeto en el mismo lugar, se descarta lo que dice
   /// el modelo propio ahí. Ej.: la laptop deja de salir también como "cuaderno".
-  double _area(Detection d) => max(0.0, d.right - d.left) * max(0.0, d.bottom - d.top);
+  double _area(Detection d) =>
+      max(0.0, d.right - d.left) * max(0.0, d.bottom - d.top);
   double _inter(Detection a, Detection b) =>
-      max(0.0, min(a.right, b.right) - max(a.left, b.left)) * max(0.0, min(a.bottom, b.bottom) - max(a.top, b.top));
+      max(0.0, min(a.right, b.right) - max(a.left, b.left)) *
+      max(0.0, min(a.bottom, b.bottom) - max(a.top, b.top));
 
   /// Cuánto supera cada detección su propio umbral (+0.10 si viene del modelo COCO, que es más preciso).
-  double _margen(Detection d) => d.score - _umbralDe(d) + (_model == _dual && d.cls < _offset2 ? 0.10 : 0.0);
+  double _margen(Detection d) =>
+      d.score -
+      _umbralDe(d) +
+      (_model == _dual && d.cls < _offset2 ? 0.10 : 0.0);
 
   /// Un objeto = un solo nombre. Si dos detecciones de clases distintas cubren casi lo mismo
   /// (laptop y cuaderno, taza y vaso...), se queda solo la más segura.
   List<Detection> _unaPorLugar(List<Detection> ds) {
-    final orden = List<Detection>.from(ds)..sort((a, b) => _margen(b).compareTo(_margen(a)));
+    final orden = List<Detection>.from(ds)
+      ..sort((a, b) => _margen(b).compareTo(_margen(a)));
     final keep = <Detection>[];
     for (final d in orden) {
       final ad = _area(d);
@@ -117,18 +154,23 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
   }
 
   List<Detection> _suprimirPropias(List<Detection> ds) {
-    final coco = ds.where((d) => d.cls < _offset2 && d.score >= _umbralDe(d)).toList();
+    final coco =
+        ds.where((d) => d.cls < _offset2 && d.score >= _umbralDe(d)).toList();
     if (coco.isEmpty) return ds;
-    double area(double l, double t, double r, double b) => max(0.0, r - l) * max(0.0, b - t);
+    double area(double l, double t, double r, double b) =>
+        max(0.0, r - l) * max(0.0, b - t);
     return ds.where((p) {
       if (p.cls < _offset2) return true;
       final ap = area(p.left, p.top, p.right, p.bottom);
       for (final c in coco) {
-        final inter = area(max(p.left, c.left), max(p.top, c.top), min(p.right, c.right), min(p.bottom, c.bottom));
+        final inter = area(max(p.left, c.left), max(p.top, c.top),
+            min(p.right, c.right), min(p.bottom, c.bottom));
         final ac = area(c.left, c.top, c.right, c.bottom);
         final iou = inter / (ap + ac - inter + 1e-9);
         if (iou >= 0.45) return false;
-        if (_cocoQueTapan.contains(_labels[c.cls]) && inter >= 0.7 * ap && ac <= 4 * ap) return false;
+        if (_cocoQueTapan.contains(_labels[c.cls]) &&
+            inter >= 0.7 * ap &&
+            ac <= 4 * ap) return false;
       }
       return true;
     }).toList();
@@ -170,7 +212,10 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
   static const _ventana = 3, _minVistos = 2;
   final List<Set<int>> _historial = [];
   bool _filtroTemporal = true;
-  final _pre = LatencyStats(), _inf = LatencyStats(), _post = LatencyStats(), _e2e = LatencyStats();
+  final _pre = LatencyStats(),
+      _inf = LatencyStats(),
+      _post = LatencyStats(),
+      _e2e = LatencyStats();
   final _fpsWatch = Stopwatch();
   int _frames = 0;
   double _fps = 0;
@@ -190,7 +235,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
   /// Pausa la cámara cuando la app pasa a segundo plano (privacidad y batería) y la reanuda al volver.
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.inactive || state == AppLifecycleState.paused) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
       final cam = _cam;
       if (cam == null) return;
       _cam = null;
@@ -202,7 +248,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
     } else if (state == AppLifecycleState.resumed) {
       if (_cam == null && _worker != null && mounted) {
         _startCamera().catchError((Object e) {
-          if (mounted) setState(() => _error = 'No se pudo reanudar la cámara: $e');
+          if (mounted)
+            setState(() => _error = 'No se pudo reanudar la cámara: $e');
         });
       }
     }
@@ -219,16 +266,26 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
       await _tts.setSpeechRate(0.45);
 
       final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
-      _models = manifest.listAssets().where((a) => a.endsWith('.tflite')).toList()..sort();
-      if (_models.isEmpty) throw 'No hay modelos .tflite en assets/models/';
+      _models = manifest
+          .listAssets()
+          .where((a) => a.endsWith('.tflite'))
+          .toList()
+        ..sort();
+      if (!_models.contains(PerfilYolo26.asset))
+        throw StateError('Falta el candidato YOLO26 de35clases');
+      _models = [
+        PerfilYolo26.asset
+      ]; // Copia de diagnóstico: ningún modelo anterior activo.
 
       // Filtrar modelos con formato w8a32 (LiteRT Torch) que generan "failed precondition"
       // por incompatibilidad con el runtime de TFLite en Android
       _models.removeWhere((m) => m.contains('w8a32'));
       try {
-        final j = jsonDecode(await rootBundle.loadString(_fUmbrales)) as Map<String, dynamic>;
+        final j = jsonDecode(await rootBundle.loadString(_fUmbrales))
+            as Map<String, dynamic>;
         _umbralClase = {
-          for (final e in (j['umbrales'] as Map<String, dynamic>).entries) e.key: (e.value as num).toDouble()
+          for (final e in (j['umbrales'] as Map<String, dynamic>).entries)
+            e.key: (e.value as num).toDouble()
         };
       } catch (_) {
         _umbralClase = {}; // sin archivo: se usa el umbral general (0.50)
@@ -237,7 +294,9 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
       // FP16 primero si existe: mismo modelo, mitad de peso en el APK (RNF-05)
       _fCoco = _models.contains(_fCocoBase16)
           ? _fCocoBase16
-          : (_models.contains(_fCocoBase) ? _fCocoBase : (_models.contains(_fCocoS) ? _fCocoS : _fCocoN));
+          : (_models.contains(_fCocoBase)
+              ? _fCocoBase
+              : (_models.contains(_fCocoS) ? _fCocoS : _fCocoN));
       if (manifest.listAssets().contains(_lProp11)) {
         if (_models.contains(_fProp11_16)) {
           _actualFProp = _fProp11_16;
@@ -252,10 +311,13 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
       }
 
       // Por defecto, el modo DOBLE; si faltan sus archivos, YOLO11n de COCO como respaldo.
-      _model = _models.contains(_dual) ? _dual : _models.firstWhere(
-        (m) => m.contains('yolo11n_640_fp32'),
-        orElse: () => _models.firstWhere((m) => m.contains('yolo11n'), orElse: () => _models.first),
-      );
+      _model = _models.contains(_dual)
+          ? _dual
+          : _models.firstWhere(
+              (m) => m.contains('yolo11n_640_fp32'),
+              orElse: () => _models.firstWhere((m) => m.contains('yolo11n'),
+                  orElse: () => _models.first),
+            );
 
       _worker = await DetectorWorker.spawn();
       _worker2 = await DetectorWorker.spawn();
@@ -277,14 +339,18 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
       _labels = [...l1];
       _offset2 = l1.length;
       _historial.clear();
-      _threshold = 0.5; // umbral general con el que se midió el examen (si no hay umbral por objeto)
+      _threshold =
+          0.5; // umbral general con el que se midió el examen (si no hay umbral por objeto)
       try {
-        _info = await _worker!.load(b1, _delegate, _threads, numClasses: l1.length);
+        _info =
+            await _worker!.load(b1, _delegate, _threads, numClasses: l1.length);
         if (!_actualFProp.contains('w8a32')) {
           try {
-            final b2 = (await rootBundle.load(_actualFProp)).buffer.asUint8List();
+            final b2 =
+                (await rootBundle.load(_actualFProp)).buffer.asUint8List();
             final l2 = (await rootBundle.loadString(_lProp)).trim().split('\n');
-            await _worker2!.load(b2, _delegate, _threads, numClasses: l2.length);
+            await _worker2!
+                .load(b2, _delegate, _threads, numClasses: l2.length);
             _labels.addAll(l2);
             _worker2Activo = true;
           } catch (e) {
@@ -306,14 +372,36 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
 
     final bytes = (await rootBundle.load(_model!)).buffer.asUint8List();
     try {
-      _labels = (await rootBundle.loadString(_model!.replaceAll('.tflite', '.txt'))).trim().split('\n');
+      _labels =
+          (await rootBundle.loadString(_model!.replaceAll('.tflite', '.txt')))
+              .trim()
+              .split('\n');
     } catch (_) {
-      _labels = (await rootBundle.loadString('assets/labels_coco.txt')).trim().split('\n');
+      if (_model == PerfilYolo26.asset) rethrow;
+      _labels = (await rootBundle.loadString('assets/labels_coco.txt'))
+          .trim()
+          .split('\n');
     }
     _historial.clear();
     _threshold = 0.25; // umbral del modo de un solo modelo (panel técnico)
+    if (_model == PerfilYolo26.asset) {
+      PerfilYolo26.validarEtiquetas(_labels);
+      if (sha256.convert(bytes).toString() != PerfilYolo26.sha256Modelo)
+        throw StateError(
+            'El archivo del modelo no coincide con el candidato verificado');
+      _umbralClase
+          .clear(); // Los umbrales históricos de otros pesos no son aplicables.
+      _threshold = PerfilYolo26.confianza;
+    }
     try {
-      _info = await _worker!.load(bytes, _delegate, _threads, numClasses: _labels.length);
+      _info = await _worker!.load(bytes, _delegate, _threads,
+          numClasses: _labels.length,
+          nmsIou: PerfilYolo26.iouNms,
+          maxDet: PerfilYolo26.maxDet,
+          normalizedCoordinates: true);
+      if (_model == PerfilYolo26.asset)
+        PerfilYolo26.validarTensores(
+            _info!.inputShape, _info!.outputShape, _info!.inputType);
       _resetStats();
     } catch (e) {
       _error = 'No se pudo cargar con delegado "$_delegate": $e';
@@ -324,12 +412,16 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
   Future<void> _startCamera() async {
     await _cam?.dispose();
     final cams = await availableCameras();
-    final back = cams.firstWhere((c) => c.lensDirection == CameraLensDirection.back, orElse: () => cams.first);
+    final back = cams.firstWhere(
+        (c) => c.lensDirection == CameraLensDirection.back,
+        orElse: () => cams.first);
     final cam = CameraController(
       back,
       _resolution,
       enableAudio: false,
-      imageFormatGroup: Platform.isAndroid ? ImageFormatGroup.yuv420 : ImageFormatGroup.bgra8888,
+      imageFormatGroup: Platform.isAndroid
+          ? ImageFormatGroup.yuv420
+          : ImageFormatGroup.bgra8888,
     );
     await cam.initialize();
     _cam = cam;
@@ -389,10 +481,15 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
         final todas = [
           ...r1.detections,
           if (r2 != null)
-            for (final d in r2.detections) Detection(d.cls + _offset2, d.score, d.left, d.top, d.right, d.bottom),
-        ].where((d) => _labels[d.cls] != '-').toList();
+            for (final d in r2.detections)
+              Detection(
+                  d.cls + _offset2, d.score, d.left, d.top, d.right, d.bottom),
+        ].where(_deteccionDelCatalogo).toList();
         // Los dos modelos corren EN PARALELO: el tiempo real de cada etapa es el del más lento (no la suma).
-        r = FrameResult(_suprimirPropias(todas), max(r1.preMs, r2?.preMs ?? 0.0), max(r1.infMs, r2?.infMs ?? 0.0),
+        r = FrameResult(
+            _suprimirPropias(todas),
+            max(r1.preMs, r2?.preMs ?? 0.0),
+            max(r1.infMs, r2?.infMs ?? 0.0),
             max(r1.postMs, r2?.postMs ?? 0.0));
       } else {
         r = await _worker!.process(frame, _umbralWorker);
@@ -413,7 +510,10 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
       }
 
       // 1) Umbral por objeto (umbrales_app.json, elegido con fotos etiquetadas por personas).
-      final validas = r.detections.where((d) => d.score >= _umbralDe(d)).toList();
+      final validas = r.detections
+          .where(_deteccionDelCatalogo)
+          .where((d) => d.score >= _umbralDe(d))
+          .toList();
       _historial.add({for (final d in validas) d.cls});
       if (_historial.length > _ventana) _historial.removeAt(0);
       // 2) Filtro temporal: un objeto se muestra si aparece en 2 de los últimos 3 frames,
@@ -421,14 +521,16 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
       final estables = _filtroTemporal
           ? validas.where((d) {
               if (d.score >= _umbralDe(d) + 0.25) return true;
-              return _historial.where((h) => h.contains(d.cls)).length >= _minVistos;
+              return _historial.where((h) => h.contains(d.cls)).length >=
+                  _minVistos;
             }).toList()
           : validas;
       // 3) Un solo nombre por objeto: si dos cajas tapan la misma cosa, gana la más segura.
       final limpias = _unaPorLugar(estables);
       final vista = limpias;
 
-      final ordenados = List<Detection>.from(vista)..sort((a, b) => b.score.compareTo(a.score));
+      final ordenados = List<Detection>.from(vista)
+        ..sort((a, b) => b.score.compareTo(a.score));
 
       final List<DetectedObjectItem> matchedList = [];
       final Set<String> seenClaves = {};
@@ -437,7 +539,7 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
         if (d.cls >= 0 && d.cls < _labels.length) {
           final label = _labels[d.cls];
           if (label == '-') continue;
-          final matched = _catalogo.findByCoco(label);
+          final matched = _catalogo.findPorEtiqueta(label);
           if (matched != null && !seenClaves.contains(matched.clave)) {
             seenClaves.add(matched.clave);
             matchedList.add(DetectedObjectItem(
@@ -487,13 +589,18 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
 
       // Auto-voz si está habilitada (solo en modo automático, no interrumpe el tutorial)
       final esTutorial = AccesibilidadService().tutorialCamara;
-      if (!esTutorial && _autoVoice && activeItems.isNotEmpty && activeFoco != null) {
+      if (!esTutorial &&
+          _autoVoice &&
+          activeItems.isNotEmpty &&
+          activeFoco != null) {
         final focusedObj = activeItems.firstWhere(
           (m) => m.item.clave == activeFoco,
           orElse: () => activeItems.first,
         );
         final now = DateTime.now();
-        final diff = _lastSpokenTime == null ? 9999 : now.difference(_lastSpokenTime!).inSeconds;
+        final diff = _lastSpokenTime == null
+            ? 9999
+            : now.difference(_lastSpokenTime!).inSeconds;
         if (_lastSpokenKey != focusedObj.item.clave || diff >= 3) {
           _lastSpokenKey = focusedObj.item.clave;
           _lastSpokenTime = now;
@@ -512,7 +619,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
     } catch (e) {
       if (mounted) {
         setState(() => _error = '$e');
-        if (e.toString().contains('failed precondition') || e.toString().contains('kTfLiteError')) {
+        if (e.toString().contains('failed precondition') ||
+            e.toString().contains('kTfLiteError')) {
           _recuperarAModeloSeguro();
         }
       }
@@ -523,6 +631,14 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
 
   bool _recuperando = false;
   Future<void> _recuperarAModeloSeguro() async {
+    if (_model == PerfilYolo26.asset) {
+      _running = false;
+      await _cam?.stopImageStream();
+      if (mounted)
+        setState(() => _error =
+            'El candidato no pudo ejecutarse. Prueba CPU y conserva este error para el diagnóstico.');
+      return; // No sustituir silenciosamente por un modelo COCO de80clases.
+    }
     if (_recuperando) return;
     _recuperando = true;
     try {
@@ -532,7 +648,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Modelo adaptado automáticamente a YOLO11n FP32 para estabilidad continua.'),
+            content: Text(
+                'Modelo adaptado automáticamente a YOLO11n FP32 para estabilidad continua.'),
             duration: Duration(seconds: 3),
           ),
         );
@@ -542,7 +659,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
   }
 
   Future<void> _runBenchmark() async {
-    setState(() => _benchText = 'Midiendo… (10 de calentamiento + 100 corridas)');
+    setState(
+        () => _benchText = 'Midiendo… (10 de calentamiento + 100 corridas)');
     _running = false;
     while (_busy) {
       await Future.delayed(const Duration(milliseconds: 20));
@@ -554,14 +672,19 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
             'p50 ${LatencyStats.percentile(t, 50).toStringAsFixed(1)} · '
             'p95 ${LatencyStats.percentile(t, 95).toStringAsFixed(1)} ms';
       }
+
       final t1 = await _worker!.benchmark(10, 100);
       _benchText = linea(_model == _dual ? 'COCO' : 'invoke()', t1);
       if (_model == _dual && _worker2Activo) {
         // Cada modelo por separado; en uso real corren a la vez, así que también se mide juntos.
         final t2 = await _worker2!.benchmark(10, 100);
-        final juntos = await Future.wait([_worker!.benchmark(5, 50), _worker2!.benchmark(5, 50)]);
-        final par = [for (var i = 0; i < 50; i++) max(juntos[0][i], juntos[1][i])];
-        _benchText = '${linea('COCO', t1)}\n${linea('Propio', t2)}\n${linea('Los dos a la vez', par)}';
+        final juntos = await Future.wait(
+            [_worker!.benchmark(5, 50), _worker2!.benchmark(5, 50)]);
+        final par = [
+          for (var i = 0; i < 50; i++) max(juntos[0][i], juntos[1][i])
+        ];
+        _benchText =
+            '${linea('COCO', t1)}\n${linea('Propio', t2)}\n${linea('Los dos a la vez', par)}';
       }
     } catch (e) {
       _benchText = 'Error: $e';
@@ -571,23 +694,28 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
   }
 
   Future<void> _copyReport() async {
-    final dur = _sessionStart == null ? 0 : DateTime.now().difference(_sessionStart!).inSeconds;
+    final dur = _sessionStart == null
+        ? 0
+        : DateTime.now().difference(_sessionStart!).inSeconds;
     final b = StringBuffer()
       ..writeln('modelo,${_model!.split('/').last}')
       ..writeln('delegado,${_info?.delegateUsed}')
       ..writeln('entrada,${_info?.inputShape} ${_info?.inputType}')
       ..writeln('salida,${_info?.outputShape}')
       ..writeln('camara,${_cam?.value.previewSize} ($_resolution)')
-      ..writeln('build,${kReleaseMode ? 'release' : kProfileMode ? 'profile' : 'DEBUG (no válido para medir)'}')
+      ..writeln(
+          'build,${kReleaseMode ? 'release' : kProfileMode ? 'profile' : 'DEBUG (no válido para medir)'}')
       ..writeln('duracion_s,$dur')
       ..writeln('frames,${_e2e.all.length}')
-      ..writeln('fps_promedio,${dur > 0 ? (_e2e.all.length / dur).toStringAsFixed(2) : '-'}')
+      ..writeln(
+          'fps_promedio,${dur > 0 ? (_e2e.all.length / dur).toStringAsFixed(2) : '-'}')
       ..writeln('hilos,$_threads')
       ..writeln('benchmark,$_benchText')
       ..writeln()
       ..writeln('frame,pre_ms,inf_ms,post_ms,e2e_ms');
     for (var i = 0; i < _e2e.all.length; i++) {
-      b.writeln('$i,${_pre.all[i].toStringAsFixed(2)},${_inf.all[i].toStringAsFixed(2)},'
+      b.writeln(
+          '$i,${_pre.all[i].toStringAsFixed(2)},${_inf.all[i].toStringAsFixed(2)},'
           '${_post.all[i].toStringAsFixed(2)},${_e2e.all[i].toStringAsFixed(2)}');
     }
     await Clipboard.setData(ClipboardData(text: b.toString()));
@@ -600,9 +728,11 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
     // para analizar las mediciones en una computadora.
     try {
       final ahora = DateTime.now();
-      final sello = '${ahora.year}${ahora.month.toString().padLeft(2, '0')}${ahora.day.toString().padLeft(2, '0')}'
+      final sello =
+          '${ahora.year}${ahora.month.toString().padLeft(2, '0')}${ahora.day.toString().padLeft(2, '0')}'
           '_${ahora.hour.toString().padLeft(2, '0')}${ahora.minute.toString().padLeft(2, '0')}';
-      final delegado = '${_info?.delegateUsed ?? _delegate}'.replaceAll(RegExp(r'[^A-Za-z0-9]+'), '');
+      final delegado = '${_info?.delegateUsed ?? _delegate}'
+          .replaceAll(RegExp(r'[^A-Za-z0-9]+'), '');
       final dir = await getTemporaryDirectory();
       final f = File('${dir.path}/latencia_${delegado}_$sello.csv');
       await f.writeAsString(b.toString());
@@ -654,7 +784,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                             child: Text(
                               _error ?? 'Iniciando cámara…',
                               textAlign: TextAlign.center,
-                              style: const TextStyle(color: Colors.white, fontSize: 16),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 16),
                             ),
                           )
                         else
@@ -668,7 +799,9 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                           ),
 
                         if (_mostrarCajasDebug)
-                          CustomPaint(painter: _BoxPainter(_dets, _labels, _catalogo, _tamanoFrame())),
+                          CustomPaint(
+                              painter: _BoxPainter(
+                                  _dets, _labels, _catalogo, _tamanoFrame())),
 
                         // CONTENIDO ADAPTATIVO:
                         if (esTutorial) ...[
@@ -690,7 +823,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                           if (_detectedItems.isNotEmpty)
                             Positioned.fill(
                               child: LayoutBuilder(
-                                builder: (ctx, c) => _capaRealidadAumentada(c.biggest),
+                                builder: (ctx, c) =>
+                                    _capaRealidadAumentada(c.biggest),
                               ),
                             ),
                         ],
@@ -702,8 +836,7 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
             ),
 
             // 3. Botón del modo tutorial
-            if (esTutorial)
-              _buildBotonCamaraTutorial(),
+            if (esTutorial) _buildBotonCamaraTutorial(),
 
             // 4. Panel técnico (solo en modo técnico)
             if (kModoTecnico && _mostrarPanelMetricas)
@@ -722,11 +855,17 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                         children: [
                           const Text(
                             '⚙️ Métricas de Tesis y Control de Inferencia',
-                            style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold, fontSize: 13),
+                            style: TextStyle(
+                                color: Colors.white70,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13),
                           ),
-                          IconButton(tooltip: 'Cerrar', 
-                            icon: const Icon(Icons.close, color: Colors.white70, size: 20),
-                            onPressed: () => setState(() => _mostrarPanelMetricas = false),
+                          IconButton(
+                            tooltip: 'Cerrar',
+                            icon: const Icon(Icons.close,
+                                color: Colors.white70, size: 20),
+                            onPressed: () =>
+                                setState(() => _mostrarPanelMetricas = false),
                           ),
                         ],
                       ),
@@ -736,22 +875,30 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                       padding: const EdgeInsets.fromLTRB(12, 0, 12, 6),
                       child: Row(
                         children: [
-                          Expanded(child: _botonMedicion(Icons.speed, 'Benchmark', _runBenchmark)),
+                          Expanded(
+                              child: _botonMedicion(
+                                  Icons.speed, 'Benchmark', _runBenchmark)),
                           const SizedBox(width: 6),
-                          Expanded(child: _botonMedicion(Icons.restart_alt, 'Reiniciar', () => setState(_resetStats))),
+                          Expanded(
+                              child: _botonMedicion(Icons.restart_alt,
+                                  'Reiniciar', () => setState(_resetStats))),
                           const SizedBox(width: 6),
-                          Expanded(child: _botonMedicion(Icons.ios_share, 'Exportar CSV', _copyReport)),
+                          Expanded(
+                              child: _botonMedicion(Icons.ios_share,
+                                  'Exportar CSV', _copyReport)),
                         ],
                       ),
                     ),
                     ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.45),
+                      constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height * 0.45),
                       child: SingleChildScrollView(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 14.0),
                               child: _statsCard(),
                             ),
                             _controls(),
@@ -776,26 +923,31 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
         children: [
           Row(
             children: [
-              Semantics(button: true, label: 'Volver', child: InkWell(
-                onTap: () {
-                  if (Navigator.canPop(context)) {
-                    Navigator.pop(context);
-                  }
-                },
-                borderRadius: BorderRadius.circular(999),
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xFFDDD6C9), width: 1.5),
-                  ),
-                  child: const Center(
-                    child: Icon(Icons.arrow_back, color: Color(0xFF3A3A3A), size: 22),
-                  ),
-                ),
-              )),
+              Semantics(
+                  button: true,
+                  label: 'Volver',
+                  child: InkWell(
+                    onTap: () {
+                      if (Navigator.canPop(context)) {
+                        Navigator.pop(context);
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(999),
+                    child: Container(
+                      width: 44,
+                      height: 44,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            color: const Color(0xFFDDD6C9), width: 1.5),
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.arrow_back,
+                            color: Color(0xFF3A3A3A), size: 22),
+                      ),
+                    ),
+                  )),
               const SizedBox(width: 14),
               const Expanded(
                 child: Text(
@@ -817,12 +969,17 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                 },
                 borderRadius: BorderRadius.circular(16),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: esTutorial ? const Color(0xFFE8F2F4) : const Color(0xFFF7F5F0),
+                    color: esTutorial
+                        ? const Color(0xFFE8F2F4)
+                        : const Color(0xFFF7F5F0),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: esTutorial ? const Color(0xFF386673) : const Color(0xFFDDD6C9),
+                      color: esTutorial
+                          ? const Color(0xFF386673)
+                          : const Color(0xFFDDD6C9),
                       width: 1.2,
                     ),
                   ),
@@ -830,9 +987,13 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        esTutorial ? Icons.touch_app_rounded : Icons.auto_awesome_rounded,
+                        esTutorial
+                            ? Icons.touch_app_rounded
+                            : Icons.auto_awesome_rounded,
                         size: 15,
-                        color: esTutorial ? const Color(0xFF386673) : const Color(0xFF757575),
+                        color: esTutorial
+                            ? const Color(0xFF386673)
+                            : const Color(0xFF757575),
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -841,7 +1002,9 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                           fontFamily: 'Atkinson Hyperlegible Next',
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
-                          color: esTutorial ? const Color(0xFF386673) : const Color(0xFF757575),
+                          color: esTutorial
+                              ? const Color(0xFF386673)
+                              : const Color(0xFF757575),
                         ),
                       ),
                     ],
@@ -850,15 +1013,19 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
               ),
               const SizedBox(width: 6),
               // Botón discreto para panel de métricas de tesis (solo en modo técnico)
-              if (kModoTecnico) IconButton(
-                tooltip: 'Métricas de tesis y hardware',
-                icon: Icon(
-                  _mostrarPanelMetricas ? Icons.tune : Icons.tune_outlined,
-                  color: _mostrarPanelMetricas ? const Color(0xFFB06B47) : const Color(0xFF757575),
-                  size: 24,
+              if (kModoTecnico)
+                IconButton(
+                  tooltip: 'Métricas de tesis y hardware',
+                  icon: Icon(
+                    _mostrarPanelMetricas ? Icons.tune : Icons.tune_outlined,
+                    color: _mostrarPanelMetricas
+                        ? const Color(0xFFB06B47)
+                        : const Color(0xFF757575),
+                    size: 24,
+                  ),
+                  onPressed: () => setState(
+                      () => _mostrarPanelMetricas = !_mostrarPanelMetricas),
                 ),
-                onPressed: () => setState(() => _mostrarPanelMetricas = !_mostrarPanelMetricas),
-              ),
             ],
           ),
           const SizedBox(height: 6),
@@ -885,38 +1052,42 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
   Widget _buildBotonCamaraTutorial() {
     return Padding(
       padding: const EdgeInsets.only(bottom: 22.0, top: 6.0),
-      child: Semantics(button: true, label: 'Identificar el objeto', child: InkWell(
-        onTap: _onTocarBotonCamaraTutorial,
-        borderRadius: BorderRadius.circular(999),
-        child: Container(
-          width: 86,
-          height: 86,
-          decoration: const BoxDecoration(
-            color: Color(0xFFDCE9EB), // Halo ring claro del mockup Figma
-            shape: BoxShape.circle,
-          ),
-          child: Center(
+      child: Semantics(
+          button: true,
+          label: 'Identificar el objeto',
+          child: InkWell(
+            onTap: _onTocarBotonCamaraTutorial,
+            borderRadius: BorderRadius.circular(999),
             child: Container(
-              width: 66,
-              height: 66,
-              decoration: BoxDecoration(
-                color: const Color(0xFF386673), // Círculo teal interior
+              width: 86,
+              height: 86,
+              decoration: const BoxDecoration(
+                color: Color(0xFFDCE9EB), // Halo ring claro del mockup Figma
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF386673).withValues(alpha: 0.35),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
               ),
-              child: const Center(
-                child: Icon(Icons.camera_alt_outlined, color: Colors.white, size: 30),
+              child: Center(
+                child: Container(
+                  width: 66,
+                  height: 66,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF386673), // Círculo teal interior
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF386673).withValues(alpha: 0.35),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: const Center(
+                    child: Icon(Icons.camera_alt_outlined,
+                        color: Colors.white, size: 30),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      )),
+          )),
     );
   }
 
@@ -942,9 +1113,10 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
     if (_dets.isNotEmpty) {
       for (final d in _dets) {
         if (d.cls >= 0 && d.cls < _labels.length) {
-          final m = _catalogo.findByCoco(_labels[d.cls]);
+          final m = _catalogo.findPorEtiqueta(_labels[d.cls]);
           if (m != null) {
-            final detItem = DetectedObjectItem(item: m, score: d.score, detection: d);
+            final detItem =
+                DetectedObjectItem(item: m, score: d.score, detection: d);
             setState(() => _objetoDetectadoTutorial = detItem);
             _speak(m.frasePeticion ?? m.fraseApoyo ?? m.nombre);
             return;
@@ -996,7 +1168,6 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
     );
   }
 
-
   /// Tarjeta inferior cuando hay un solo objeto.
   Widget _buildCardAbajo(DetectedObjectItem detItem) {
     final item = detItem.item;
@@ -1036,7 +1207,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
               child: Image.asset(
                 item.assetPath,
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => const Icon(Icons.category, size: 28, color: Colors.grey),
+                errorBuilder: (_, __, ___) =>
+                    const Icon(Icons.category, size: 28, color: Colors.grey),
               ),
             ),
             const SizedBox(width: 14),
@@ -1061,7 +1233,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFFF2D6),
                           borderRadius: BorderRadius.circular(8),
@@ -1093,49 +1266,63 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
               ),
             ),
             const SizedBox(width: 8),
-            Semantics(button: true, label: 'Escuchar', child: InkWell(
-              onTap: () => _speak(frase),
-              borderRadius: BorderRadius.circular(999),
-              child: Container(
-                width: 40,
-                height: 40,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF0F5F6),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.volume_up_rounded, color: Color(0xFF386673), size: 22),
-              ),
-            )),
+            Semantics(
+                button: true,
+                label: 'Escuchar',
+                child: InkWell(
+                  onTap: () => _speak(frase),
+                  borderRadius: BorderRadius.circular(999),
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF0F5F6),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.volume_up_rounded,
+                        color: Color(0xFF386673), size: 22),
+                  ),
+                )),
             const SizedBox(width: 6),
-            Semantics(button: true, label: 'Ver en grande', child: InkWell(
-              onTap: () => _mostrarResultadoFigma(item),
-              borderRadius: BorderRadius.circular(999),
-              child: Container(
-                width: 36,
-                height: 36,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF386673),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 18),
-              ),
-            )),
-            if (AccesibilidadService().tutorialCamara || _objetoDetectadoTutorial != null) ...[
+            Semantics(
+                button: true,
+                label: 'Ver en grande',
+                child: InkWell(
+                  onTap: () => _mostrarResultadoFigma(item),
+                  borderRadius: BorderRadius.circular(999),
+                  child: Container(
+                    width: 36,
+                    height: 36,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF386673),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.arrow_forward_rounded,
+                        color: Colors.white, size: 18),
+                  ),
+                )),
+            if (AccesibilidadService().tutorialCamara ||
+                _objetoDetectadoTutorial != null) ...[
               const SizedBox(width: 6),
               // Botón cerrar para reanudar el visor en modo tutorial
-              Semantics(button: true, label: 'Cerrar', child: InkWell(
-                onTap: () => setState(() => _objetoDetectadoTutorial = null),
-                borderRadius: BorderRadius.circular(999),
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFF0F5F6),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(Icons.close_rounded, color: Color(0xFF757575), size: 20),
-                ),
-              )),
+              Semantics(
+                  button: true,
+                  label: 'Cerrar',
+                  child: InkWell(
+                    onTap: () =>
+                        setState(() => _objetoDetectadoTutorial = null),
+                    borderRadius: BorderRadius.circular(999),
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFF0F5F6),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.close_rounded,
+                          color: Color(0xFF757575), size: 20),
+                    ),
+                  )),
             ],
           ],
         ),
@@ -1151,16 +1338,19 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
         for (int i = 0; i < items.length; i++) ...[
           if (i > 0) const SizedBox(width: 12),
           Expanded(
-            child: _buildItemColumn(items[i], isFocused: items[i].item.clave == _focusedClave),
+            child: _buildItemColumn(items[i],
+                isFocused: items[i].item.clave == _focusedClave),
           ),
         ],
       ],
     );
   }
 
-  Widget _buildItemColumn(DetectedObjectItem detItem, {required bool isFocused}) {
+  Widget _buildItemColumn(DetectedObjectItem detItem,
+      {required bool isFocused}) {
     final item = detItem.item;
-    const accentColor = Color(0xFFE5A93C); // Amarillo / Ámbar dorado del mockup Figma
+    const accentColor =
+        Color(0xFFE5A93C); // Amarillo / Ámbar dorado del mockup Figma
     final frase = item.fraseApoyo ?? item.frasePeticion ?? item.nombre;
 
     return GestureDetector(
@@ -1168,7 +1358,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
         setState(() => _focusedClave = item.clave);
         HapticFeedback.selectionClick();
         _speak(item.frasePeticion ?? item.fraseApoyo ?? item.nombre);
-        RegistroUsoService().registrar(RegistroUsoService.objeto, item.clave, etiqueta: item.nombre);
+        RegistroUsoService().registrar(RegistroUsoService.objeto, item.clave,
+            etiqueta: item.nombre);
       },
       onDoubleTap: () => _mostrarResultadoFigma(item),
       child: AnimatedContainer(
@@ -1199,16 +1390,21 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
               height: 52,
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
-                color: isFocused ? const Color(0xFFFFF9EE) : const Color(0xFFFBF8F2),
+                color: isFocused
+                    ? const Color(0xFFFFF9EE)
+                    : const Color(0xFFFBF8F2),
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: isFocused ? const Color(0xFFF0D5A8) : const Color(0xFFE8E2D8),
+                  color: isFocused
+                      ? const Color(0xFFF0D5A8)
+                      : const Color(0xFFE8E2D8),
                 ),
               ),
               child: Image.asset(
                 item.assetPath,
                 fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) => const Icon(Icons.category, size: 28, color: Colors.grey),
+                errorBuilder: (_, __, ___) =>
+                    const Icon(Icons.category, size: 28, color: Colors.grey),
               ),
             ),
             const SizedBox(height: 8),
@@ -1218,7 +1414,9 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                 fontFamily: 'Atkinson Hyperlegible Next',
                 fontSize: 14.5,
                 fontWeight: FontWeight.w700,
-                color: isFocused ? const Color(0xFF2C2C2C) : const Color(0xFF4A4A4A),
+                color: isFocused
+                    ? const Color(0xFF2C2C2C)
+                    : const Color(0xFF4A4A4A),
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -1228,44 +1426,54 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Semantics(button: true, label: 'Escuchar', child: InkWell(
-                  onTap: () {
-                    HapticFeedback.selectionClick();
-                    _speak(frase);
-                  },
-                  borderRadius: BorderRadius.circular(999),
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: isFocused ? const Color(0xFFFFF2D6) : const Color(0xFFF0F5F6),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.volume_up_rounded,
-                      color: isFocused ? const Color(0xFFB06B47) : const Color(0xFF386673),
-                      size: 18,
-                    ),
-                  ),
-                )),
+                Semantics(
+                    button: true,
+                    label: 'Escuchar',
+                    child: InkWell(
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        _speak(frase);
+                      },
+                      borderRadius: BorderRadius.circular(999),
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: isFocused
+                              ? const Color(0xFFFFF2D6)
+                              : const Color(0xFFF0F5F6),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.volume_up_rounded,
+                          color: isFocused
+                              ? const Color(0xFFB06B47)
+                              : const Color(0xFF386673),
+                          size: 18,
+                        ),
+                      ),
+                    )),
                 const SizedBox(width: 8),
-                Semantics(button: true, label: 'Ver en grande', child: InkWell(
-                  onTap: () => _mostrarResultadoFigma(item),
-                  borderRadius: BorderRadius.circular(999),
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF386673),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.arrow_forward_rounded,
-                      color: Colors.white,
-                      size: 16,
-                    ),
-                  ),
-                )),
+                Semantics(
+                    button: true,
+                    label: 'Ver en grande',
+                    child: InkWell(
+                      onTap: () => _mostrarResultadoFigma(item),
+                      borderRadius: BorderRadius.circular(999),
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF386673),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.arrow_forward_rounded,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                      ),
+                    )),
               ],
             ),
           ],
@@ -1297,22 +1505,27 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
           children: [
             Row(
               children: [
-                Semantics(button: true, label: 'Volver', child: InkWell(
-                  onTap: () => Navigator.pop(ctx),
-                  borderRadius: BorderRadius.circular(999),
-                  child: Container(
-                    width: 42,
-                    height: 42,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: const Color(0xFFDDD6C9), width: 1.5),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.arrow_back, color: Color(0xFF3A3A3A), size: 20),
-                    ),
-                  ),
-                )),
+                Semantics(
+                    button: true,
+                    label: 'Volver',
+                    child: InkWell(
+                      onTap: () => Navigator.pop(ctx),
+                      borderRadius: BorderRadius.circular(999),
+                      child: Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              color: const Color(0xFFDDD6C9), width: 1.5),
+                        ),
+                        child: const Center(
+                          child: Icon(Icons.arrow_back,
+                              color: Color(0xFF3A3A3A), size: 20),
+                        ),
+                      ),
+                    )),
                 const SizedBox(width: 14),
                 const Text(
                   'Encontré esto',
@@ -1340,7 +1553,10 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                     width: 140,
                     height: 140,
                     fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) => const Icon(Icons.image_outlined, size: 80, color: Colors.grey),
+                    errorBuilder: (_, __, ___) => const Icon(
+                        Icons.image_outlined,
+                        size: 80,
+                        color: Colors.grey),
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -1374,12 +1590,18 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                       ),
                     );
                   },
-                  icon: const Icon(Icons.fact_check_rounded, color: Colors.white, size: 20),
-                  label: const Text('Ir a la rutina', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 15)),
+                  icon: const Icon(Icons.fact_check_rounded,
+                      color: Colors.white, size: 20),
+                  label: const Text('Ir a la rutina',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF555555),
                     elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
               ),
@@ -1392,9 +1614,12 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                 onPressed: () => Navigator.pop(ctx),
                 style: OutlinedButton.styleFrom(
                   side: const BorderSide(color: Color(0xFFDDD6C9), width: 1.5),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
                 ),
-                child: const Text('Buscar otro objeto', style: TextStyle(color: Color(0xFF3A3A3A), fontWeight: FontWeight.w600)),
+                child: const Text('Buscar otro objeto',
+                    style: TextStyle(
+                        color: Color(0xFF3A3A3A), fontWeight: FontWeight.w600)),
               ),
             ),
             const SizedBox(height: 12),
@@ -1410,20 +1635,32 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
     final ok = _e2e.count > 10 && _e2e.p95 < kObjetivoMs;
     return Container(
       padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.65), borderRadius: BorderRadius.circular(8)),
+      decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.65),
+          borderRadius: BorderRadius.circular(8)),
       child: DefaultTextStyle(
-        style: const TextStyle(color: Colors.white, fontFamily: 'monospace', fontSize: 12),
+        style: const TextStyle(
+            color: Colors.white, fontFamily: 'monospace', fontSize: 12),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text('${_info?.delegateUsed ?? '-'} · ${_info?.inputShape ?? ''}'),
           Text(row('pre ', _pre)),
           Text(row('inf ', _inf)),
           Text(row('post', _post)),
           Text(row('e2e ', _e2e),
-              style: TextStyle(color: _e2e.count < 10 ? Colors.white : (ok ? Colors.greenAccent : Colors.redAccent))),
-          Text('${_fps.toStringAsFixed(1)} fps · ${_dets.length} obj · n=${_e2e.all.length}'),
+              style: TextStyle(
+                  color: _e2e.count < 10
+                      ? Colors.white
+                      : (ok ? Colors.greenAccent : Colors.redAccent))),
+          Text(
+              '${_fps.toStringAsFixed(1)} fps · ${_dets.length} obj · n=${_e2e.all.length}'),
           if (!kReleaseMode && !kProfileMode)
-            const Text('DEBUG: usa --profile para medir', style: TextStyle(color: Colors.orangeAccent)),
-          if (_error != null) SizedBox(width: 260, child: Text(_error!, style: const TextStyle(color: Colors.redAccent))),
+            const Text('DEBUG: usa --profile para medir',
+                style: TextStyle(color: Colors.orangeAccent)),
+          if (_error != null)
+            SizedBox(
+                width: 260,
+                child: Text(_error!,
+                    style: const TextStyle(color: Colors.redAccent))),
         ]),
       ),
     );
@@ -1446,48 +1683,58 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
     final maxX = max(margen, vista.width - _anchoTarjetaRA - margen);
     final maxY = max(margen, vista.height - _altoTarjetaRA - margen);
     for (final det in _detectedItems.take(_maxObjetosSimultaneos)) {
-      final caja = cajaEnVista(det.detection, vista, frame).intersect(Offset.zero & vista);
+      final caja = cajaEnVista(det.detection, vista, frame)
+          .intersect(Offset.zero & vista);
       if (caja.width <= 0 || caja.height <= 0) continue;
       final clave = det.item.clave;
       // Caja muy grande (objeto muy cerca, o una caja holgada del modelo, típica de "mochila"):
       // no se dibuja el marco, que taparía la cámara, y la tarjeta va sobre el centro del objeto.
-      final grande = caja.width * caja.height > 0.40 * vista.width * vista.height;
-      final x = (caja.center.dx - _anchoTarjetaRA / 2).clamp(margen, maxX).toDouble();
+      final grande =
+          caja.width * caja.height > 0.40 * vista.width * vista.height;
+      final x =
+          (caja.center.dx - _anchoTarjetaRA / 2).clamp(margen, maxX).toDouble();
       var y = caja.top - _altoTarjetaRA - 10; // encima del objeto
       if (grande) {
-        y = (caja.center.dy - _altoTarjetaRA / 2).clamp(margen, maxY).toDouble();
+        y = (caja.center.dy - _altoTarjetaRA / 2)
+            .clamp(margen, maxY)
+            .toDouble();
       } else {
         if (y < margen) y = caja.bottom + 10; // si no cabe arriba, debajo
-        if (y > maxY) y = (caja.top + 10).clamp(margen, maxY).toDouble(); // dentro, arriba
+        if (y > maxY)
+          y = (caja.top + 10).clamp(margen, maxY).toDouble(); // dentro, arriba
       }
       var r = Rect.fromLTWH(x, y, _anchoTarjetaRA, _altoTarjetaRA);
       for (final o in ocupadas) {
         if (r.overlaps(o.inflate(4))) {
-          y = (o.bottom + 8 <= maxY) ? o.bottom + 8 : max(margen, o.top - _altoTarjetaRA - 8);
+          y = (o.bottom + 8 <= maxY)
+              ? o.bottom + 8
+              : max(margen, o.top - _altoTarjetaRA - 8);
           r = Rect.fromLTWH(x, y, _anchoTarjetaRA, _altoTarjetaRA);
         }
       }
       ocupadas.add(r);
       final enfocado = clave == _focusedClave;
-      if (!grande) hijos.add(AnimatedPositioned(
-        key: ValueKey('marco_$clave'),
-        duration: const Duration(milliseconds: 140),
-        left: caja.left,
-        top: caja.top,
-        width: caja.width,
-        height: caja.height,
-        child: IgnorePointer(
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                color: (enfocado ? const Color(0xFFE5A93C) : Colors.white).withValues(alpha: 0.85),
-                width: enfocado ? 3 : 2,
+      if (!grande)
+        hijos.add(AnimatedPositioned(
+          key: ValueKey('marco_$clave'),
+          duration: const Duration(milliseconds: 140),
+          left: caja.left,
+          top: caja.top,
+          width: caja.width,
+          height: caja.height,
+          child: IgnorePointer(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: (enfocado ? const Color(0xFFE5A93C) : Colors.white)
+                      .withValues(alpha: 0.85),
+                  width: enfocado ? 3 : 2,
+                ),
               ),
             ),
           ),
-        ),
-      ));
+        ));
       hijos.add(AnimatedPositioned(
         key: ValueKey('tarjeta_$clave'),
         duration: const Duration(milliseconds: 140),
@@ -1511,7 +1758,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
         onTap: () {
           HapticFeedback.selectionClick();
           setState(() => _focusedClave = item.clave);
-          RegistroUsoService().registrar(RegistroUsoService.objeto, item.clave, etiqueta: item.nombre);
+          RegistroUsoService().registrar(RegistroUsoService.objeto, item.clave,
+              etiqueta: item.nombre);
           _mostrarResultadoFigma(item);
         },
         child: Container(
@@ -1520,10 +1768,14 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: enfocado ? const Color(0xFFE5A93C) : const Color(0xFFDDD6C9),
+              color:
+                  enfocado ? const Color(0xFFE5A93C) : const Color(0xFFDDD6C9),
               width: enfocado ? 2.8 : 1.5,
             ),
-            boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 3))],
+            boxShadow: const [
+              BoxShadow(
+                  color: Colors.black26, blurRadius: 10, offset: Offset(0, 3))
+            ],
           ),
           child: Row(
             children: [
@@ -1538,7 +1790,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
                 child: Image.asset(
                   item.assetPath,
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) => const Icon(Icons.category, size: 26, color: Colors.grey),
+                  errorBuilder: (_, __, ___) =>
+                      const Icon(Icons.category, size: 26, color: Colors.grey),
                 ),
               ),
               const SizedBox(width: 8),
@@ -1567,7 +1820,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
     return OutlinedButton.icon(
       onPressed: alTocar,
       icon: Icon(icono, size: 18, color: Colors.white),
-      label: Text(texto, style: const TextStyle(color: Colors.white, fontSize: 12.5)),
+      label: Text(texto,
+          style: const TextStyle(color: Colors.white, fontSize: 12.5)),
       style: OutlinedButton.styleFrom(
         side: const BorderSide(color: Colors.white38),
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
@@ -1579,68 +1833,84 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Wrap(spacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
-          DropdownButton<String>(
-            value: _model,
-            dropdownColor: const Color(0xFF2C2C2C),
-            style: const TextStyle(color: Colors.white, fontSize: 13),
-            items: [for (final m in _models) DropdownMenuItem(value: m, child: Text(m.split('/').last))],
-            onChanged: (v) {
-              _model = v;
-              _loadModel();
-            },
-          ),
-          DropdownButton<String>(
-            value: _delegate,
-            dropdownColor: const Color(0xFF2C2C2C),
-            style: const TextStyle(color: Colors.white, fontSize: 13),
-            items: [
-              const DropdownMenuItem(value: 'cpu', child: Text('CPU')),
-              const DropdownMenuItem(value: 'gpu', child: Text('GPU')),
-              if (Platform.isAndroid) const DropdownMenuItem(value: 'nnapi', child: Text('NNAPI')),
-            ],
-            onChanged: (v) {
-              _delegate = v!;
-              _loadModel();
-            },
-          ),
-          DropdownButton<int>(
-            value: _threads,
-            dropdownColor: const Color(0xFF2C2C2C),
-            style: const TextStyle(color: Colors.white, fontSize: 13),
-            items: [for (final t in [1, 2, 4, 6]) DropdownMenuItem(value: t, child: Text('$t hilos'))],
-            onChanged: (v) {
-              _threads = v!;
-              _loadModel();
-            },
-          ),
-          DropdownButton<int>(
-            value: _maxObjetosSimultaneos,
-            dropdownColor: const Color(0xFF2C2C2C),
-            style: const TextStyle(color: Colors.white, fontSize: 13),
-            items: const [
-              DropdownMenuItem(value: 2, child: Text('Máx 2 obj (TEA N2)')),
-              DropdownMenuItem(value: 3, child: Text('Máx 3 obj')),
-            ],
-            onChanged: (v) => setState(() => _maxObjetosSimultaneos = v!),
-          ),
-          DropdownButton<ResolutionPreset>(
-            value: _resolution,
-            dropdownColor: const Color(0xFF2C2C2C),
-            style: const TextStyle(color: Colors.white, fontSize: 13),
-            items: [
-              for (final r in [ResolutionPreset.medium, ResolutionPreset.high, ResolutionPreset.veryHigh])
-                DropdownMenuItem(value: r, child: Text('cam ${r.name}')),
-            ],
-            onChanged: (v) {
-              _resolution = v!;
-              _resetStats();
-              _startCamera();
-            },
-          ),
-        ]),
+        Wrap(
+            spacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              DropdownButton<String>(
+                value: _model,
+                dropdownColor: const Color(0xFF2C2C2C),
+                style: const TextStyle(color: Colors.white, fontSize: 13),
+                items: [
+                  for (final m in _models)
+                    DropdownMenuItem(value: m, child: Text(m.split('/').last))
+                ],
+                onChanged: (v) {
+                  _model = v;
+                  _loadModel();
+                },
+              ),
+              DropdownButton<String>(
+                value: _delegate,
+                dropdownColor: const Color(0xFF2C2C2C),
+                style: const TextStyle(color: Colors.white, fontSize: 13),
+                items: [
+                  const DropdownMenuItem(value: 'cpu', child: Text('CPU')),
+                  const DropdownMenuItem(value: 'gpu', child: Text('GPU')),
+                  if (Platform.isAndroid)
+                    const DropdownMenuItem(
+                        value: 'nnapi', child: Text('NNAPI')),
+                ],
+                onChanged: (v) {
+                  _delegate = v!;
+                  _loadModel();
+                },
+              ),
+              DropdownButton<int>(
+                value: _threads,
+                dropdownColor: const Color(0xFF2C2C2C),
+                style: const TextStyle(color: Colors.white, fontSize: 13),
+                items: [
+                  for (final t in [1, 2, 4, 6])
+                    DropdownMenuItem(value: t, child: Text('$t hilos'))
+                ],
+                onChanged: (v) {
+                  _threads = v!;
+                  _loadModel();
+                },
+              ),
+              DropdownButton<int>(
+                value: _maxObjetosSimultaneos,
+                dropdownColor: const Color(0xFF2C2C2C),
+                style: const TextStyle(color: Colors.white, fontSize: 13),
+                items: const [
+                  DropdownMenuItem(value: 2, child: Text('Máx 2 obj (TEA N2)')),
+                  DropdownMenuItem(value: 3, child: Text('Máx 3 obj')),
+                ],
+                onChanged: (v) => setState(() => _maxObjetosSimultaneos = v!),
+              ),
+              DropdownButton<ResolutionPreset>(
+                value: _resolution,
+                dropdownColor: const Color(0xFF2C2C2C),
+                style: const TextStyle(color: Colors.white, fontSize: 13),
+                items: [
+                  for (final r in [
+                    ResolutionPreset.medium,
+                    ResolutionPreset.high,
+                    ResolutionPreset.veryHigh
+                  ])
+                    DropdownMenuItem(value: r, child: Text('cam ${r.name}')),
+                ],
+                onChanged: (v) {
+                  _resolution = v!;
+                  _resetStats();
+                  _startCamera();
+                },
+              ),
+            ]),
         Row(children: [
-          const Text('umbral', style: TextStyle(color: Colors.white70, fontSize: 12)),
+          const Text('umbral',
+              style: TextStyle(color: Colors.white70, fontSize: 12)),
           Expanded(
             child: Slider(
               value: _threshold,
@@ -1654,7 +1924,8 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
           ),
           FilterChip(
             label: const Text('Estable', style: TextStyle(fontSize: 11)),
-            tooltip: 'Mostrar solo objetos vistos en $_minVistos de $_ventana frames',
+            tooltip:
+                'Mostrar solo objetos vistos en $_minVistos de $_ventana frames',
             selected: _filtroTemporal,
             onSelected: (v) => setState(() => _filtroTemporal = v),
           ),
@@ -1673,11 +1944,14 @@ class _DetectorPageState extends State<DetectorPage> with AutomaticKeepAliveClie
           ),
           IconButton(
             tooltip: 'Girar 90°',
-            onPressed: () => setState(() => _extraRotation = (_extraRotation + 90) % 360),
+            onPressed: () =>
+                setState(() => _extraRotation = (_extraRotation + 90) % 360),
             icon: const Icon(Icons.rotate_90_degrees_cw, color: Colors.white70),
           ),
         ]),
-        if (_benchText.isNotEmpty) Text(_benchText, style: const TextStyle(fontSize: 12, color: Colors.white)),
+        if (_benchText.isNotEmpty)
+          Text(_benchText,
+              style: const TextStyle(fontSize: 12, color: Colors.white)),
       ]),
     );
   }
@@ -1694,26 +1968,31 @@ class _BoxPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     for (final d in dets) {
       final rect = cajaEnVista(d, size, frame);
-      final rawName = d.cls >= 0 && d.cls < labels.length ? labels[d.cls] : '#${d.cls}';
+      final rawName =
+          d.cls >= 0 && d.cls < labels.length ? labels[d.cls] : '#${d.cls}';
       if (rawName == '-') continue;
-      final item = catalogo.findByCoco(rawName);
+      final item = catalogo.findPorEtiqueta(rawName);
+      if (item == null || !PerfilYolo26.claves.contains(item.clave)) continue;
 
-      final isTeaItem = item != null;
-      final strokeColor = isTeaItem ? const Color(0xFFE5A93C) : Colors.greenAccent;
-      final bgColor = isTeaItem ? const Color(0xFFB06B47) : Colors.greenAccent;
+      const strokeColor = Color(0xFFE5A93C);
+      const bgColor = Color(0xFFB06B47);
       const textColor = Colors.white;
 
       final stroke = Paint()
         ..style = PaintingStyle.stroke
-        ..strokeWidth = isTeaItem ? 3.5 : 2.0
+        ..strokeWidth = 3.5
         ..color = strokeColor;
       canvas.drawRect(rect, stroke);
 
-      final displayName = item != null ? '${item.nombre} ($rawName)' : rawName;
+      final displayName = '${item.nombre} ($rawName)';
       final tp = TextPainter(
         text: TextSpan(
           text: ' $displayName ${(d.score * 100).toStringAsFixed(0)}% ',
-          style: TextStyle(color: textColor, backgroundColor: bgColor, fontSize: 13, fontWeight: FontWeight.bold),
+          style: TextStyle(
+              color: textColor,
+              backgroundColor: bgColor,
+              fontSize: 13,
+              fontWeight: FontWeight.bold),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
@@ -1729,7 +2008,8 @@ class _BoxPainter extends CustomPainter {
 /// teniendo en cuenta el recorte de BoxFit.cover de la vista previa.
 Rect cajaEnVista(Detection d, Size vista, Size? frame) {
   if (frame == null || frame.width <= 0 || frame.height <= 0) {
-    return Rect.fromLTRB(d.left * vista.width, d.top * vista.height, d.right * vista.width, d.bottom * vista.height);
+    return Rect.fromLTRB(d.left * vista.width, d.top * vista.height,
+        d.right * vista.width, d.bottom * vista.height);
   }
   final escala = max(vista.width / frame.width, vista.height / frame.height);
   final dx = (vista.width - frame.width * escala) / 2;
