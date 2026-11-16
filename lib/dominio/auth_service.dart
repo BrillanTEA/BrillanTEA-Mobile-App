@@ -326,7 +326,7 @@ class AuthService {
     final hashGuardado = aj['pin_hash'] as String?;
 
     if (salt == null || hashGuardado == null) {
-      return pinIngresado == '1234';
+      return false; // sin PIN registrado no se entra: no existe un PIN por defecto
     }
 
     if (await _pinCoincide(pinIngresado, salt, hashGuardado)) {
