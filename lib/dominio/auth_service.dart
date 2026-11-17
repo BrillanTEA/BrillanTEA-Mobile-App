@@ -450,14 +450,14 @@ class AuthService {
   }
 
   Future<bool> verificarRespuestasRecuperacion({
-    required String fechaOAnioNacimiento,
-    required String apellidoMaterno,
-    required String ciudadNacimiento,
+    required String nombre,
+    required String apellido,
+    required String ciudad,
   }) async {
     final res = await verificarRespuestasRecuperacionDetallado(
-      anioNacimiento: fechaOAnioNacimiento,
-      apellidoMaterno: apellidoMaterno,
-      ciudadNacimiento: ciudadNacimiento,
+      nombre: nombre,
+      apellido: apellido,
+      ciudad: ciudad,
     );
     return res.exito;
   }
