@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import '../../dominio/tutoriales_service.dart';
 import '../../infraestructura/servicio_voz.dart';
 import '../inicio/inicio_page.dart';
+import 'tutoriales_contenido.dart';
 
 /// Tutoriales para el adulto (Figma BrillanTEA-UX-UI):
 ///   - InvitacionPage: "Invitación · Conoce BrillanTEA", al terminar el registro.
 ///   - TutorialesPage: "Tutoriales · Lista", desde Área de padres.
-///   - _TutorialDetallePage: "Tutorial · Detalle".
+///   - _TutorialPasosPage: "Tutorial · <Módulo> · 0…6" (7 pantallas por módulo; US1502).
+///   - _TutorialDetallePage: "Tutorial · Detalle" (solo Situaciones, que no tiene pasos en el Figma).
 /// No hay videos en la app: el botón de reproducir lee la explicación en voz alta.
 /// Los tutoriales vistos se guardan en SQLite (tabla tutorial_visto).
 
@@ -232,7 +234,11 @@ class _TutorialesPageState extends State<TutorialesPage> {
 
   Future<void> _abrir(int indice) async {
     await Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => _TutorialDetallePage(indice: indice)),
+      MaterialPageRoute(
+        builder: (_) => guiasTutorial.containsKey(tutoriales[indice].clave)
+            ? _TutorialPasosPage(indice: indice)
+            : _TutorialDetallePage(indice: indice),
+      ),
     );
     _cargar();
   }
@@ -445,12 +451,232 @@ class _TutorialDetallePageState extends State<_TutorialDetallePage> {
               if (siguiente != null) ...[
                 _primario('Siguiente: ${siguiente.nombre}', () {
                   Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => _TutorialDetallePage(indice: widget.indice + 1)),
+                    MaterialPageRoute(
+                      builder: (_) => guiasTutorial.containsKey(siguiente.clave)
+                          ? _TutorialPasosPage(indice: widget.indice + 1)
+                          : _TutorialDetallePage(indice: widget.indice + 1),
+                    ),
                   );
                 }),
                 const SizedBox(height: 10),
               ],
               _secundario('Volver a la lista', () => Navigator.maybePop(context)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Tutorial · <Módulo> · 0…6 (US1502): «Antes de empezar», 5 pasos y «Listo»
+
+class _TutorialPasosPage extends StatefulWidget {
+  final int indice;
+  const _TutorialPasosPage({required this.indice});
+
+  @override
+  State<_TutorialPasosPage> createState() => _TutorialPasosPageState();
+}
+
+class _TutorialPasosPageState extends State<_TutorialPasosPage> {
+  /// 0 = Antes de empezar, 1…5 = pasos, 6 = Listo.
+  int _pantalla = 0;
+
+  Tutorial get _t => tutoriales[widget.indice];
+  GuiaTutorial get _g => guiasTutorial[_t.clave]!;
+
+  void _ir(int pantalla) {
+    setState(() => _pantalla = pantalla);
+    if (pantalla == 6) TutorialesService().marcarVisto(_t.clave);
+  }
+
+  String get _etiqueta {
+    if (_pantalla == 0) return 'Antes de empezar';
+    if (_pantalla == 6) return 'Listo';
+    return 'Paso $_pantalla de 5';
+  }
+
+  Widget _barras() => Semantics(
+        label: _etiqueta,
+        child: ExcludeSemantics(
+          child: Row(children: [
+            for (var i = 1; i <= 5; i++) ...[
+              if (i > 1) const SizedBox(width: 6),
+              Expanded(
+                child: Container(
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: i <= _pantalla ? _teal : const Color(0xFFE6E0D4),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              ),
+            ],
+          ]),
+        ),
+      );
+
+  BoxDecoration get _cajaDecoracion => BoxDecoration(
+        color: _t.fondo,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Color.lerp(_t.fondo, Colors.black, 0.08)!, width: 1.5),
+      );
+
+  Widget _caja() {
+    if (_pantalla == 0) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(24, 40, 24, 32),
+        decoration: _cajaDecoracion,
+        child: Column(children: [
+          Container(
+            width: 110,
+            height: 110,
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(22),
+            ),
+            alignment: Alignment.center,
+            child: _imagen(_t.imagen, 92, 76),
+          ),
+          const SizedBox(height: 30),
+          Text(_g.idea,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontFamily: _fuente, fontSize: 19, height: 1.35, fontWeight: FontWeight.w700, color: _texto)),
+        ]),
+      );
+    }
+    if (_pantalla == 6) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(16, 22, 16, 22),
+        decoration: _cajaDecoracion,
+        child: Column(children: [
+          for (var i = 0; i < _g.consejos.length; i++)
+            Padding(
+              padding: EdgeInsets.only(top: i == 0 ? 0 : 26),
+              child: Row(children: [
+                Container(
+                  width: 34,
+                  height: 34,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: _borde, width: 1.5),
+                  ),
+                  child: Text('${i + 1}',
+                      style: TextStyle(fontFamily: _fuente, fontSize: 15, fontWeight: FontWeight.w700, color: _g.acento)),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(_g.consejos[i],
+                      style: const TextStyle(fontFamily: _fuente, fontSize: 16, height: 1.35, fontWeight: FontWeight.w700, color: _texto)),
+                ),
+              ]),
+            ),
+        ]),
+      );
+    }
+    final paso = _g.pasos[_pantalla - 1];
+    return Semantics(
+      image: true,
+      label: 'Captura de ${_t.nombre}: ${paso.titulo}',
+      child: ExcludeSemantics(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(18),
+          child: AspectRatio(
+            aspectRatio: 312 / 330,
+            child: Image.asset(
+              GuiaTutorial.imagenPaso(_t.clave, _pantalla),
+              fit: BoxFit.contain,
+              errorBuilder: (c, e, s) => Container(
+                decoration: _cajaDecoracion,
+                alignment: Alignment.center,
+                child: _imagen(_t.imagen, 120, 90),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _textos() {
+    final String titulo;
+    final String texto;
+    if (_pantalla == 0) {
+      titulo = 'Para qué sirve';
+      texto = _g.paraQueSirve;
+    } else if (_pantalla == 6) {
+      titulo = 'Cómo acompañar';
+      texto = _g.comoAcompanar;
+    } else {
+      titulo = _g.pasos[_pantalla - 1].titulo;
+      texto = _g.pasos[_pantalla - 1].texto;
+    }
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(titulo, style: const TextStyle(fontFamily: _fuente, fontSize: 19, fontWeight: FontWeight.w700, color: _texto)),
+      const SizedBox(height: 4),
+      Text(texto, style: const TextStyle(fontFamily: _fuente, fontSize: 14.5, height: 20 / 14.5, color: _textoSecundario)),
+    ]);
+  }
+
+  Widget _botones() {
+    if (_pantalla == 0) return _primario('Empezar', () => _ir(1));
+    if (_pantalla == 6) {
+      return Column(children: [
+        _primario('Terminar', () => Navigator.maybePop(context)),
+        const SizedBox(height: 10),
+        _secundario('Ver otra vez', () => _ir(0)),
+      ]);
+    }
+    return Row(children: [
+      Expanded(child: _secundario('Anterior', () => _ir(_pantalla - 1))),
+      const SizedBox(width: 12),
+      Expanded(child: _primario('Siguiente', () => _ir(_pantalla + 1))),
+    ]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                _BotonVolver(() => Navigator.maybePop(context)),
+                const SizedBox(width: 12),
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text('Tutorial ${widget.indice + 1} de ${tutoriales.length}',
+                      style: const TextStyle(fontFamily: _fuente, fontSize: 12.5, fontWeight: FontWeight.w700, color: _textoSecundario)),
+                  Text(_t.nombre,
+                      style: const TextStyle(fontFamily: _fuente, fontSize: 22, fontWeight: FontWeight.w700, color: _texto)),
+                ]),
+              ]),
+              const SizedBox(height: 18),
+              _barras(),
+              const SizedBox(height: 8),
+              Text(_etiqueta,
+                  style: const TextStyle(fontFamily: _fuente, fontSize: 12.5, fontWeight: FontWeight.w700, color: _textoSecundario)),
+              const SizedBox(height: 10),
+              Expanded(
+                child: SingleChildScrollView(
+                  key: ValueKey(_pantalla),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    _caja(),
+                    const SizedBox(height: 18),
+                    _textos(),
+                  ]),
+                ),
+              ),
+              const SizedBox(height: 12),
+              _botones(),
             ],
           ),
         ),
