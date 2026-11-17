@@ -1,5 +1,5 @@
-name: spike_edge_ai
-description: Spike de Edge AI (YOLO TFLite en cámara) y voz offline (flutter_tts).
+name: brillantea
+description: BrillanTEA, aplicación asistiva para niños con TEA nivel 2 (visión computacional en el dispositivo y voz sin conexión).
 publish_to: none
 version: 0.2.0+12
 

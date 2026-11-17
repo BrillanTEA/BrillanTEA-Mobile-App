@@ -1,4 +1,4 @@
-package pe.tesis.tea.spike_edge_ai
+package pe.brillantea.app
 
 import android.app.ActivityManager
 import android.content.Context
@@ -11,7 +11,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "pe.tesis.tea.spike_edge_ai/lock_task"
+    private val CHANNEL = "pe.brillantea.app/lock_task"
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)

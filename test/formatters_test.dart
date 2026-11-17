@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:spike_edge_ai/presentacion/comun/formatters.dart';
+import 'package:brillantea/presentacion/comun/formatters.dart';
 
 void main() {
   group('SinTildesFormatter tests', () {
