@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Contenido de los tutoriales de 7 pantallas por módulo (US1502; Figma «Tutorial · <Módulo> · 0…6»):
+/// Contenido de los tutoriales de 7 pantallas por módulo (US1502; Figma «Tutorial · módulo · 0…6»):
 /// «Antes de empezar», 5 pasos con la captura del módulo y «Listo» con 3 consejos.
 /// Situaciones no tiene tutorial por pasos en el Figma y sigue con su detalle.
 
@@ -29,7 +29,7 @@ class GuiaTutorial {
     required this.acento,
   });
 
-  /// Captura del paso n (1 a 5): assets/images/tutoriales/<clave>_<n>.png
+  /// Captura del paso n (1 a 5): `assets/images/tutoriales/{clave}_{n}.png`
   static String imagenPaso(String clave, int n) => 'assets/images/tutoriales/${clave}_$n.png';
 }
 

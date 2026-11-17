@@ -327,7 +327,7 @@ class _Pantalla extends StatelessWidget {
   final String? titulo;
   final VoidCallback? onVolver;
   final Widget hijo;
-  const _Pantalla({required this.nav, required this.hijo, this.titulo, this.onVolver});
+  const _Pantalla({required this.nav, required this.hijo, this.titulo}) : onVolver = null;
 
   @override
   Widget build(BuildContext context) {
@@ -460,7 +460,7 @@ class _CalmaEjercicioPage extends StatefulWidget {
   final int vueltas;
   final int segundosPorFase;
 
-  const _CalmaEjercicioPage._(this.tipo, this.nav, {this.vueltas = 3, this.segundosPorFase = 4});
+  const _CalmaEjercicioPage._(this.tipo, this.nav) : segundosPorFase = 4, vueltas = 3;
 
   factory _CalmaEjercicioPage.respirar({required _NavCalma nav}) =>
       _CalmaEjercicioPage._(_TipoEjercicio.respirar, nav);
