@@ -7,9 +7,9 @@ import '../../infraestructura/bloqueo_service.dart';
 import '../../infraestructura/modo_compilacion.dart';
 import '../comun/hoja_documento_legal.dart';
 import '../registro/bienvenida_page.dart';
-import 'borrar_datos_dialogo.dart';
 import 'configuracion_cuenta_page.dart';
 import 'perfil_menor_page.dart';
+import 'privacidad_datos_page.dart';
 import 'seguimiento_page.dart';
 import 'tutoriales_page.dart';
 
@@ -181,28 +181,17 @@ class _AreaPadresPageState extends State<AreaPadresPage> {
                         MaterialPageRoute(builder: (_) => const AyudaSoportePage()),
                       ),
                     ),
-                    const SizedBox(height: 24),
-
-                    // Retiro del consentimiento (Términos 11.2): borra todo y vuelve al inicio, donde hay que
-                    // aceptar otra vez. Pide el PIN como Borrar los datos.
-                    _buildFilaMenu(
-                      titulo: 'Retirar consentimiento',
-                      subtitulo: 'Dejar de usar la app y borrar sus datos',
-                      icono: Icons.do_not_disturb_on_outlined,
-                      colorIconoFondo: const Color(0xFFFDE8E8),
-                      colorIcono: Colors.red.shade700,
-                      onTap: () => confirmarBorrarDatos(context, retirarConsentimiento: true),
-                    ),
                     const SizedBox(height: 12),
 
-                    // Opción definitiva para el adulto (US1007): pide el PIN otra vez antes de borrar.
+                    // Documentos, constancia de aceptación, Retirar consentimiento y Borrar los datos
+                    // (Figma «Privacidad y datos»; US901, US1007).
                     _buildFilaMenu(
-                      titulo: 'Borrar los datos',
-                      subtitulo: 'Eliminar toda la información guardada en este dispositivo',
-                      icono: Icons.delete_forever_rounded,
-                      colorIconoFondo: const Color(0xFFFDE8E8),
-                      colorIcono: Colors.red.shade700,
-                      onTap: () => confirmarBorrarDatos(context),
+                      titulo: 'Privacidad y datos',
+                      subtitulo: 'Documentos, consentimiento y datos',
+                      icono: Icons.verified_user_outlined,
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const PrivacidadDatosPage()),
+                      ),
                     ),
 
                     // Solo en la versión QA (--dart-define=QA=true): reinicio rápido sin PIN.

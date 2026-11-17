@@ -27,7 +27,7 @@ class BaseDatos {
   BaseDatos._internal();
 
   static const String archivo = 'catalogo.db'; // nombre de la base de datos local
-  static const int _version = 7; // 1 = solo registro de uso y notas; 2 = todo en SQLite; 3 = premios; 4 = tutoriales; 5 = una sola clase del modelo (YOLO26s, 35 clases); 6 = claves foráneas (FOREIGN KEY); 7 = período de los premios
+  static const int _version = 8; // 1 = solo registro de uso y notas; 2 = todo en SQLite; 3 = premios; 4 = tutoriales; 5 = una sola clase del modelo (YOLO26s, 35 clases); 6 = claves foráneas (FOREIGN KEY); 7 = período de los premios; 8 = versión aceptada de los documentos
   Future<Database>? _db;
 
   /// Tabla OBJETO (v5): id_modelo es la clase que entrega YOLO26s (0 a 34, mismo orden que
@@ -201,6 +201,11 @@ class BaseDatos {
       // v7: la meta de premios puede ser diaria, semanal o mensual. meta_semanal guarda la meta
       // del período elegido (se conserva el nombre para no rehacer la tabla).
       b.execute("ALTER TABLE configuracion_premios ADD COLUMN periodo TEXT NOT NULL DEFAULT 'semanal'");
+    }
+    if (desde < 8) {
+      // v8: junto con la fecha de aceptación se guarda la versión de los Términos y la Política
+      // (se muestra en Área de padres → Privacidad y datos).
+      b.execute('ALTER TABLE ajuste ADD COLUMN acuerdo_version TEXT');
     }
     await b.commit(noResult: true);
   }
