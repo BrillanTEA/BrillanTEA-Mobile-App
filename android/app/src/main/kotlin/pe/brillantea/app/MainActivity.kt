@@ -73,7 +73,7 @@ class MainActivity : FlutterActivity() {
                         val para = call.argument<String>("para") ?: ""
                         val asunto = call.argument<String>("asunto") ?: ""
                         val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"))
-                        intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(para))
+                        intent.putExtra(Intent.EXTRA_EMAIL, para.split(",").map { it.trim() }.filter { it.isNotEmpty() }.toTypedArray())
                         intent.putExtra(Intent.EXTRA_SUBJECT, asunto)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         startActivity(Intent.createChooser(intent, "Escribir a soporte").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))

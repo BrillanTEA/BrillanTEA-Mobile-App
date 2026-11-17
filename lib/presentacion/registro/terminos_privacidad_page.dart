@@ -207,7 +207,7 @@ class _TerminosPrivacidadPageState extends State<TerminosPrivacidadPage> {
     );
     return Semantics(
       checked: _acepto,
-      label: 'Estoy de acuerdo con los Términos y condiciones y la Política de privacidad',
+      label: 'Estoy de acuerdo con los Términos y condiciones y la Política de privacidad, y autorizo el tratamiento de los datos sensibles del niño o niña',
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => setState(() => _acepto = !_acepto),
@@ -244,7 +244,7 @@ class _TerminosPrivacidadPageState extends State<TerminosPrivacidadPage> {
                       TextSpan(text: 'Términos y condiciones', style: enlace, recognizer: _tapTerminos),
                       const TextSpan(text: ' y la '),
                       TextSpan(text: 'Política de privacidad', style: enlace, recognizer: _tapPolitica),
-                      const TextSpan(text: '.'),
+                      const TextSpan(text: ', y autorizo el tratamiento de los datos sensibles del niño o niña.'),
                     ],
                   ),
                 ),
