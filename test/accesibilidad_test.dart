@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spike_edge_ai/dominio/accesibilidad_service.dart';
-import 'package:spike_edge_ai/main.dart';
+import 'package:brillantea/dominio/accesibilidad_service.dart';
+import 'package:brillantea/main.dart';
 
 void main() {
   testWidgets('Accesibilidad textScaler changes when setTamanoTextoIndex is called', (tester) async {

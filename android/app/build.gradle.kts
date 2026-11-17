@@ -15,7 +15,7 @@ if (archivoPropiedadesClave.exists()) {
 }
 
 android {
-    namespace = "pe.tesis.tea.spike_edge_ai"
+    namespace = "pe.brillantea.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -25,7 +25,7 @@ android {
     }
 
     defaultConfig {
-        // Identificador final de la app en Android (antes pe.tesis.tea.spike_edge_ai, el del prototipo)
+        // Identificador final de la app en Android (también es el namespace del código nativo)
         applicationId = "pe.brillantea.app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.

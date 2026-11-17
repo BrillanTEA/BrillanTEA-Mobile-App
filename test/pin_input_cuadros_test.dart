@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:spike_edge_ai/presentacion/comun/pin_input_cuadros.dart';
+import 'package:brillantea/presentacion/comun/pin_input_cuadros.dart';
 
 void main() {
   testWidgets('PinInputCuadros muestra 4 casillas y maneja escritura y borrado', (tester) async {

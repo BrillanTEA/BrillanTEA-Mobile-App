@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 /// Fijación de pantalla de Android (Screen Pinning) para que el niño no salga de la app (US905, US906).
 class BloqueoService {
   static const MethodChannel _channel =
-      MethodChannel('pe.tesis.tea.spike_edge_ai/lock_task');
+      MethodChannel('pe.brillantea.app/lock_task');
 
   /// Activa el modo de fijación de pantalla (Screen Pinning) en Android
   static Future<bool> startLockTask() async {

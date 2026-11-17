@@ -1,12 +1,12 @@
 // Pruebas automáticas de la asociación objeto → pictograma → frase → rutina (indicador OE3-I3).
-// Correr desde la carpeta spike_app:  flutter test test/catalogo_test.dart
+// Correr desde la carpeta del proyecto:  flutter test test/catalogo_test.dart
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:spike_edge_ai/dominio/premios_service.dart';
-import 'package:spike_edge_ai/dominio/rutinas_app.dart';
-import 'package:spike_edge_ai/dominio/rutinas_data.dart';
+import 'package:brillantea/dominio/premios_service.dart';
+import 'package:brillantea/dominio/rutinas_app.dart';
+import 'package:brillantea/dominio/rutinas_data.dart';
 
 Map<String, dynamic> _catalogo() =>
     jsonDecode(File('assets/catalogo.json').readAsStringSync())

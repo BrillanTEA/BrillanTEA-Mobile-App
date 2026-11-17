@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:spike_edge_ai/infraestructura/perfil_yolo26.dart';
+import 'package:brillantea/infraestructura/perfil_yolo26.dart';
 
 void main() {
   test('el archivo y etiquetas pertenecen al candidato comprobado', () {
