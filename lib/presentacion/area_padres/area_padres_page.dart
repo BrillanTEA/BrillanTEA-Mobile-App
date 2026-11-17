@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../dominio/accesibilidad_service.dart';
 import '../../dominio/auth_service.dart';
+import '../../dominio/documentos_legales.dart';
 import '../../infraestructura/bloqueo_service.dart';
 import '../../infraestructura/modo_compilacion.dart';
+import '../comun/hoja_documento_legal.dart';
 import '../registro/bienvenida_page.dart';
 import 'borrar_datos_dialogo.dart';
 import 'configuracion_cuenta_page.dart';
@@ -1057,22 +1059,13 @@ class AyudaSoportePage extends StatelessWidget {
                           _buildFilaSimple(
                             context,
                             titulo: 'Términos y condiciones',
-                            contenido:
-                                'Esta aplicación es parte del proyecto de investigación y tesis para soporte de comunicación y rutinas en niños con TEA Nivel 2.',
+                            documento: terminosYCondiciones,
                           ),
                           const Divider(height: 1.5, color: colorBorde),
                           _buildFilaSimple(
                             context,
                             titulo: 'Política de privacidad',
-                            contenido:
-                                'Los datos son tratados con estricta confidencialidad clínica y no se comparten con terceros.',
-                          ),
-                          const Divider(height: 1.5, color: colorBorde),
-                          _buildFilaSimple(
-                            context,
-                            titulo: 'Pictogramas ARASAAC',
-                            contenido:
-                                'Los símbolos pictográficos utilizados son propiedad del Gobierno de Aragón y han sido creados por Sergio Palao para ARASAAC (https://arasaac.org), que los distribuye bajo Licencia Creative Commons BY-NC-SA.',
+                            documento: politicaDePrivacidad,
                           ),
                         ],
                       ),
@@ -1136,10 +1129,11 @@ class AyudaSoportePage extends StatelessWidget {
     );
   }
 
+  /// Fila de «Acerca de»: abre el documento completo en la hoja inferior (igual que en el registro).
   Widget _buildFilaSimple(
     BuildContext context, {
     required String titulo,
-    required String contenido,
+    required DocumentoLegal documento,
   }) {
     return ListTile(
       title: Text(
@@ -1151,17 +1145,8 @@ class AyudaSoportePage extends StatelessWidget {
           color: colorTextoPrincipal,
         ),
       ),
-      trailing: const Icon(Icons.arrow_forward_ios_rounded, color: colorTextoSecundario, size: 14),
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text(titulo),
-            content: Text(contenido),
-            actions: [TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Entendido'))],
-          ),
-        );
-      },
+      trailing: const Icon(Icons.chevron_right_rounded, color: colorTextoSecundario, size: 26),
+      onTap: () => mostrarHojaDocumentoLegal(context, documento),
     );
   }
 }
