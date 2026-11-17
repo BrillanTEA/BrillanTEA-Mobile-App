@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../datos/base_datos.dart';
+import 'documentos_legales.dart';
 import 'favoritos_service.dart';
 import 'reporte_service.dart';
 
@@ -187,7 +188,18 @@ class AuthService {
     await _guardarAjuste({
       'acuerdo_privacidad': valor ? 1 : 0,
       'acuerdo_fecha': valor ? DateTime.now().toIso8601String() : null,
+      'acuerdo_version': valor ? versionDocumentosLegales : null,
     });
+  }
+
+  /// Constancia de la aceptación de los Términos y la Política (Privacidad y datos).
+  Future<RegistroAceptacion> getRegistroAceptacion() async {
+    final a = await _ajuste();
+    final fecha = a['acuerdo_fecha'] as String?;
+    return RegistroAceptacion(
+      fecha: fecha == null ? null : DateTime.tryParse(fecha)?.toLocal(),
+      version: a['acuerdo_version'] as String?,
+    );
   }
 
   Future<String?> getFechaAcuerdoPrivacidad() async => (await _ajuste())['acuerdo_fecha'] as String?;
@@ -486,4 +498,11 @@ class AuthService {
     await _bd.borrarTodo();
     FavoritosService().limpiarMemoria();
   }
+}
+
+/// Fecha y versión con que el adulto aceptó los Términos y la Política (null si no hay registro).
+class RegistroAceptacion {
+  final DateTime? fecha;
+  final String? version;
+  const RegistroAceptacion({this.fecha, this.version});
 }

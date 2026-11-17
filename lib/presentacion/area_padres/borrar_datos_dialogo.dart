@@ -82,77 +82,111 @@ class _DialogoBorrarDatosState extends State<_DialogoBorrarDatos> {
     if (mounted) Navigator.of(context).pop(true);
   }
 
+  /// Mismo estilo que los diálogos del Figma (Privacidad y datos · Retirar consentimiento / Borrar los datos).
   @override
   Widget build(BuildContext context) {
+    const rojo = Color(0xFFB4533F);
+    const borde = Color(0xFFDDD6C9);
+    const teal = Color(0xFF3D6D7E);
+    final retirar = widget.retirarConsentimiento;
     final listo = _pin.text.length == 4 && !_borrando;
-    return AlertDialog(
-      title: Text(
-        widget.retirarConsentimiento ? '¿Retirar tu consentimiento?' : '¿Borrar los datos?',
-        style: TextStyle(fontFamily: _fuente, fontWeight: FontWeight.w700),
-      ),
-      content: SingleChildScrollView(
+    return Dialog(
+      backgroundColor: Colors.white,
+      insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              widget.retirarConsentimiento
-                  ? 'La aplicación dejará de usar los datos del niño o niña. Se eliminarán de este dispositivo '
-                      'los perfiles, el PIN, la configuración, los favoritos, el progreso, el seguimiento y las notas, '
-                      'y la aplicación volverá al inicio. Para usarla otra vez tendrás que aceptar de nuevo los '
-                      'Términos y la Política. Esta acción no se puede deshacer.'
-                  : 'Se eliminarán de este dispositivo los perfiles, el PIN, la configuración, los favoritos, '
-                      'el progreso, el seguimiento y las notas. La aplicación volverá al primer uso. '
-                      'Esta acción no se puede deshacer.',
-              style: TextStyle(fontFamily: _fuente, fontSize: 15),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Ingresa tu PIN para confirmar',
-              style: TextStyle(fontFamily: _fuente, fontWeight: FontWeight.w700),
+            ExcludeSemantics(
+              child: Container(
+                width: 58,
+                height: 58,
+                decoration: const BoxDecoration(color: Color(0xFFFDE8E8), shape: BoxShape.circle),
+                child: Icon(retirar ? Icons.do_not_disturb_on_outlined : Icons.delete_outline_rounded,
+                    color: rojo, size: 28),
+              ),
             ),
             const SizedBox(height: 10),
-            Center(
-              child: PinInputCuadros(
-                controller: _pin,
-                esError: _error != null,
-                enabled: !_borrando,
-                boxWidth: 48,
-                boxHeight: 56,
-                fontSize: 22,
-                onChanged: (_) => setState(() => _error = null),
-                onCompleted: (_) => setState(() {}),
-              ),
+            Text(
+              retirar ? '¿Retirar tu consentimiento?' : '¿Borrar los datos?',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontFamily: _fuente, fontSize: 19, fontWeight: FontWeight.w700, color: Color(0xFF3A3A3A)),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              retirar
+                  ? 'La app dejará de usar los datos del niño o niña. Se borrará todo lo guardado en este teléfono '
+                      'y volverás al inicio. Para usarla otra vez tendrás que aceptar de nuevo los Términos y la Política.'
+                  : 'Se eliminarán de este teléfono los perfiles, el PIN, la configuración, los favoritos, el progreso, '
+                      'el seguimiento y las notas. La app volverá al primer uso. No se puede deshacer.',
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontFamily: _fuente, fontSize: 13.5, height: 1.4, color: _colorTextoSecundario),
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Ingresa tu PIN para confirmar',
+              style: TextStyle(fontFamily: _fuente, fontSize: 13.5, fontWeight: FontWeight.w700, color: Color(0xFF3A3A3A)),
+            ),
+            const SizedBox(height: 10),
+            PinInputCuadros(
+              controller: _pin,
+              esError: _error != null,
+              enabled: !_borrando,
+              boxWidth: 48,
+              boxHeight: 56,
+              fontSize: 22,
+              onChanged: (_) => setState(() => _error = null),
+              onCompleted: (_) => setState(() {}),
             ),
             if (_error != null)
               Padding(
                 padding: const EdgeInsets.only(top: 10),
-                child: Text(
-                  _error!,
-                  style: TextStyle(fontFamily: _fuente, color: Colors.red.shade700),
-                ),
+                child: Text(_error!, style: const TextStyle(fontFamily: _fuente, color: rojo)),
               ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: listo ? _borrar : null,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: rojo,
+                  disabledBackgroundColor: rojo.withValues(alpha: 0.4),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: _borrando
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      )
+                    : Text(retirar ? 'Retirar consentimiento' : 'Borrar los datos',
+                        style: const TextStyle(
+                            fontFamily: _fuente, fontSize: 15.5, fontWeight: FontWeight.w700, color: Colors.white)),
+              ),
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: OutlinedButton(
+                onPressed: _borrando ? null : () => Navigator.of(context).pop(false),
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: teal,
+                  side: const BorderSide(color: borde, width: 1.5),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text('Cancelar',
+                    style: TextStyle(fontFamily: _fuente, fontSize: 15.5, fontWeight: FontWeight.w700)),
+              ),
+            ),
           ],
         ),
       ),
-      actions: [
-        TextButton(
-          onPressed: _borrando ? null : () => Navigator.of(context).pop(false),
-          child: const Text('Cancelar', style: TextStyle(fontFamily: _fuente, color: _colorTextoSecundario)),
-        ),
-        ElevatedButton(
-          onPressed: listo ? _borrar : null,
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.red.shade700),
-          child: _borrando
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                )
-              : Text(widget.retirarConsentimiento ? 'Retirar consentimiento' : 'Borrar los datos',
-                  style: const TextStyle(fontFamily: _fuente, color: Colors.white)),
-        ),
-      ],
     );
   }
 }
