@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../dominio/auth_service.dart';
 import '../inicio/inicio_page.dart';
-import 'perfil_responsable_page.dart';
+import 'terminos_privacidad_page.dart';
 
 /// Pantalla de carga y bienvenida («Hola»).
 class BienvenidaPage extends StatefulWidget {
@@ -51,9 +51,10 @@ class _BienvenidaPageState extends State<BienvenidaPage> {
     super.dispose();
   }
 
-  void _irAPerfilResponsable() {
+  /// Primer paso del registro: Términos y privacidad (US901). Desde ahí sigue el perfil del responsable.
+  void _irATerminosPrivacidad() {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const PerfilResponsablePage()),
+      MaterialPageRoute(builder: (_) => const TerminosPrivacidadPage()),
     );
   }
 
@@ -188,7 +189,7 @@ class _BienvenidaPageState extends State<BienvenidaPage> {
             width: double.infinity,
             height: 60,
             child: ElevatedButton(
-              onPressed: _irAPerfilResponsable,
+              onPressed: _irATerminosPrivacidad,
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF3D6D7E),
                 elevation: 0,
