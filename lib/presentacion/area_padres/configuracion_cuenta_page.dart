@@ -183,7 +183,7 @@ class _ConfiguracionCuentaPageState extends State<ConfiguracionCuentaPage> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Nacimiento: ${_adulto!.fechaNacimientoTexto} · ${_adulto!.ciudadNacimiento}',
+                              'Nacimiento: ${_adulto!.fechaNacimientoTexto} · Ciudad: ${_adulto!.ciudadNacimiento}',
                               style: const TextStyle(
                                 fontFamily: 'Atkinson Hyperlegible Next',
                                 fontSize: 13,

@@ -50,7 +50,7 @@ class _PerfilNinoPageState extends State<PerfilNinoPage> {
   void _continuar() {
     final nombre = _nombreCtrl.text.trim();
     if (nombre.isEmpty) {
-      setState(() => _error = 'Por favor ingresa el nombre o apodo del niño o niña.');
+      setState(() => _error = 'Falta escribir el nombre del niño o niña.');
       return;
     }
 
@@ -260,7 +260,7 @@ class _PerfilNinoPageState extends State<PerfilNinoPage> {
                       const SizedBox(height: 24),
 
                       const Text(
-                        'Nombre o apodo del niño o niña',
+                        'Primer nombre del niño o niña',
                         style: TextStyle(
                           fontFamily: 'Atkinson Hyperlegible Next',
                           fontSize: 14,
@@ -329,7 +329,7 @@ class _PerfilNinoPageState extends State<PerfilNinoPage> {
                       const SizedBox(height: 18),
 
                       const Text(
-                        'Edad (6 a 10 años - Delimitación TEA Nivel 2)',
+                        'Edad',
                         style: TextStyle(
                           fontFamily: 'Atkinson Hyperlegible Next',
                           fontSize: 14,

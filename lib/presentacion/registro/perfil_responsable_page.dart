@@ -2,997 +2,230 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../dominio/auth_service.dart';
-import '../comun/formatters.dart';
 import 'perfil_nino_page.dart';
 
-/// Perfil del responsable en el registro.
-/// Nombres, apellidos y ciudad solo admiten letras sin tildes y un espacio entre palabras; los espacios
-/// sobrantes se quitan al salir del campo. Con el teclado abierto se oculta el botón inferior para que
-/// no tape los campos.
+/// Perfil del responsable en el registro (US902; Figma «Perfil del responsable» y sus estados
+/// Parentesco, Ciudad, Completo, Campos faltantes y Formato no válido).
+/// Nombre y apellido admiten una sola palabra sin espacios ni tildes; la ciudad y el parentesco se
+/// eligen en una hoja inferior. El botón se ve gris hasta que todo está completo; si se toca antes,
+/// marca en rojo lo que falta.
 class PerfilResponsablePage extends StatefulWidget {
   const PerfilResponsablePage({super.key});
+
+  /// Ciudades o distritos de la hoja «Ciudad» del Figma. También son la respuesta 3 de la recuperación
+  /// del PIN («¿En qué ciudad vives?»).
+  static const List<String> ciudades = [
+    'Barranco',
+    'Cercado de Lima',
+    'Jesús María',
+    'La Molina',
+    'Lince',
+    'Miraflores',
+    'San Borja',
+    'San Isidro',
+  ];
+
+  /// Opciones de la hoja «Parentesco con el niño o niña» del Figma.
+  static const List<String> parentescos = [
+    'Mamá',
+    'Papá',
+    'Abuela o abuelo',
+    'Tía o tío',
+    'Niñero o niñera',
+    'Tutor o tutora legal',
+    'Especialista/profesor',
+    'Otro',
+  ];
 
   @override
   State<PerfilResponsablePage> createState() => _PerfilResponsablePageState();
 }
 
 class _PerfilResponsablePageState extends State<PerfilResponsablePage> {
-  static const Color colorFondo = Color(0xFFFFFFFF);
-  static const Color colorBorde = Color(0xFFDDD6C9);
-  static const Color colorInput = Color(0xFFF6F6F4);
-  static const Color colorTextoPrincipal = Color(0xFF3A3A3A);
-  static const Color colorTextoSecundario = Color(0xFF6B6B66);
-  static const Color colorPista = Color(0xFF9A968C);
-  static const Color colorTealPrimario = Color(0xFF3D6D7E);
-  static const Color colorBotonDeshabilitado = Color(0xFFC9D5DA);
-  static const Color colorError = Color(0xFFD32F2F);
+  static const String _fuente = 'Atkinson Hyperlegible Next';
+  static const Color _borde = Color(0xFFDDD6C9);
+  static const Color _input = Color(0xFFF6F6F4);
+  static const Color _texto = Color(0xFF3A3A3A);
+  static const Color _textoSecundario = Color(0xFF6B6B66);
+  static const Color _pista = Color(0xFF9A968C);
+  static const Color _teal = Color(0xFF3D6D7E);
+  static const Color _tealClaro = Color(0xFFDDE9EC);
+  static const Color _botonDeshabilitado = Color(0xFFC9D5DA);
+  static const Color _error = Color(0xFFB3453A);
+  static const Color _bordeError = Color(0xFFB3453A);
+
+  static const List<String> _meses = [
+    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+    'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre',
+  ];
+
+  /// Una sola palabra: letras sin tildes (se admite la ñ), sin espacios.
+  static final RegExp _unaPalabra = RegExp(r'^[a-zA-ZñÑ]+$');
 
   final TextEditingController _nombreCtrl = TextEditingController();
-  final TextEditingController _apellidoPaternoCtrl = TextEditingController();
-  final TextEditingController _apellidoMaternoCtrl = TextEditingController();
+  final TextEditingController _apellidoCtrl = TextEditingController();
   final TextEditingController _diaCtrl = TextEditingController();
   final TextEditingController _anioCtrl = TextEditingController();
-  final TextEditingController _ciudadCtrl = TextEditingController();
 
-  // Al salir de un campo se quitan los espacios sobrantes
   final FocusNode _nombreFocus = FocusNode();
-  final FocusNode _apellidoPaternoFocus = FocusNode();
-  final FocusNode _apellidoMaternoFocus = FocusNode();
+  final FocusNode _apellidoFocus = FocusNode();
   final FocusNode _diaFocus = FocusNode();
   final FocusNode _anioFocus = FocusNode();
-  final FocusNode _ciudadFocus = FocusNode();
 
-  final ScrollController _scrollController = ScrollController();
-  final Set<String> _camposTocados = {};
+  final Set<String> _tocados = {};
+  bool _intentoContinuar = false;
 
-  String? _mesSeleccionado;
-  String _sexoSeleccionado = 'Femenino';
-  String? _parentescoSeleccionado;
-
-  final List<String> _meses = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'
-  ];
-
-  final List<String> _parentescos = [
-    'Madre', 'Padre', 'Tutor legal', 'Terapeuta', 'Docente', 'Familiar'
-  ];
-
-  bool _haIntentadoContinuar = false;
-
-  // Regex estricto para nombres: Solo letras sin tildes, ñ, un espacio entre palabras
-  static final RegExp _regexLetrasValidas = RegExp(r"^[a-zA-ZñÑ]+(?:\s[a-zA-ZñÑ]+)*$");
+  String? _mes;
+  String? _ciudad;
+  String _sexo = 'Femenino';
+  String? _parentesco;
 
   @override
   void initState() {
     super.initState();
-    // Auto-trim automático al perder el foco en cualquier campo de texto y registro de touch
-    _nombreFocus.addListener(() => _alPerderFoco(_nombreCtrl, _nombreFocus, 'nombre'));
-    _apellidoPaternoFocus.addListener(() => _alPerderFoco(_apellidoPaternoCtrl, _apellidoPaternoFocus, 'paterno'));
-    _apellidoMaternoFocus.addListener(() => _alPerderFoco(_apellidoMaternoCtrl, _apellidoMaternoFocus, 'materno'));
-    _ciudadFocus.addListener(() => _alPerderFoco(_ciudadCtrl, _ciudadFocus, 'ciudad'));
-    _diaFocus.addListener(() => _alPerderFoco(_diaCtrl, _diaFocus, 'dia'));
-    _anioFocus.addListener(() => _alPerderFoco(_anioCtrl, _anioFocus, 'anio'));
+    _nombreFocus.addListener(() => _alSalir(_nombreFocus, 'nombre'));
+    _apellidoFocus.addListener(() => _alSalir(_apellidoFocus, 'apellido'));
+    _diaFocus.addListener(() => _alSalir(_diaFocus, 'fecha'));
+    _anioFocus.addListener(() => _alSalir(_anioFocus, 'fecha'));
   }
 
-  void _alPerderFoco(TextEditingController ctrl, FocusNode focus, String campoId) {
-    if (!focus.hasFocus) {
-      _camposTocados.add(campoId);
-      final textoLimpio = limpiarTildes(ctrl.text.trim().replaceAll(RegExp(r'\s+'), ' '));
-      if (ctrl.text != textoLimpio) {
-        ctrl.value = TextEditingValue(
-          text: textoLimpio,
-          selection: TextSelection.collapsed(offset: textoLimpio.length),
-        );
-      }
-      setState(() {});
-    }
-  }
-
-  void _asegurarSinTildes(TextEditingController ctrl) {
-    final limpio = limpiarTildes(ctrl.text);
-    if (ctrl.text != limpio) {
-      final diff = ctrl.text.length - limpio.length;
-      final newOffset = (ctrl.selection.end - diff).clamp(0, limpio.length);
-      ctrl.value = TextEditingValue(
-        text: limpio,
-        selection: TextSelection.collapsed(offset: newOffset),
-      );
-    }
-    setState(() {});
-  }
-
-  void _avanzarAlSiguienteCampo() {
-    if (_nombreFocus.hasFocus) {
-      _enfocarYDesplazar(_apellidoPaternoFocus);
-    } else if (_apellidoPaternoFocus.hasFocus) {
-      _enfocarYDesplazar(_apellidoMaternoFocus);
-    } else if (_apellidoMaternoFocus.hasFocus) {
-      _enfocarYDesplazar(_diaFocus);
-    } else if (_diaFocus.hasFocus) {
-      _enfocarYDesplazar(_anioFocus);
-    } else if (_anioFocus.hasFocus) {
-      _enfocarYDesplazar(_ciudadFocus);
-    } else if (_ciudadFocus.hasFocus) {
-      FocusScope.of(context).unfocus();
-    } else {
-      _enfocarYDesplazar(_nombreFocus);
-    }
-  }
-
-  void _enfocarYDesplazar(FocusNode siguiente) {
-    siguiente.requestFocus();
+  void _alSalir(FocusNode foco, String campo) {
+    if (!foco.hasFocus && mounted) setState(() => _tocados.add(campo));
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
     _nombreCtrl.dispose();
-    _apellidoPaternoCtrl.dispose();
-    _apellidoMaternoCtrl.dispose();
+    _apellidoCtrl.dispose();
     _diaCtrl.dispose();
     _anioCtrl.dispose();
-    _ciudadCtrl.dispose();
-
     _nombreFocus.dispose();
-    _apellidoPaternoFocus.dispose();
-    _apellidoMaternoFocus.dispose();
+    _apellidoFocus.dispose();
     _diaFocus.dispose();
     _anioFocus.dispose();
-    _ciudadFocus.dispose();
-
     super.dispose();
   }
 
-  String? _validarNombre(String? valor) {
-    if (valor == null || valor.trim().isEmpty) {
-      return 'Ingresa el nombre';
-    }
-    final limpio = valor.trim();
-    if (limpio.length < 2) {
-      return 'Mínimo 2 caracteres';
-    }
-    if (!_regexLetrasValidas.hasMatch(limpio)) {
-      return 'Solo se permiten letras';
-    }
+  // ---------------------------------------------------------------- validación
+
+  String? _errorNombre() {
+    final v = _nombreCtrl.text.trim();
+    if (v.isEmpty) return 'Falta escribir tu nombre.';
+    if (!_unaPalabra.hasMatch(v) || v.length < 2) return 'Solo un nombre, sin espacios ni tildes.';
     return null;
   }
 
-  String? _validarApellido(String? valor, String campo) {
-    if (valor == null || valor.trim().isEmpty) {
-      return 'Ingresa el $campo';
-    }
-    final limpio = valor.trim();
-    if (limpio.length < 2) {
-      return 'Mínimo 2 caracteres';
-    }
-    if (!_regexLetrasValidas.hasMatch(limpio)) {
-      return 'Solo se permiten letras';
-    }
+  String? _errorApellido() {
+    final v = _apellidoCtrl.text.trim();
+    if (v.isEmpty) return 'Falta escribir tu apellido.';
+    if (!_unaPalabra.hasMatch(v) || v.length < 2) return 'Solo tu primer apellido, sin espacios ni tildes.';
     return null;
   }
 
-  String? _validarDia(String? valor) {
-    if (valor == null || valor.trim().isEmpty) return 'Día requerido';
-    final d = int.tryParse(valor.trim());
-    if (d == null || d < 1 || d > 31) return 'Día inválido (1-31)';
+  String? _errorFecha() {
+    final dia = int.tryParse(_diaCtrl.text.trim());
+    final anio = int.tryParse(_anioCtrl.text.trim());
+    if (dia == null || _mes == null || anio == null || _anioCtrl.text.trim().length != 4) {
+      return 'Completa tu fecha de nacimiento.';
+    }
+    final mes = _meses.indexOf(_mes!) + 1;
+    final fecha = DateTime(anio, mes, dia);
+    if (dia < 1 || fecha.month != mes || anio < 1920) return 'Revisa tu fecha de nacimiento.';
+    final hoy = DateTime.now();
+    final mayorDeEdad = DateTime(hoy.year - 18, hoy.month, hoy.day);
+    if (fecha.isAfter(mayorDeEdad)) return 'Debes ser mayor de edad.';
     return null;
   }
 
-  String? _validarAnio(String? valor) {
-    if (valor == null || valor.trim().isEmpty) return 'Año requerido';
-    final limpio = valor.trim();
-    if (limpio.length < 4) return 'Ingresa 4 dígitos (Ej. 1988)';
-    final a = int.tryParse(limpio);
-    if (a == null) return 'Año inválido (solo números)';
-    final anioActual = DateTime.now().year;
-    if (a < 1920) return 'Año muy antiguo';
-    if (a > anioActual - 18) return 'Debe ser mayor de edad (+18)';
-    return null;
-  }
+  String? _errorCiudad() => _ciudad == null ? 'Elige tu ciudad.' : null;
+  String? _errorParentesco() => _parentesco == null ? 'Elige tu parentesco.' : null;
 
-  String? _validarCiudad(String? valor) {
-    if (valor == null || valor.trim().isEmpty) {
-      return 'Ingresa la ciudad de nacimiento';
-    }
-    final limpio = valor.trim();
-    if (limpio.length < 2) {
-      return 'Mínimo 2 caracteres';
-    }
-    if (!_regexLetrasValidas.hasMatch(limpio)) {
-      return 'Solo se permiten letras';
-    }
-    return null;
-  }
+  bool get _completo =>
+      _errorNombre() == null &&
+      _errorApellido() == null &&
+      _errorFecha() == null &&
+      _errorCiudad() == null &&
+      _errorParentesco() == null;
 
-  bool get _formularioValido =>
-      _validarNombre(_nombreCtrl.text) == null &&
-      _validarApellido(_apellidoPaternoCtrl.text, 'apellido paterno') == null &&
-      _validarApellido(_apellidoMaternoCtrl.text, 'apellido materno') == null &&
-      _validarDia(_diaCtrl.text) == null &&
-      _mesSeleccionado != null &&
-      _validarAnio(_anioCtrl.text) == null &&
-      _validarCiudad(_ciudadCtrl.text) == null &&
-      _parentescoSeleccionado != null;
+  /// El error de un campo se muestra después de salir de él o al tocar Continuar.
+  String? _visible(String campo, String? error) =>
+      (_intentoContinuar || _tocados.contains(campo)) ? error : null;
 
   void _continuar() {
     FocusScope.of(context).unfocus();
-    setState(() => _haIntentadoContinuar = true);
-
-    if (!_formularioValido) {
-      String primerError = '';
-      double scrollTarget = 0.0;
-
-      if (_validarNombre(_nombreCtrl.text) != null) {
-        primerError = 'Nombre: ${_validarNombre(_nombreCtrl.text)}';
-        scrollTarget = 0.0;
-      } else if (_validarApellido(_apellidoPaternoCtrl.text, 'apellido paterno') != null) {
-        primerError = 'Apellido paterno: ${_validarApellido(_apellidoPaternoCtrl.text, 'apellido paterno')}';
-        scrollTarget = 60.0;
-      } else if (_validarApellido(_apellidoMaternoCtrl.text, 'apellido materno') != null) {
-        primerError = 'Apellido materno: ${_validarApellido(_apellidoMaternoCtrl.text, 'apellido materno')}';
-        scrollTarget = 140.0;
-      } else if (_validarDia(_diaCtrl.text) != null) {
-        primerError = 'Fecha: ${_validarDia(_diaCtrl.text)}';
-        scrollTarget = 220.0;
-      } else if (_mesSeleccionado == null) {
-        primerError = 'Fecha: Selecciona el mes de nacimiento';
-        scrollTarget = 220.0;
-      } else if (_validarAnio(_anioCtrl.text) != null) {
-        primerError = 'Fecha: ${_validarAnio(_anioCtrl.text)}';
-        scrollTarget = 220.0;
-      } else if (_validarCiudad(_ciudadCtrl.text) != null) {
-        primerError = 'Ciudad: ${_validarCiudad(_ciudadCtrl.text)}';
-        scrollTarget = 300.0;
-      } else if (_parentescoSeleccionado == null) {
-        primerError = 'Parentesco: Selecciona una opción';
-        scrollTarget = 400.0;
-      }
-
-      if (_scrollController.hasClients) {
-        _scrollController.animateTo(
-          scrollTarget,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
-
-      ScaffoldMessenger.of(context).clearSnackBars();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            primerError.isNotEmpty ? primerError : 'Por favor completa los campos requeridos marcados en rojo.',
-            style: const TextStyle(fontFamily: 'Atkinson Hyperlegible Next', fontWeight: FontWeight.w600),
-          ),
-          backgroundColor: colorError,
-          duration: const Duration(seconds: 3),
-        ),
-      );
+    if (!_completo) {
+      setState(() => _intentoContinuar = true);
       return;
     }
-
-    // Limpieza final de espacios antes de guardar en Base de Datos
-    final nombreLimpio = _nombreCtrl.text.trim().replaceAll(RegExp(r'\s+'), ' ');
-    final paternoLimpio = _apellidoPaternoCtrl.text.trim().replaceAll(RegExp(r'\s+'), ' ');
-    final maternoLimpio = _apellidoMaternoCtrl.text.trim().replaceAll(RegExp(r'\s+'), ' ');
-    final ciudadLimpia = _ciudadCtrl.text.trim().replaceAll(RegExp(r'\s+'), ' ');
-    final diaLimpio = _diaCtrl.text.trim();
-    final anioLimpio = _anioCtrl.text.trim();
-
-    // Edad calculada automáticamente a partir del año de nacimiento
-    final anioInt = int.tryParse(anioLimpio) ?? DateTime.now().year;
-    final edadCalculada = '${DateTime.now().year - anioInt}';
-
+    final anio = _anioCtrl.text.trim();
     final adulto = PerfilAdulto(
-      nombres: nombreLimpio,
-      apellidoPaterno: paternoLimpio,
-      apellidoMaterno: maternoLimpio,
-      diaNacimiento: diaLimpio,
-      mesNacimiento: _mesSeleccionado!,
-      anioNacimiento: anioLimpio,
-      ciudadNacimiento: ciudadLimpia,
-      edad: edadCalculada,
-      sexo: _sexoSeleccionado,
-      parentesco: _parentescoSeleccionado!,
+      nombres: _nombreCtrl.text.trim(),
+      apellidoPaterno: _apellidoCtrl.text.trim(),
+      apellidoMaterno: '',
+      diaNacimiento: int.parse(_diaCtrl.text.trim()).toString(),
+      mesNacimiento: _mes!,
+      anioNacimiento: anio,
+      ciudadNacimiento: _ciudad!,
+      edad: '${DateTime.now().year - int.parse(anio)}',
+      sexo: _sexo,
+      parentesco: _parentesco!,
     );
-
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => PerfilNinoPage(perfilAdulto: adulto),
-      ),
+      MaterialPageRoute(builder: (_) => PerfilNinoPage(perfilAdulto: adulto)),
     );
   }
 
-  void _abrirSelectorMes() {
+  // ---------------------------------------------------------------- hojas de selección
+
+  Future<void> _elegir({
+    required String titulo,
+    required List<String> opciones,
+    required String? actual,
+    required ValueChanged<String> alElegir,
+  }) async {
     FocusScope.of(context).unfocus();
-    showModalBottomSheet(
+    final elegido = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: Colors.white,
       isScrollControlled: true,
+      backgroundColor: Colors.white,
+      barrierColor: const Color(0x733A3A3A),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 44,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: colorBorde,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Mes de nacimiento',
-                  style: TextStyle(
-                    fontFamily: 'Atkinson Hyperlegible Next',
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: colorTextoPrincipal,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height * 0.48,
-                  ),
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: _meses.length,
-                    separatorBuilder: (_, __) => const Divider(height: 1, color: Color(0xFFF2F2EE)),
-                    itemBuilder: (ctx, i) {
-                      final m = _meses[i];
-                      final sel = _mesSeleccionado == m;
-                      return ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                        title: Text(
-                          m,
-                          style: TextStyle(
-                            fontFamily: 'Atkinson Hyperlegible Next',
-                            fontSize: 16,
-                            fontWeight: sel ? FontWeight.w700 : FontWeight.w500,
-                            color: sel ? colorTealPrimario : colorTextoPrincipal,
-                          ),
-                        ),
-                        trailing: sel
-                            ? const Icon(Icons.check_circle_rounded, color: colorTealPrimario, size: 24)
-                            : null,
-                        onTap: () {
-                          setState(() => _mesSeleccionado = m);
-                          Navigator.pop(ctx);
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void _abrirSelectorParentesco() {
-    FocusScope.of(context).unfocus();
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 44,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: colorBorde,
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Parentesco con el niño o niña',
-                  style: TextStyle(
-                    fontFamily: 'Atkinson Hyperlegible Next',
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: colorTextoPrincipal,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  'Selecciona la relación del acompañante principal',
-                  style: TextStyle(
-                    fontFamily: 'Atkinson Hyperlegible Next',
-                    fontSize: 14,
-                    color: colorTextoSecundario,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _parentescos.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1, color: Color(0xFFF2F2EE)),
-                  itemBuilder: (ctx, i) {
-                    final p = _parentescos[i];
-                    final sel = _parentescoSeleccionado == p;
-                    return ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      title: Text(
-                        p,
-                        style: TextStyle(
-                          fontFamily: 'Atkinson Hyperlegible Next',
-                          fontSize: 16,
-                          fontWeight: sel ? FontWeight.w700 : FontWeight.w500,
-                          color: sel ? colorTealPrimario : colorTextoPrincipal,
-                        ),
-                      ),
-                      trailing: sel
-                          ? const Icon(Icons.check_circle_rounded, color: colorTealPrimario, size: 24)
-                          : null,
-                      onTap: () {
-                        setState(() => _parentescoSeleccionado = p);
-                        Navigator.pop(ctx);
-                      },
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final formValido = _formularioValido;
-    final tecladoVisible = MediaQuery.of(context).viewInsets.bottom > 0;
-
-    // Errores para visualización (feedback inmediato por campo tocado o tras presionar continuar)
-    final errorNombre = (_haIntentadoContinuar || _camposTocados.contains('nombre'))
-        ? _validarNombre(_nombreCtrl.text)
-        : null;
-    final errorPaterno = (_haIntentadoContinuar || _camposTocados.contains('paterno'))
-        ? _validarApellido(_apellidoPaternoCtrl.text, 'apellido paterno')
-        : null;
-    final errorMaterno = (_haIntentadoContinuar || _camposTocados.contains('materno'))
-        ? _validarApellido(_apellidoMaternoCtrl.text, 'apellido materno')
-        : null;
-    final errorDia = (_haIntentadoContinuar || _camposTocados.contains('dia'))
-        ? _validarDia(_diaCtrl.text)
-        : null;
-    final errorMes = (_haIntentadoContinuar || _camposTocados.contains('mes')) && _mesSeleccionado == null
-        ? 'Selecciona el mes'
-        : null;
-    final errorAnio = (_haIntentadoContinuar || _camposTocados.contains('anio'))
-        ? _validarAnio(_anioCtrl.text)
-        : null;
-    final errorCiudad = (_haIntentadoContinuar || _camposTocados.contains('ciudad'))
-        ? _validarCiudad(_ciudadCtrl.text)
-        : null;
-    final errorParentesco = (_haIntentadoContinuar || _camposTocados.contains('parentesco')) && _parentescoSeleccionado == null
-        ? 'Selecciona una opción'
-        : null;
-
-    return GestureDetector(
-      // Tocar cualquier parte fuera de los inputs cierra el teclado inmediatamente
-      onTap: () => FocusScope.of(context).unfocus(),
-      behavior: HitTestBehavior.translucent,
-      child: Scaffold(
-        backgroundColor: colorFondo,
-        bottomNavigationBar: tecladoVisible
-            ? SafeArea(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.08),
-                        offset: const Offset(0, -2),
-                        blurRadius: 8,
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () => FocusScope.of(context).unfocus(),
-                          icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 22, color: colorTextoPrincipal),
-                          label: const Text(
-                            'Bajar teclado ⌄',
-                            style: TextStyle(
-                              fontFamily: 'Atkinson Hyperlegible Next',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: colorTextoPrincipal,
-                            ),
-                          ),
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: colorBorde, width: 1.5),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: _avanzarAlSiguienteCampo,
-                          icon: const Icon(Icons.arrow_downward_rounded, size: 18, color: Colors.white),
-                          label: const Text(
-                            'Siguiente campo ↓',
-                            style: TextStyle(
-                              fontFamily: 'Atkinson Hyperlegible Next',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorTealPrimario,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            : Container(
-                padding: EdgeInsets.only(
-                  left: 24,
-                  right: 24,
-                  top: 12,
-                  bottom: MediaQuery.of(context).padding.bottom > 0
-                      ? MediaQuery.of(context).padding.bottom + 8
-                      : 16,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
-                      offset: const Offset(0, -3),
-                      blurRadius: 10,
-                    ),
-                  ],
-                ),
-                child: _buildBotonContinuar(formValido),
-              ),
-        body: SafeArea(
-          bottom: false,
+      builder: (ctx) => SafeArea(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: MediaQuery.of(ctx).size.height * 0.75),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-                child: Row(
-                  children: [
-                    Semantics(button: true, label: 'Volver', child: InkWell(
-                      onTap: () => Navigator.pop(context),
-                      borderRadius: BorderRadius.circular(999),
-                      child: Container(
-                        width: 48,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: colorBorde, width: 1.5),
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.arrow_back, color: colorTextoPrincipal, size: 22),
-                        ),
-                      ),
-                    )),
-                    const SizedBox(width: 14),
-                    const Expanded(
-                      child: Text(
-                        'Perfil del responsable',
-                        style: TextStyle(
-                          fontFamily: 'Atkinson Hyperlegible Next',
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          color: colorTextoPrincipal,
-                          letterSpacing: -0.3,
-                        ),
-                      ),
-                    ),
-                  ],
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  width: 44,
+                  height: 5,
+                  decoration: BoxDecoration(color: _borde, borderRadius: BorderRadius.circular(3)),
                 ),
               ),
-
-              Expanded(
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  physics: const BouncingScrollPhysics(),
-                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Cuéntanos quién acompañará al niño o niña en la app.',
-                        style: TextStyle(
-                          fontFamily: 'Atkinson Hyperlegible Next',
-                          fontSize: 16,
-                          height: 1.4,
-                          color: colorTextoSecundario,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-
-                      const SizedBox(height: 22),
-
-                      _buildEtiqueta('Nombre'),
-                      const SizedBox(height: 6),
-                      _buildInputContainer(
-                        tieneError: errorNombre != null,
-                        child: TextField(
-                          controller: _nombreCtrl,
-                          focusNode: _nombreFocus,
-                          keyboardType: TextInputType.name,
-                          maxLines: 1,
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.words,
-                          onEditingComplete: () => _enfocarYDesplazar(_apellidoPaternoFocus),
-                          onSubmitted: (_) => _enfocarYDesplazar(_apellidoPaternoFocus),
-                          inputFormatters: [
-                            SinTildesFormatter(),
-                            FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZñÑ\s]")),
-                            LengthLimitingTextInputFormatter(35),
-                          ],
-                          style: const TextStyle(
-                            fontFamily: 'Atkinson Hyperlegible Next',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: colorTextoPrincipal,
-                          ),
-                          decoration: const InputDecoration(
-                            hintText: 'Ej. Maria Elena',
-                            hintStyle: TextStyle(color: colorPista, fontSize: 16),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                          onChanged: (_) => _asegurarSinTildes(_nombreCtrl),
-                        ),
-                      ),
-                      if (errorNombre != null) _buildTextoError(errorNombre),
-
-                      const SizedBox(height: 16),
-
-                      _buildEtiqueta('Apellido paterno'),
-                      const SizedBox(height: 6),
-                      _buildInputContainer(
-                        tieneError: errorPaterno != null,
-                        child: TextField(
-                          controller: _apellidoPaternoCtrl,
-                          focusNode: _apellidoPaternoFocus,
-                          keyboardType: TextInputType.name,
-                          maxLines: 1,
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.words,
-                          onEditingComplete: () => _enfocarYDesplazar(_apellidoMaternoFocus),
-                          onSubmitted: (_) => _enfocarYDesplazar(_apellidoMaternoFocus),
-                          inputFormatters: [
-                            SinTildesFormatter(),
-                            FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZñÑ\s]")),
-                            LengthLimitingTextInputFormatter(35),
-                          ],
-                          style: const TextStyle(
-                            fontFamily: 'Atkinson Hyperlegible Next',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: colorTextoPrincipal,
-                          ),
-                          decoration: const InputDecoration(
-                            hintText: 'Ej. Gomez',
-                            hintStyle: TextStyle(color: colorPista, fontSize: 16),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                          onChanged: (_) => _asegurarSinTildes(_apellidoPaternoCtrl),
-                        ),
-                      ),
-                      if (errorPaterno != null) _buildTextoError(errorPaterno),
-
-                      const SizedBox(height: 16),
-
-                      _buildEtiqueta('Apellido materno'),
-                      const SizedBox(height: 6),
-                      _buildInputContainer(
-                        tieneError: errorMaterno != null,
-                        child: TextField(
-                          controller: _apellidoMaternoCtrl,
-                          focusNode: _apellidoMaternoFocus,
-                          keyboardType: TextInputType.name,
-                          maxLines: 1,
-                          textInputAction: TextInputAction.next,
-                          textCapitalization: TextCapitalization.words,
-                          onEditingComplete: () => _enfocarYDesplazar(_diaFocus),
-                          onSubmitted: (_) => _enfocarYDesplazar(_diaFocus),
-                          inputFormatters: [
-                            SinTildesFormatter(),
-                            FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZñÑ\s]")),
-                            LengthLimitingTextInputFormatter(35),
-                          ],
-                          style: const TextStyle(
-                            fontFamily: 'Atkinson Hyperlegible Next',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: colorTextoPrincipal,
-                          ),
-                          decoration: const InputDecoration(
-                            hintText: 'Ej. Ruiz',
-                            hintStyle: TextStyle(color: colorPista, fontSize: 16),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                          onChanged: (_) => _asegurarSinTildes(_apellidoMaternoCtrl),
-                        ),
-                      ),
-                      if (errorMaterno != null) _buildTextoError(errorMaterno),
-
-                      const SizedBox(height: 16),
-
-                      _buildEtiqueta('Fecha de nacimiento'),
-                      const SizedBox(height: 6),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 76,
-                            child: _buildInputContainer(
-                              tieneError: errorDia != null,
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
-                              child: TextField(
-                                controller: _diaCtrl,
-                                focusNode: _diaFocus,
-                                keyboardType: TextInputType.number,
-                                maxLines: 1,
-                                textInputAction: TextInputAction.next,
-                                textAlign: TextAlign.center,
-                                maxLength: 2,
-                                onEditingComplete: () => _enfocarYDesplazar(_anioFocus),
-                                onSubmitted: (_) => _enfocarYDesplazar(_anioFocus),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  LengthLimitingTextInputFormatter(2),
-                                ],
-                                style: const TextStyle(
-                                  fontFamily: 'Atkinson Hyperlegible Next',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: colorTextoPrincipal,
-                                ),
-                                decoration: const InputDecoration(
-                                  hintText: 'DD',
-                                  hintStyle: TextStyle(color: colorPista, fontSize: 16),
-                                  counterText: '',
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.zero,
-                                ),
-                                onChanged: (v) {
-                                  if (v.length == 2) {
-                                    _enfocarYDesplazar(_anioFocus);
-                                  }
-                                  setState(() {});
-                                },
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: InkWell(
-                              onTap: _abrirSelectorMes,
-                              borderRadius: BorderRadius.circular(12),
-                              child: _buildInputContainer(
-                                tieneError: errorMes != null,
-                                padding: const EdgeInsets.symmetric(horizontal: 14),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      _mesSeleccionado ?? 'Mes',
-                                      style: TextStyle(
-                                        fontFamily: 'Atkinson Hyperlegible Next',
-                                        fontSize: 16,
-                                        fontWeight: _mesSeleccionado != null ? FontWeight.w600 : FontWeight.w400,
-                                        color: _mesSeleccionado != null ? colorTextoPrincipal : colorPista,
-                                      ),
-                                    ),
-                                    const Icon(Icons.keyboard_arrow_down_rounded, color: colorTextoSecundario, size: 22),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          SizedBox(
-                            width: 90,
-                            child: _buildInputContainer(
-                              tieneError: errorAnio != null,
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
-                              child: TextField(
-                                controller: _anioCtrl,
-                                focusNode: _anioFocus,
-                                keyboardType: TextInputType.number,
-                                maxLines: 1,
-                                textInputAction: TextInputAction.next,
-                                textAlign: TextAlign.center,
-                                maxLength: 4,
-                                onEditingComplete: () => _enfocarYDesplazar(_ciudadFocus),
-                                onSubmitted: (_) => _enfocarYDesplazar(_ciudadFocus),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  LengthLimitingTextInputFormatter(4),
-                                ],
-                                style: const TextStyle(
-                                  fontFamily: 'Atkinson Hyperlegible Next',
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                  color: colorTextoPrincipal,
-                                ),
-                                decoration: const InputDecoration(
-                                  hintText: 'AAAA',
-                                  hintStyle: TextStyle(color: colorPista, fontSize: 16),
-                                  counterText: '',
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.zero,
-                                ),
-                                onChanged: (v) {
-                                  if (v.length == 4) {
-                                    _enfocarYDesplazar(_ciudadFocus);
-                                  }
-                                  setState(() {});
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (errorDia != null || errorMes != null || errorAnio != null)
-                        _buildTextoError(errorDia ?? errorMes ?? errorAnio!),
-
-                      const SizedBox(height: 16),
-
-                      _buildEtiqueta('Ciudad de nacimiento'),
-                      const SizedBox(height: 6),
-                      _buildInputContainer(
-                        tieneError: errorCiudad != null,
-                        child: TextField(
-                          controller: _ciudadCtrl,
-                          focusNode: _ciudadFocus,
-                          keyboardType: TextInputType.text,
-                          maxLines: 1,
-                          textInputAction: TextInputAction.done,
-                          textCapitalization: TextCapitalization.words,
-                          onEditingComplete: () => FocusScope.of(context).unfocus(),
-                          onSubmitted: (_) => FocusScope.of(context).unfocus(),
-                          inputFormatters: [
-                            SinTildesFormatter(),
-                            FilteringTextInputFormatter.allow(RegExp(r"[a-zA-ZñÑ\s]")),
-                            LengthLimitingTextInputFormatter(35),
-                          ],
-                          style: const TextStyle(
-                            fontFamily: 'Atkinson Hyperlegible Next',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: colorTextoPrincipal,
-                          ),
-                          decoration: const InputDecoration(
-                            hintText: 'Ej. Lima',
-                            hintStyle: TextStyle(color: colorPista, fontSize: 16),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                          ),
-                          onChanged: (_) => _asegurarSinTildes(_ciudadCtrl),
-                        ),
-                      ),
-                      if (errorCiudad != null) _buildTextoError(errorCiudad),
-
-                      const SizedBox(height: 16),
-
-                      _buildEtiqueta('Sexo'),
-                      const SizedBox(height: 6),
-                      Row(
-                        children: ['Femenino', 'Masculino', 'Otro'].map((s) {
-                          final sel = _sexoSeleccionado == s;
-                          return Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                              child: InkWell(
-                                onTap: () => setState(() => _sexoSeleccionado = s),
-                                borderRadius: BorderRadius.circular(12),
-                                child: Container(
-                                  height: 54,
-                                  decoration: BoxDecoration(
-                                    color: sel ? colorTealPrimario : colorInput,
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(
-                                      color: sel ? colorTealPrimario : colorBorde,
-                                      width: 1.5,
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      s,
-                                      style: TextStyle(
-                                        fontFamily: 'Atkinson Hyperlegible Next',
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w600,
-                                        color: sel ? Colors.white : colorTextoPrincipal,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      _buildEtiqueta('Parentesco con el niño o niña'),
-                      const SizedBox(height: 6),
-                      InkWell(
-                        onTap: _abrirSelectorParentesco,
-                        borderRadius: BorderRadius.circular(12),
-                        child: _buildInputContainer(
-                          tieneError: errorParentesco != null,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                _parentescoSeleccionado ?? 'Selecciona una opción',
-                                style: TextStyle(
-                                  fontFamily: 'Atkinson Hyperlegible Next',
-                                  fontSize: 16,
-                                  fontWeight: _parentescoSeleccionado != null ? FontWeight.w600 : FontWeight.w400,
-                                  color: _parentescoSeleccionado != null ? colorTextoPrincipal : colorPista,
-                                ),
-                              ),
-                              const Icon(Icons.keyboard_arrow_down_rounded, color: colorTextoSecundario, size: 24),
-                            ],
-                          ),
-                        ),
-                      ),
-                      if (errorParentesco != null) _buildTextoError(errorParentesco),
-
-                      const SizedBox(height: 24),
-
-                      // Botón continuar integrado al final del scroll si el teclado está abierto
-                      if (tecladoVisible)
-                        _buildBotonContinuar(formValido),
-
-                      const SizedBox(height: 20),
-                    ],
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 13, 24, 12),
+                child: Text(
+                  titulo,
+                  style: const TextStyle(
+                    fontFamily: _fuente,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: _texto,
                   ),
+                ),
+              ),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+                  children: [
+                    for (final o in opciones) _opcionHoja(ctx, o, o == actual),
+                  ],
                 ),
               ),
             ],
@@ -1000,62 +233,225 @@ class _PerfilResponsablePageState extends State<PerfilResponsablePage> {
         ),
       ),
     );
+    if (elegido != null && mounted) setState(() => alElegir(elegido));
   }
 
-  Widget _buildBotonContinuar(bool formValido) {
-    return SizedBox(
-      width: double.infinity,
-      height: 58,
-      child: ElevatedButton(
-        onPressed: _continuar,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: formValido ? colorTealPrimario : colorBotonDeshabilitado,
-          disabledBackgroundColor: colorBotonDeshabilitado,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-        ),
-        child: Text(
-          'Continuar',
-          style: TextStyle(
-            fontFamily: 'Atkinson Hyperlegible Next',
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-            color: formValido ? Colors.white : const Color(0xFF8E9598),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEtiqueta(String texto) {
-    return Text(
-      texto,
-      style: const TextStyle(
-        fontFamily: 'Atkinson Hyperlegible Next',
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
-        color: colorTextoSecundario,
-      ),
-    );
-  }
-
-  Widget _buildTextoError(String error) {
+  Widget _opcionHoja(BuildContext ctx, String opcion, bool marcada) {
     return Padding(
-      padding: const EdgeInsets.only(top: 5.0, left: 4.0),
+      padding: const EdgeInsets.only(bottom: 2),
+      child: Semantics(
+        selected: marcada,
+        button: true,
+        child: Material(
+          color: marcada ? _tealClaro : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => Navigator.of(ctx).pop(opcion),
+            child: SizedBox(
+              height: 48,
+              child: Row(
+                children: [
+                  const SizedBox(width: 12),
+                  Container(
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: marcada ? _teal : Colors.white,
+                      border: Border.all(color: marcada ? _teal : _borde, width: 2),
+                    ),
+                    child: marcada ? const Icon(Icons.check_rounded, size: 14, color: Colors.white) : null,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      opcion,
+                      style: TextStyle(
+                        fontFamily: _fuente,
+                        fontSize: 16,
+                        fontWeight: marcada ? FontWeight.w700 : FontWeight.w400,
+                        color: _texto,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ---------------------------------------------------------------- pantalla
+
+  @override
+  Widget build(BuildContext context) {
+    final tecladoAbierto = MediaQuery.of(context).viewInsets.bottom > 0;
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(24, 32, 24, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _encabezado(),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Cuéntanos quién acompañará al niño o niña en la app.',
+                        style: TextStyle(
+                          fontFamily: _fuente,
+                          fontSize: 18,
+                          height: 1.5,
+                          color: _textoSecundario,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      _etiqueta('Nombre'),
+                      _campoTexto(
+                        ctrl: _nombreCtrl,
+                        foco: _nombreFocus,
+                        pista: 'Ej. Maria',
+                        error: _visible('nombre', _errorNombre()),
+                        siguiente: _apellidoFocus,
+                      ),
+                      _etiqueta('Apellido'),
+                      _campoTexto(
+                        ctrl: _apellidoCtrl,
+                        foco: _apellidoFocus,
+                        pista: 'Ej. Gomez',
+                        error: _visible('apellido', _errorApellido()),
+                        siguiente: _diaFocus,
+                      ),
+                      _etiqueta('Fecha de nacimiento'),
+                      _campoFecha(),
+                      _etiqueta('Ciudad'),
+                      _selector(
+                        valor: _ciudad,
+                        error: _visible('ciudad', _errorCiudad()),
+                        onTap: () => _elegir(
+                          titulo: 'Ciudad',
+                          opciones: PerfilResponsablePage.ciudades,
+                          actual: _ciudad,
+                          alElegir: (v) => _ciudad = v,
+                        ).then((_) => _marcar('ciudad')),
+                      ),
+                      _etiqueta('Sexo'),
+                      _chipsSexo(),
+                      _etiqueta('Parentesco con el niño o niña'),
+                      _selector(
+                        valor: _parentesco,
+                        error: _visible('parentesco', _errorParentesco()),
+                        onTap: () => _elegir(
+                          titulo: 'Parentesco con el niño o niña',
+                          opciones: PerfilResponsablePage.parentescos,
+                          actual: _parentesco,
+                          alElegir: (v) => _parentesco = v,
+                        ).then((_) => _marcar('parentesco')),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (!tecladoAbierto)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+                  child: _botonContinuar(),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _marcar(String campo) {
+    if (mounted) setState(() => _tocados.add(campo));
+  }
+
+  Widget _encabezado() {
+    return Row(
+      children: [
+        Semantics(
+          button: true,
+          label: 'Volver',
+          excludeSemantics: true,
+          child: InkWell(
+            onTap: () => Navigator.of(context).maybePop(),
+            borderRadius: BorderRadius.circular(999),
+            child: Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                border: Border.all(color: _borde, width: 1.5),
+              ),
+              child: const Icon(Icons.arrow_back_rounded, color: _texto, size: 22),
+            ),
+          ),
+        ),
+        const SizedBox(width: 14),
+        const Expanded(
+          child: Text(
+            'Perfil del responsable',
+            style: TextStyle(
+              fontFamily: _fuente,
+              fontSize: 24,
+              height: 1.3,
+              fontWeight: FontWeight.w700,
+              color: _texto,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _etiqueta(String texto) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12, bottom: 6),
+      child: Text(
+        texto,
+        style: const TextStyle(fontFamily: _fuente, fontSize: 14, height: 1.4, color: _textoSecundario),
+      ),
+    );
+  }
+
+  BoxDecoration _caja({required bool error, bool activo = false}) {
+    return BoxDecoration(
+      color: _input,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(
+        color: error ? _bordeError : (activo ? _teal : _borde),
+        width: error || activo ? 2 : 1.5,
+      ),
+    );
+  }
+
+  Widget _mensajeError(String? error) {
+    if (error == null) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
       child: Row(
         children: [
-          const Icon(Icons.error_outline_rounded, size: 14, color: colorError),
-          const SizedBox(width: 4),
+          const Icon(Icons.error_outline_rounded, size: 15, color: _error),
+          const SizedBox(width: 5),
           Expanded(
             child: Text(
               error,
               style: const TextStyle(
-                fontFamily: 'Atkinson Hyperlegible Next',
-                fontSize: 12.5,
-                fontWeight: FontWeight.w600,
-                color: colorError,
+                fontFamily: _fuente,
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: _error,
               ),
             ),
           ),
@@ -1064,24 +460,238 @@ class _PerfilResponsablePageState extends State<PerfilResponsablePage> {
     );
   }
 
-  Widget _buildInputContainer({
-    required Widget child,
-    EdgeInsetsGeometry? padding,
-    bool tieneError = false,
+  Widget _campoTexto({
+    required TextEditingController ctrl,
+    required FocusNode foco,
+    required String pista,
+    required String? error,
+    required FocusNode siguiente,
   }) {
-    return Container(
-      height: 56,
-      padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
-      alignment: Alignment.centerLeft,
-      decoration: BoxDecoration(
-        color: colorInput,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AnimatedBuilder(
+          animation: foco,
+          builder: (_, child) => Container(
+            height: 48,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            alignment: Alignment.centerLeft,
+            decoration: _caja(error: error != null, activo: foco.hasFocus),
+            child: child,
+          ),
+          child: TextField(
+            controller: ctrl,
+            focusNode: foco,
+            textCapitalization: TextCapitalization.words,
+            textInputAction: TextInputAction.next,
+            inputFormatters: [LengthLimitingTextInputFormatter(30)],
+            onChanged: (_) => setState(() {}),
+            onSubmitted: (_) => siguiente.requestFocus(),
+            style: const TextStyle(fontFamily: _fuente, fontSize: 18, color: _texto),
+            decoration: InputDecoration(
+              isCollapsed: true,
+              hintText: pista,
+              hintStyle: const TextStyle(fontFamily: _fuente, fontSize: 18, color: _pista),
+              border: InputBorder.none,
+            ),
+          ),
+        ),
+        _mensajeError(error),
+      ],
+    );
+  }
+
+  Widget _campoFecha() {
+    final error = _visible('fecha', _errorFecha());
+    Widget numero(TextEditingController c, FocusNode f, String pista, int largo, double ancho,
+        FocusNode? siguiente) {
+      return SizedBox(
+        width: ancho,
+        child: AnimatedBuilder(
+          animation: f,
+          builder: (_, child) => Container(
+            height: 48,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            alignment: Alignment.centerLeft,
+            decoration: _caja(error: error != null, activo: f.hasFocus),
+            child: child,
+          ),
+          child: TextField(
+            controller: c,
+            focusNode: f,
+            keyboardType: TextInputType.number,
+            textInputAction: siguiente == null ? TextInputAction.done : TextInputAction.next,
+            inputFormatters: [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(largo),
+            ],
+            onChanged: (v) {
+              setState(() {});
+              if (v.length == largo && siguiente != null) siguiente.requestFocus();
+            },
+            style: const TextStyle(fontFamily: _fuente, fontSize: 18, color: _texto),
+            decoration: InputDecoration(
+              isCollapsed: true,
+              hintText: pista,
+              hintStyle: const TextStyle(fontFamily: _fuente, fontSize: 18, color: _pista),
+              border: InputBorder.none,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            numero(_diaCtrl, _diaFocus, 'DD', 2, 84, null),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Semantics(
+                button: true,
+                label: 'Mes de nacimiento${_mes == null ? '' : ', $_mes'}',
+                excludeSemantics: true,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () => _elegir(
+                    titulo: 'Mes de nacimiento',
+                    opciones: _meses,
+                    actual: _mes,
+                    alElegir: (v) => _mes = v,
+                  ).then((_) => _marcar('fecha')),
+                  child: Container(
+                    height: 48,
+                    padding: const EdgeInsets.only(left: 16, right: 10),
+                    decoration: _caja(error: error != null),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _mes ?? 'Mes',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontFamily: _fuente,
+                              fontSize: 18,
+                              color: _mes == null ? _pista : _texto,
+                            ),
+                          ),
+                        ),
+                        const Icon(Icons.keyboard_arrow_down_rounded, color: _texto, size: 20),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 10),
+            numero(_anioCtrl, _anioFocus, 'AAAA', 4, 96, null),
+          ],
+        ),
+        _mensajeError(error),
+      ],
+    );
+  }
+
+  Widget _selector({required String? valor, required String? error, required VoidCallback onTap}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Semantics(
+          button: true,
+          label: valor ?? 'Selecciona una opción',
+          excludeSemantics: true,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: onTap,
+            child: Container(
+              height: 48,
+              padding: const EdgeInsets.only(left: 16, right: 14),
+              decoration: _caja(error: error != null),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      valor ?? 'Selecciona una opción',
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: _fuente,
+                        fontSize: 18,
+                        color: valor == null ? _pista : _texto,
+                      ),
+                    ),
+                  ),
+                  const Icon(Icons.keyboard_arrow_down_rounded, color: _texto, size: 22),
+                ],
+              ),
+            ),
+          ),
+        ),
+        _mensajeError(error),
+      ],
+    );
+  }
+
+  Widget _chipsSexo() {
+    const opciones = ['Femenino', 'Masculino', 'Otro'];
+    return Row(
+      children: [
+        for (var i = 0; i < opciones.length; i++) ...[
+          if (i > 0) const SizedBox(width: 10),
+          Expanded(child: _chip(opciones[i])),
+        ],
+      ],
+    );
+  }
+
+  Widget _chip(String opcion) {
+    final marcado = _sexo == opcion;
+    return Semantics(
+      selected: marcado,
+      button: true,
+      child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: tieneError ? colorError : colorBorde,
-          width: tieneError ? 1.8 : 1.5,
+        onTap: () => setState(() => _sexo = opcion),
+        child: Container(
+          height: 48,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: marcado ? _tealClaro : _input,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: marcado ? _teal : _borde, width: marcado ? 2 : 1.5),
+          ),
+          child: Text(
+            opcion,
+            style: TextStyle(
+              fontFamily: _fuente,
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: marcado ? _teal : _texto,
+            ),
+          ),
         ),
       ),
-      child: child,
+    );
+  }
+
+  Widget _botonContinuar() {
+    return SizedBox(
+      width: double.infinity,
+      height: 58,
+      child: ElevatedButton(
+        onPressed: _continuar,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _completo ? _teal : _botonDeshabilitado,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        ),
+        child: const Text(
+          'Continuar',
+          style: TextStyle(fontFamily: _fuente, fontSize: 16, fontWeight: FontWeight.w600),
+        ),
+      ),
     );
   }
 }
