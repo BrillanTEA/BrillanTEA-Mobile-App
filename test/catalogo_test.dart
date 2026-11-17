@@ -163,27 +163,34 @@ void main() {
           DateTime(2026, 10, 19));
     });
 
-    test('las metas siguen los rangos del Figma y el valor por defecto es válido',
+    test('las metas se pueden lograr con las 5 rutinas y el valor por defecto es válido',
         () {
       for (final p in PeriodoPremios.values) {
         final r = p.rango;
         expect(r.minimo <= r.porDefecto && r.porDefecto <= r.maximo, isTrue);
       }
-      expect(PeriodoPremios.diaria.rango.minimo, 15);
-      expect(PeriodoPremios.diaria.rango.maximo, 25);
-      expect(PeriodoPremios.semanal.rango.minimo, 30);
-      expect(PeriodoPremios.semanal.rango.maximo, 100);
-      expect(PeriodoPremios.mensual.rango.minimo, 50);
+      // 1 medalla por rutina y día: el máximo por día es la cantidad de rutinas
+      final rutinas = rutinasApp.length;
+      expect(PeriodoPremios.diaria.rango.maximo, lessThanOrEqualTo(rutinas));
+      expect(PeriodoPremios.semanal.rango.maximo, lessThanOrEqualTo(rutinas * 7));
+      expect(PeriodoPremios.mensual.rango.maximo, lessThanOrEqualTo(rutinas * 28));
+      expect(PeriodoPremios.diaria.rango.minimo, 1);
+      expect(PeriodoPremios.diaria.rango.maximo, 5);
+      expect(PeriodoPremios.semanal.rango.minimo, 10);
+      expect(PeriodoPremios.semanal.rango.maximo, 35);
+      expect(PeriodoPremios.mensual.rango.minimo, 20);
       expect(PeriodoPremios.mensual.rango.maximo, 100);
     });
 
     test('la meta fuera de rango da el mensaje del Figma', () {
-      expect(PremiosService.errorMeta(PeriodoPremios.semanal, 30), isNull);
+      expect(PremiosService.errorMeta(PeriodoPremios.semanal, 20), isNull);
       expect(PremiosService.errorMeta(PeriodoPremios.semanal, null), isNull);
-      expect(PremiosService.errorMeta(PeriodoPremios.semanal, 1000),
-          'Máximo 100 medallas por semana. Escribe un número de 30 a 100.');
-      expect(PremiosService.errorMeta(PeriodoPremios.semanal, 10),
-          'Mínimo 30 medallas por semana. Escribe un número de 30 a 100.');
+      expect(PremiosService.errorMeta(PeriodoPremios.semanal, 100),
+          'Máximo 35 medallas por semana. Escribe un número de 10 a 35.');
+      expect(PremiosService.errorMeta(PeriodoPremios.semanal, 5),
+          'Mínimo 10 medallas por semana. Escribe un número de 10 a 35.');
+      expect(PremiosService.errorMeta(PeriodoPremios.diaria, 8),
+          'Máximo 5 medallas por día. Escribe un número de 1 a 5.');
     });
 
     test('el período empieza hoy, el lunes o el día 1', () {
