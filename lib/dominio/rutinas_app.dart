@@ -35,7 +35,7 @@ class RutinaItem {
   final String categoria;
   final String assetIcono;
 
-  /// Pictograma del objeto del catálogo que abre «Ir a la rutina» desde la cámara.
+  /// Pictograma del objeto del catálogo que abre «Ir a rutina» desde la cámara.
   /// Solo el objeto del PRIMER paso la abre. null = ningún objeto la abre (Ir a comer).
   final String? assetObjetoInicio;
 
