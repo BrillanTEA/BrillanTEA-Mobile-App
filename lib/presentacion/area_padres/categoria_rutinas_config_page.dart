@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../../dominio/rutinas_data.dart';
 import '../../dominio/rutinas_service.dart';
+import '../comun/dialogo_confirmacion.dart';
 
 /// Rutinas de una categoría: ver, buscar, filtrar (activas o desactivadas) y activar o desactivar
-/// una por una o todas a la vez.
+/// una por una o todas a la vez. Al confirmar se pide «¿Guardar los cambios?» y al salir con cambios,
+/// «¿Salir sin guardar?» (US1005; Figma «Higiene · 5b, 6, 6b, 7a, 7b, 7c»).
 class CategoriaRutinasConfigPage extends StatefulWidget {
   final String categoria;
 
@@ -101,20 +103,75 @@ class _CategoriaRutinasConfigPageState
     });
   }
 
-  void _cancelarEdicion() {
+  /// Rutinas cuyo estado en edición es distinto del guardado.
+  List<int> get _cambios => [
+        for (final r in _rutinasCategoria)
+          if ((_edicionEstados[r.id] ?? !_desactivadas.contains(r.id)) != !_desactivadas.contains(r.id)) r.id,
+      ];
+
+  String _rutinas(int n) => n == 1 ? '1 rutina' : '$n rutinas';
+
+  void _salirDeEdicion() {
     setState(() {
       _edicionEstados.clear();
       _modoEdicion = false;
     });
   }
 
+  Future<void> _cancelarEdicion() async {
+    final n = _cambios.length;
+    if (n == 0) {
+      _salirDeEdicion();
+      return;
+    }
+    final seguir = await mostrarDialogoConfirmacion(
+      context,
+      tipo: TipoDialogo.aviso,
+      titulo: '¿Salir sin guardar?',
+      texto: '${n == 1 ? 'Tienes 1 cambio sin guardar' : 'Tienes $n cambios sin guardar'}.\n'
+          'Si sales ahora, no se ${n == 1 ? 'aplicará' : 'aplicarán'}.',
+      primario: 'Seguir editando',
+      secundario: 'Salir sin guardar',
+      secundarioRojo: true,
+    );
+    if (seguir == false && mounted) _salirDeEdicion();
+  }
+
+  String _textoConfirmacion(List<int> cambios) {
+    final activar = cambios.where((id) => _edicionEstados[id] == true).length;
+    final desactivar = cambios.length - activar;
+    final cat = widget.categoria;
+    if (desactivar == 0) {
+      return 'Se ${activar == 1 ? 'activará' : 'activarán'} ${_rutinas(activar)} de $cat.\n'
+          'El menor podrá ${activar == 1 ? 'verla' : 'verlas'} en su lista.';
+    }
+    if (activar == 0) {
+      final ninguna = _activasCategoria == 0;
+      return 'Se ${desactivar == 1 ? 'desactivará' : 'desactivarán'} ${_rutinas(desactivar)} de $cat.\n'
+          '${ninguna ? 'El menor no verá ninguna de esta categoría.' : 'El menor ya no ${desactivar == 1 ? 'la' : 'las'} verá en su lista.'}';
+    }
+    return 'Se ${desactivar == 1 ? 'desactivará' : 'desactivarán'} ${_rutinas(desactivar)}\n'
+        'y se ${activar == 1 ? 'activará' : 'activarán'} ${_rutinas(activar)} de $cat.';
+  }
+
   Future<void> _confirmarEdicion() async {
+    final cambios = _cambios;
+    if (cambios.isEmpty) {
+      _salirDeEdicion();
+      return;
+    }
+    final ok = await mostrarDialogoConfirmacion(
+      context,
+      tipo: TipoDialogo.guardar,
+      titulo: '¿Guardar los cambios?',
+      texto: _textoConfirmacion(cambios),
+      primario: 'Sí, guardar',
+      secundario: 'Seguir editando',
+    );
+    if (ok != true) return;
     await _rutinasService.setRutinasActivas(_edicionEstados);
     await _cargarConfiguracion();
-    setState(() {
-      _edicionEstados.clear();
-      _modoEdicion = false;
-    });
+    _salirDeEdicion();
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -129,47 +186,20 @@ class _CategoriaRutinasConfigPageState
     }
   }
 
-  Future<void> _activarTodas() async {
-    final map = <int, bool>{};
-    for (final r in _rutinasCategoria) {
-      map[r.id] = true;
-    }
-    await _rutinasService.setRutinasActivas(map);
-    await _cargarConfiguracion();
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Todas las rutinas de ${widget.categoria} fueron activadas',
-            style: const TextStyle(fontFamily: 'Atkinson Hyperlegible Next'),
-          ),
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
+  /// «Activar todas» y «Desactivar todas» dejan todas marcadas en modo edición (Figma «6b» y «6»);
+  /// se guardan al confirmar con ✓.
+  void _marcarTodas(bool activa) {
+    setState(() {
+      _edicionEstados
+        ..clear()
+        ..addEntries(_rutinasCategoria.map((r) => MapEntry(r.id, activa)));
+      _modoEdicion = true;
+    });
   }
 
-  Future<void> _desactivarTodas() async {
-    final map = <int, bool>{};
-    for (final r in _rutinasCategoria) {
-      map[r.id] = false;
-    }
-    await _rutinasService.setRutinasActivas(map);
-    await _cargarConfiguracion();
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Todas las rutinas de ${widget.categoria} fueron desactivadas',
-            style: const TextStyle(fontFamily: 'Atkinson Hyperlegible Next'),
-          ),
-          duration: const Duration(seconds: 2),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
-  }
+  void _activarTodas() => _marcarTodas(true);
+
+  void _desactivarTodas() => _marcarTodas(false);
 
   void _mostrarMenuLapiz() {
     showGeneralDialog(
@@ -486,7 +516,12 @@ class _CategoriaRutinasConfigPageState
       return true;
     }).toList();
 
-    return Scaffold(
+    return PopScope(
+      canPop: !_modoEdicion,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _cancelarEdicion();
+      },
+      child: Scaffold(
       backgroundColor: colorFondo,
       body: SafeArea(
         child: Padding(
@@ -610,6 +645,7 @@ class _CategoriaRutinasConfigPageState
             ],
           ),
         ),
+      ),
       ),
     );
   }

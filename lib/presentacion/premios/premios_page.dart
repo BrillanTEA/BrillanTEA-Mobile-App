@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../dominio/accesibilidad_service.dart';
 import '../../dominio/premios_service.dart';
+import '../comun/dialogo_confirmacion.dart';
 import '../comun/svg_seguro.dart';
 
 /// Premios (Figma BrillanTEA-UX-UI):
@@ -371,10 +372,9 @@ class _PremiosConfigPageState extends State<PremiosConfigPage> {
     FocusScope.of(context).unfocus();
     if (_activados) {
       final meta = _meta!;
-      final ok = await _mostrarDialogo(
-        icono: Icons.check_rounded,
-        colorIcono: _teal,
-        fondoIcono: const Color(0xFFDDE9EC),
+      final ok = await mostrarDialogoConfirmacion(
+        context,
+        tipo: TipoDialogo.guardar,
         titulo: '¿Guardar esta meta?',
         texto: 'Meta ${_periodo.adjetivo}: $meta medallas.\nEl niño verá esta meta en Mis premios.',
         primario: 'Sí, guardar',
@@ -412,10 +412,9 @@ class _PremiosConfigPageState extends State<PremiosConfigPage> {
       return;
     }
     FocusScope.of(context).unfocus();
-    final seguir = await _mostrarDialogo(
-      icono: Icons.priority_high_rounded,
-      colorIcono: const Color(0xFF9A7414),
-      fondoIcono: const Color(0xFFF8EBC4),
+    final seguir = await mostrarDialogoConfirmacion(
+      context,
+      tipo: TipoDialogo.aviso,
       titulo: '¿Salir sin guardar?',
       texto: _textoCambios,
       primario: 'Seguir editando',
@@ -423,65 +422,6 @@ class _PremiosConfigPageState extends State<PremiosConfigPage> {
       secundarioRojo: true,
     );
     if (seguir == false && mounted) Navigator.of(context).pop();
-  }
-
-  /// Diálogo del Figma («Confirmar guardado», «Salir sin guardar»): true = primario, false = secundario.
-  Future<bool?> _mostrarDialogo({
-    required IconData icono,
-    required Color colorIcono,
-    required Color fondoIcono,
-    required String titulo,
-    required String texto,
-    required String primario,
-    required String secundario,
-    bool secundarioRojo = false,
-  }) {
-    return showDialog<bool>(
-      context: context,
-      barrierColor: Colors.black.withValues(alpha: 0.45),
-      builder: (ctx) => Dialog(
-        backgroundColor: Colors.white,
-        insetPadding: const EdgeInsets.symmetric(horizontal: 24),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(color: fondoIcono, shape: BoxShape.circle),
-              child: Icon(icono, color: colorIcono, size: 30),
-            ),
-            const SizedBox(height: 14),
-            Text(titulo,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontFamily: _fuente, fontSize: 21, fontWeight: FontWeight.w700, color: _texto)),
-            const SizedBox(height: 8),
-            Text(texto,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontFamily: _fuente, fontSize: 14, height: 1.4, color: _textoSecundario)),
-            const SizedBox(height: 20),
-            _botonPrimario(primario, () => Navigator.pop(ctx, true), alto: 52, tamano: 15),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: OutlinedButton(
-                onPressed: () => Navigator.pop(ctx, false),
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: secundarioRojo ? _rojo : _teal,
-                  side: BorderSide(color: secundarioRojo ? _rojo : _borde, width: 1.5),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                child: Text(secundario,
-                    style: const TextStyle(fontFamily: _fuente, fontSize: 15, fontWeight: FontWeight.w700)),
-              ),
-            ),
-          ]),
-        ),
-      ),
-    );
   }
 
   Widget _etiquetaCampo(String t, Color c) => Text(t,
