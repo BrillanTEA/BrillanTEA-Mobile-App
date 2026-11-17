@@ -98,11 +98,14 @@ class _DetectorPageState extends State<DetectorPage>
   }
 
   bool _deteccionDelCatalogo(Detection d) {
-    if (!PerfilYolo26.permite(d.cls, d.score) || d.cls >= _labels.length)
+    if (!PerfilYolo26.permite(d.cls, d.score) || d.cls >= _labels.length) {
       return false;
+    }
     if (![d.left, d.top, d.right, d.bottom].every((v) => v.isFinite) ||
         d.right <= d.left ||
-        d.bottom <= d.top) return false;
+        d.bottom <= d.top) {
+      return false;
+    }
     return _catalogo.findByClave(_labels[d.cls]) != null &&
         PerfilYolo26.claves.contains(_labels[d.cls]);
   }
@@ -169,7 +172,9 @@ class _DetectorPageState extends State<DetectorPage>
         if (iou >= 0.45) return false;
         if (_cocoQueTapan.contains(_labels[c.cls]) &&
             inter >= 0.7 * ap &&
-            ac <= 4 * ap) return false;
+            ac <= 4 * ap) {
+          return false;
+        }
       }
       return true;
     }).toList();
@@ -248,8 +253,9 @@ class _DetectorPageState extends State<DetectorPage>
     } else if (state == AppLifecycleState.resumed) {
       if (_cam == null && _worker != null && mounted) {
         _startCamera().catchError((Object e) {
-          if (mounted)
+          if (mounted) {
             setState(() => _error = 'No se pudo reanudar la cámara: $e');
+          }
         });
       }
     }
@@ -271,8 +277,9 @@ class _DetectorPageState extends State<DetectorPage>
           .where((a) => a.endsWith('.tflite'))
           .toList()
         ..sort();
-      if (!_models.contains(PerfilYolo26.asset))
+      if (!_models.contains(PerfilYolo26.asset)) {
         throw StateError('Falta el candidato YOLO26 de35clases');
+      }
       _models = [
         PerfilYolo26.asset
       ]; // Copia de diagnóstico: ningún modelo anterior activo.
@@ -386,9 +393,10 @@ class _DetectorPageState extends State<DetectorPage>
     _threshold = 0.25; // umbral del modo de un solo modelo (panel técnico)
     if (_model == PerfilYolo26.asset) {
       PerfilYolo26.validarEtiquetas(_labels);
-      if (sha256.convert(bytes).toString() != PerfilYolo26.sha256Modelo)
+      if (sha256.convert(bytes).toString() != PerfilYolo26.sha256Modelo) {
         throw StateError(
             'El archivo del modelo no coincide con el candidato verificado');
+      }
       _umbralClase
           .clear(); // Los umbrales históricos de otros pesos no son aplicables.
       _threshold = PerfilYolo26.confianza;
@@ -399,9 +407,10 @@ class _DetectorPageState extends State<DetectorPage>
           nmsIou: PerfilYolo26.iouNms,
           maxDet: PerfilYolo26.maxDet,
           normalizedCoordinates: true);
-      if (_model == PerfilYolo26.asset)
+      if (_model == PerfilYolo26.asset) {
         PerfilYolo26.validarTensores(
             _info!.inputShape, _info!.outputShape, _info!.inputType);
+      }
       _resetStats();
     } catch (e) {
       _error = 'No se pudo cargar con delegado "$_delegate": $e';
@@ -634,9 +643,10 @@ class _DetectorPageState extends State<DetectorPage>
     if (_model == PerfilYolo26.asset) {
       _running = false;
       await _cam?.stopImageStream();
-      if (mounted)
+      if (mounted) {
         setState(() => _error =
             'El candidato no pudo ejecutarse. Prueba CPU y conserva este error para el diagnóstico.');
+      }
       return; // No sustituir silenciosamente por un modelo COCO de80clases.
     }
     if (_recuperando) return;
@@ -731,7 +741,7 @@ class _DetectorPageState extends State<DetectorPage>
       final sello =
           '${ahora.year}${ahora.month.toString().padLeft(2, '0')}${ahora.day.toString().padLeft(2, '0')}'
           '_${ahora.hour.toString().padLeft(2, '0')}${ahora.minute.toString().padLeft(2, '0')}';
-      final delegado = '${_info?.delegateUsed ?? _delegate}'
+      final delegado = (_info?.delegateUsed ?? _delegate)
           .replaceAll(RegExp(r'[^A-Za-z0-9]+'), '');
       final dir = await getTemporaryDirectory();
       final f = File('${dir.path}/latencia_${delegado}_$sello.csv');
@@ -1455,158 +1465,6 @@ class _DetectorPageState extends State<DetectorPage>
     );
   }
 
-  /// Diseño de 2 (o 3) objetos lado a lado: píldoras con icono pequeño arriba + tarjetas abajo
-  Widget _buildMultiItemRow(List<DetectedObjectItem> items) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        for (int i = 0; i < items.length; i++) ...[
-          if (i > 0) const SizedBox(width: 12),
-          Expanded(
-            child: _buildItemColumn(items[i],
-                isFocused: items[i].item.clave == _focusedClave),
-          ),
-        ],
-      ],
-    );
-  }
-
-  Widget _buildItemColumn(DetectedObjectItem detItem,
-      {required bool isFocused}) {
-    final item = detItem.item;
-    const accentColor =
-        Color(0xFFE5A93C); // Amarillo / Ámbar dorado del mockup Figma
-    final frase = item.fraseApoyo ?? item.frasePeticion ?? item.nombre;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() => _focusedClave = item.clave);
-        HapticFeedback.selectionClick();
-        _speak(item.frasePeticion ?? item.fraseApoyo ?? item.nombre);
-        RegistroUsoService().registrar(RegistroUsoService.objeto, item.clave,
-            etiqueta: item.nombre);
-      },
-      onDoubleTap: () => _mostrarResultadoFigma(item),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isFocused ? accentColor : const Color(0xFFDDD6C9),
-            width: isFocused ? 2.8 : 1.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: isFocused
-                  ? accentColor.withValues(alpha: 0.35)
-                  : Colors.black.withValues(alpha: 0.16),
-              blurRadius: isFocused ? 12 : 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: isFocused
-                    ? const Color(0xFFFFF9EE)
-                    : const Color(0xFFFBF8F2),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: isFocused
-                      ? const Color(0xFFF0D5A8)
-                      : const Color(0xFFE8E2D8),
-                ),
-              ),
-              child: Image.asset(
-                item.assetPath,
-                fit: BoxFit.contain,
-                errorBuilder: (_, __, ___) =>
-                    const Icon(Icons.category, size: 28, color: Colors.grey),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              item.nombre,
-              style: TextStyle(
-                fontFamily: 'Atkinson Hyperlegible Next',
-                fontSize: 14.5,
-                fontWeight: FontWeight.w700,
-                color: isFocused
-                    ? const Color(0xFF2C2C2C)
-                    : const Color(0xFF4A4A4A),
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 6),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Semantics(
-                    button: true,
-                    label: 'Escuchar',
-                    child: InkWell(
-                      onTap: () {
-                        HapticFeedback.selectionClick();
-                        _speak(frase);
-                      },
-                      borderRadius: BorderRadius.circular(999),
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: isFocused
-                              ? const Color(0xFFFFF2D6)
-                              : const Color(0xFFF0F5F6),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.volume_up_rounded,
-                          color: isFocused
-                              ? const Color(0xFFB06B47)
-                              : const Color(0xFF386673),
-                          size: 18,
-                        ),
-                      ),
-                    )),
-                const SizedBox(width: 8),
-                Semantics(
-                    button: true,
-                    label: 'Ver en grande',
-                    child: InkWell(
-                      onTap: () => _mostrarResultadoFigma(item),
-                      borderRadius: BorderRadius.circular(999),
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF386673),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.arrow_forward_rounded,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                      ),
-                    )),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Future<void> _mostrarResultadoFigma(CatalogoItem item) async {
     final nombreUpper = item.nombre.toUpperCase();
     _speak(item.frasePeticion ?? item.fraseApoyo ?? item.nombre);
@@ -1825,8 +1683,9 @@ class _DetectorPageState extends State<DetectorPage>
             .toDouble();
       } else {
         if (y < margen) y = caja.bottom + 10; // si no cabe arriba, debajo
-        if (y > maxY)
+        if (y > maxY) {
           y = (caja.top + 10).clamp(margen, maxY).toDouble(); // dentro, arriba
+        }
       }
       var r = Rect.fromLTWH(x, y, _anchoTarjetaRA, _altoTarjetaRA);
       for (final o in ocupadas) {
@@ -1839,7 +1698,7 @@ class _DetectorPageState extends State<DetectorPage>
       }
       ocupadas.add(r);
       final enfocado = clave == _focusedClave;
-      if (!grande)
+      if (!grande) {
         hijos.add(AnimatedPositioned(
           key: ValueKey('marco_$clave'),
           duration: const Duration(milliseconds: 140),
@@ -1860,6 +1719,7 @@ class _DetectorPageState extends State<DetectorPage>
             ),
           ),
         ));
+      }
       hijos.add(AnimatedPositioned(
         key: ValueKey('tarjeta_$clave'),
         duration: const Duration(milliseconds: 140),

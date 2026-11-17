@@ -8,7 +8,7 @@ import 'tutoriales_contenido.dart';
 /// Tutoriales para el adulto (Figma BrillanTEA-UX-UI):
 ///   - InvitacionPage: "Invitación · Conoce BrillanTEA", al terminar el registro.
 ///   - TutorialesPage: "Tutoriales · Lista", desde Área de padres.
-///   - _TutorialPasosPage: "Tutorial · <Módulo> · 0…6" (7 pantallas por módulo; US1502).
+///   - _TutorialPasosPage: "Tutorial · módulo · 0…6" (7 pantallas por módulo; US1502).
 ///   - _TutorialDetallePage: "Tutorial · Detalle" (solo Situaciones, que no tiene pasos en el Figma).
 /// No hay videos en la app: el botón de reproducir lee la explicación en voz alta.
 /// Los tutoriales vistos se guardan en SQLite (tabla tutorial_visto).
@@ -469,7 +469,7 @@ class _TutorialDetallePageState extends State<_TutorialDetallePage> {
   }
 }
 
-// Tutorial · <Módulo> · 0…6 (US1502): «Antes de empezar», 5 pasos y «Listo»
+// Tutorial · módulo · 0…6 (US1502): «Antes de empezar», 5 pasos y «Listo»
 
 class _TutorialPasosPage extends StatefulWidget {
   final int indice;
