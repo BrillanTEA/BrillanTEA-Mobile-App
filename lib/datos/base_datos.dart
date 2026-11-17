@@ -66,6 +66,13 @@ class BaseDatos {
     }
   }
 
+  /// Cierra la conexión sin eliminar los datos; la siguiente consulta vuelve a abrirla.
+  Future<void> cerrar() async {
+    final pendiente = _db;
+    _db = null;
+    if (pendiente != null) await (await pendiente).close();
+  }
+
   /// Borra la base completa (Configuración → borrar los datos de la aplicación).
   Future<void> borrarTodo() async {
     try {
