@@ -6,7 +6,7 @@ import '../datos/base_datos.dart';
 /// Período de la meta de premios (Figma «Premios · Activados · Período abierto»).
 enum PeriodoPremios { diaria, semanal, mensual }
 
-/// Rango permitido de la meta en cada período (Figma «De 30 a 100 medallas por semana»).
+/// Rango permitido de la meta en cada período («De 10 a 35 medallas por semana»).
 class RangoMeta {
   final int minimo;
   final int maximo;
@@ -41,22 +41,24 @@ class ConfigPremios {
   const ConfigPremios({
     this.activados = true,
     this.periodo = PeriodoPremios.semanal,
-    this.meta = 30,
+    this.meta = 20,
   });
 }
 
 /// Medallas por período. Cada rutina terminada en un día da 1 medalla (repetirla el mismo día no da otra).
 /// Se cuentan desde progreso_rutina (completada = 1) entre el inicio del período y hoy, así que no se
-/// guardan aparte. El período y los rangos de la meta son los del Figma (US1402).
+/// guardan aparte. El período es el del Figma (US1402). Los rangos se ajustaron a lo que se puede lograr
+/// con las 5 rutinas de la app: como máximo 5 medallas por día, 35 por semana y unas 150 por mes
+/// (los del Figma, 15–25 por día y 30–100 por semana, eran de ejemplo con 40 rutinas).
 class PremiosService extends ChangeNotifier {
   static final PremiosService _instance = PremiosService._internal();
   factory PremiosService() => _instance;
   PremiosService._internal();
 
   static const Map<PeriodoPremios, RangoMeta> rangos = {
-    PeriodoPremios.diaria: RangoMeta(15, 25, 20),
-    PeriodoPremios.semanal: RangoMeta(30, 100, 30),
-    PeriodoPremios.mensual: RangoMeta(50, 100, 60),
+    PeriodoPremios.diaria: RangoMeta(1, 5, 3),
+    PeriodoPremios.semanal: RangoMeta(10, 35, 20),
+    PeriodoPremios.mensual: RangoMeta(20, 100, 60),
   };
 
   Future<Database> get _db => BaseDatos().db;
