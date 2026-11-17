@@ -1468,7 +1468,7 @@ class _DetectorPageState extends State<DetectorPage>
   Future<void> _mostrarResultadoFigma(CatalogoItem item) async {
     final nombreUpper = item.nombre.toUpperCase();
     _speak(item.frasePeticion ?? item.fraseApoyo ?? item.nombre);
-    // «Ir a la rutina» solo si el objeto es el del PRIMER paso de alguna rutina activa (US405, RF-03)
+    // «Ir a rutina» solo si el objeto es el del PRIMER paso de alguna rutina activa (US405, RF-03)
     final rutinasDelObjeto = await rutinasQueEmpiezanCon(item.assetPath);
     final tieneRutina = rutinasDelObjeto.isNotEmpty;
     if (!mounted) return;
@@ -1575,7 +1575,7 @@ class _DetectorPageState extends State<DetectorPage>
                   },
                   icon: const Icon(Icons.fact_check_rounded,
                       color: Colors.white, size: 20),
-                  label: const Text('Ir a la rutina',
+                  label: const Text('Ir a rutina',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w700,

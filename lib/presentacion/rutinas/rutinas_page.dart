@@ -16,7 +16,7 @@ class RutinasPage extends StatefulWidget {
   final VoidCallback? onIrFavoritos;
   final String? categoriaInicial;
 
-  /// Abre directamente esta rutina (desde «Ir a la rutina» en la cámara).
+  /// Abre directamente esta rutina (desde «Ir a rutina» en la cámara).
   final int? rutinaInicialId;
 
   const RutinasPage({

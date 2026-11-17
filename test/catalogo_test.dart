@@ -122,7 +122,7 @@ void main() {
       }
     });
 
-    test('«Ir a la rutina» solo con el objeto del primer paso (Ir a comer, ninguno)', () {
+    test('«Ir a rutina» solo con el objeto del primer paso (Ir a comer, ninguno)', () {
       final objetos = _lista('objetos');
       for (final r in rutinasApp) {
         final primeros = objetos
