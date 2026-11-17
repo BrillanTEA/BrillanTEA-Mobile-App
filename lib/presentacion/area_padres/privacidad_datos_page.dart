@@ -152,7 +152,7 @@ class _PrivacidadDatosPageState extends State<PrivacidadDatosPage> {
               const Text('Privacidad y datos',
                   style: TextStyle(fontFamily: _fuente, fontSize: 21, fontWeight: FontWeight.w700, color: _texto)),
               const SizedBox(height: 4),
-              const Text('Tus documentos, tu aceptación y tus datos.',
+              const Text('Documentos, consentimiento y datos.',
                   style: TextStyle(fontFamily: _fuente, fontSize: 14, color: _textoSecundario)),
               const SizedBox(height: 22),
               Expanded(
@@ -165,7 +165,7 @@ class _PrivacidadDatosPageState extends State<PrivacidadDatosPage> {
                       _filaDocumento('Política de privacidad', politicaDePrivacidad),
                     ]),
                     const SizedBox(height: 22),
-                    _tituloSeccion('TU ACEPTACIÓN'),
+                    _tituloSeccion('REGISTRO DE ACEPTACIÓN'),
                     _tarjeta([
                       Semantics(
                         label: '$_textoFecha. $_textoVersion',
