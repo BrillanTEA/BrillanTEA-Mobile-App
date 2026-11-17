@@ -163,15 +163,37 @@ void main() {
           DateTime(2026, 10, 19));
     });
 
-    test('las metas van de 10 a 35 de 5 en 5 y la meta por defecto es válida',
+    test('las metas siguen los rangos del Figma y el valor por defecto es válido',
         () {
-      expect(PremiosService.metaMinima, 10);
-      expect(PremiosService.metaMaxima, 35);
-      expect(PremiosService.pasoMeta, 5);
-      expect(
-          (PremiosService.metaPorDefecto - PremiosService.metaMinima) %
-              PremiosService.pasoMeta,
-          0);
+      for (final p in PeriodoPremios.values) {
+        final r = p.rango;
+        expect(r.minimo <= r.porDefecto && r.porDefecto <= r.maximo, isTrue);
+      }
+      expect(PeriodoPremios.diaria.rango.minimo, 15);
+      expect(PeriodoPremios.diaria.rango.maximo, 25);
+      expect(PeriodoPremios.semanal.rango.minimo, 30);
+      expect(PeriodoPremios.semanal.rango.maximo, 100);
+      expect(PeriodoPremios.mensual.rango.minimo, 50);
+      expect(PeriodoPremios.mensual.rango.maximo, 100);
+    });
+
+    test('la meta fuera de rango da el mensaje del Figma', () {
+      expect(PremiosService.errorMeta(PeriodoPremios.semanal, 30), isNull);
+      expect(PremiosService.errorMeta(PeriodoPremios.semanal, null), isNull);
+      expect(PremiosService.errorMeta(PeriodoPremios.semanal, 1000),
+          'Máximo 100 medallas por semana. Escribe un número de 30 a 100.');
+      expect(PremiosService.errorMeta(PeriodoPremios.semanal, 10),
+          'Mínimo 30 medallas por semana. Escribe un número de 30 a 100.');
+    });
+
+    test('el período empieza hoy, el lunes o el día 1', () {
+      final miercoles = DateTime(2026, 10, 21, 15);
+      expect(PremiosService.inicioDelPeriodo(PeriodoPremios.diaria, miercoles),
+          DateTime(2026, 10, 21));
+      expect(PremiosService.inicioDelPeriodo(PeriodoPremios.semanal, miercoles),
+          DateTime(2026, 10, 19));
+      expect(PremiosService.inicioDelPeriodo(PeriodoPremios.mensual, miercoles),
+          DateTime(2026, 10, 1));
     });
   });
 }

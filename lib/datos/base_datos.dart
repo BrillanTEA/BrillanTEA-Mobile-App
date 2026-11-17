@@ -12,7 +12,7 @@ import 'package:sqflite/sqflite.dart';
 ///   y cada vez que cambia ese archivo): pictograma, rutina, objeto, cierre_rutina.
 ///   Perfiles: perfil_adulto, perfil_nino (un registro cada una).
 ///   Configuración: ajuste (registro único), preferencia_accesibilidad, configuracion_rutina, favorito,
-///                  configuracion_premios (v3).
+///                  configuracion_premios (v3; período en v7).
 ///   Seguimiento: progreso_rutina, registro_uso, nota_especialista.
 ///
 /// Integridad referencial (v6): FOREIGN KEY sin ON DELETE CASCADE en rutina y objeto → pictograma,
@@ -27,7 +27,7 @@ class BaseDatos {
   BaseDatos._internal();
 
   static const String archivo = 'catalogo.db'; // nombre de la base de datos local
-  static const int _version = 6; // 1 = solo registro de uso y notas; 2 = todo en SQLite; 3 = premios; 4 = tutoriales; 5 = una sola clase del modelo (YOLO26s, 35 clases); 6 = claves foráneas (FOREIGN KEY)
+  static const int _version = 7; // 1 = solo registro de uso y notas; 2 = todo en SQLite; 3 = premios; 4 = tutoriales; 5 = una sola clase del modelo (YOLO26s, 35 clases); 6 = claves foráneas (FOREIGN KEY); 7 = período de los premios
   Future<Database>? _db;
 
   /// Tabla OBJETO (v5): id_modelo es la clase que entrega YOLO26s (0 a 34, mismo orden que
@@ -196,6 +196,11 @@ class BaseDatos {
               'FOREIGN KEY (rutina_id) REFERENCES rutina(id))',
           'rutina_id, fecha, paso_actual, completada',
           soloRutinasExistentes);
+    }
+    if (desde < 7) {
+      // v7: la meta de premios puede ser diaria, semanal o mensual. meta_semanal guarda la meta
+      // del período elegido (se conserva el nombre para no rehacer la tabla).
+      b.execute("ALTER TABLE configuracion_premios ADD COLUMN periodo TEXT NOT NULL DEFAULT 'semanal'");
     }
     await b.commit(noResult: true);
   }
