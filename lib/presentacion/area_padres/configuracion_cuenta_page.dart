@@ -41,7 +41,7 @@ class _ConfiguracionCuentaPageState extends State<ConfiguracionCuentaPage> {
   String get _subtituloPremios {
     final c = _premios;
     if (c == null) return 'Medallas por rutinas terminadas';
-    return c.activados ? 'Meta: ${c.metaSemanal} medallas por semana' : 'Desactivados';
+    return c.activados ? 'Meta: ${c.meta} medallas ${c.periodo.unidad}' : 'Desactivados';
   }
 
   Future<void> _cargarAdulto() async {
