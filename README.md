@@ -12,7 +12,7 @@ lib/
 ├── main.dart
 ├── presentacion/            Pantallas (Flutter), una carpeta por módulo
 │   ├── comun/               Piezas compartidas (PIN, SVG, formateadores)
-│   ├── registro/            Bienvenida, aviso de privacidad, perfiles y PIN del primer uso
+│   ├── registro/            Bienvenida, Términos y privacidad, perfiles y PIN del primer uso
 │   ├── inicio/              Inicio con los 7 módulos
 │   ├── camara/              Módulo 1: cámara y realidad aumentada
 │   ├── rutinas/             Módulo 2: rutinas
@@ -21,10 +21,10 @@ lib/
 │   ├── situaciones/         Módulo 5: situaciones
 │   ├── calma/               Calma
 │   ├── premios/             Premios
-│   └── area_padres/         Módulo 6: área de padres, PIN, seguimiento, tutoriales
+│   └── area_padres/         Módulo 6: área de padres, PIN, seguimiento, privacidad y datos, tutoriales
 ├── dominio/                 Lógica de la app
 │   ├── catalogo_service     Motor de Asociación (objeto → pictograma → frase)
-│   ├── rutinas_app          Motor de Rutinas: rutinas, pasos y «Ir a la rutina»
+│   ├── rutinas_app          Motor de Rutinas: rutinas, pasos y «Ir a rutina»
 │   ├── rutinas_service      Progreso diario y rutinas activas
 │   ├── auth_service         Gestor de Perfiles y de Seguridad (PIN con PBKDF2)
 │   ├── accesibilidad_service, favoritos_service, premios_service, tutoriales_service
@@ -41,10 +41,24 @@ lib/
 
 ## Comandos (en esta carpeta)
 
-- Pruebas: `flutter test`
-- APK versión oficial: `flutter build apk --release --split-per-abi --dart-define=QA=false` (sin opciones de prueba; los datos solo se borran desde Área de padres > Borrar los datos, con PIN)
+- Pruebas: `flutter test` (con cobertura: `flutter test --coverage`)
+- Análisis, pruebas y evidencias en un paso: `bash tool/qa.sh`
+- APK versión oficial: `flutter build apk --release --split-per-abi --dart-define=QA=false` (sin opciones de prueba; los datos solo se borran desde Área de padres > Privacidad y datos > Borrar los datos, con PIN)
 - APK versión QA: `flutter build apk --release --split-per-abi --dart-define=QA=true` (agrega Restablecer onboarding, Restablecer primer uso y el panel técnico de la cámara)
 - Con `flutter run` también es la oficial por defecto; para QA: `flutter run --dart-define=QA=true`
+
+## Pruebas y calidad
+
+- `test/` tiene las pruebas unitarias y de widgets: catálogo y rutinas, premios, PIN, formateadores,
+  accesibilidad, migraciones de SQLite, contrato del modelo, comunicación, vocabulario y emociones,
+  tutoriales y documentos legales.
+- `bash tool/qa.sh` ejecuta `flutter analyze` y `flutter test --coverage` y guarda la evidencia en
+  `docs/qa/evidencias/<fecha>/` (resumen, salida de las pruebas en texto y JSON, cobertura por capa y entorno).
+- CI: `.github/workflows/ci.yml` repite el análisis y las pruebas en cada push a `develop` o `main` y en
+  cada pull request; el resumen de cobertura y el artefacto `evidencias-pruebas` quedan en *Actions*.
+- `docs/qa/` reúne el [plan de pruebas](docs/qa/PLAN_DE_PRUEBAS.md), los
+  [casos de prueba](docs/qa/CASOS_DE_PRUEBA.md), el [registro de defectos](docs/qa/REGISTRO_DE_DEFECTOS.md),
+  el [informe de pruebas](docs/qa/INFORME_DE_PRUEBAS.md) y el [certificado QA](docs/qa/CERTIFICADO_QA.md).
 
 ## Detección
 
