@@ -51,15 +51,15 @@ class BloqueoService {
     }
   }
 
-  /// Correo de soporte (RF-17). Cambiarlo aquí cuando haya un correo oficial del proyecto.
-  static const String correoSoporte = 'ricardobarrutia99@gmail.com';
+  /// Correos de soporte (RF-17): los de los Titulares, los mismos de los Términos y la Política.
+  static const List<String> correosSoporte = ['u201714765@upc.edu.pe', 'u202214784@upc.edu.pe'];
 
   /// Abre la app de correo del celular con el destinatario y el asunto (Intent mailto).
   static Future<bool> abrirCorreoSoporte() async {
     if (!Platform.isAndroid) return false;
     try {
       final res = await _channel.invokeMethod<bool>('abrirCorreo', {
-        'para': correoSoporte,
+        'para': correosSoporte.join(','),
         'asunto': 'Brillantea: consulta de soporte',
       });
       return res ?? false;

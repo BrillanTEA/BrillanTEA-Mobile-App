@@ -183,6 +183,18 @@ class _AreaPadresPageState extends State<AreaPadresPage> {
                     ),
                     const SizedBox(height: 24),
 
+                    // Retiro del consentimiento (Términos 11.2): borra todo y vuelve al inicio, donde hay que
+                    // aceptar otra vez. Pide el PIN como Borrar los datos.
+                    _buildFilaMenu(
+                      titulo: 'Retirar consentimiento',
+                      subtitulo: 'Dejar de usar la app y borrar sus datos',
+                      icono: Icons.do_not_disturb_on_outlined,
+                      colorIconoFondo: const Color(0xFFFDE8E8),
+                      colorIcono: Colors.red.shade700,
+                      onTap: () => confirmarBorrarDatos(context, retirarConsentimiento: true),
+                    ),
+                    const SizedBox(height: 12),
+
                     // Opción definitiva para el adulto (US1007): pide el PIN otra vez antes de borrar.
                     _buildFilaMenu(
                       titulo: 'Borrar los datos',
@@ -982,7 +994,7 @@ class AyudaSoportePage extends StatelessWidget {
                     _buildTituloSeccion('CONTÁCTANOS'),
                     Semantics(
                       button: true,
-                      label: 'Escribir a soporte, ${BloqueoService.correoSoporte}',
+                      label: 'Escribir a soporte, ${BloqueoService.correosSoporte.join(' o ')}',
                       excludeSemantics: true,
                       child: InkWell(
                       borderRadius: BorderRadius.circular(12),
@@ -1018,18 +1030,19 @@ class AyudaSoportePage extends StatelessWidget {
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  BloqueoService.correoSoporte,
-                                  style: TextStyle(
-                                    fontFamily: 'Atkinson Hyperlegible Next',
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w700,
-                                    color: colorTealPrimario,
+                              children: [
+                                for (final correo in BloqueoService.correosSoporte)
+                                  Text(
+                                    correo,
+                                    style: const TextStyle(
+                                      fontFamily: 'Atkinson Hyperlegible Next',
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                      color: colorTealPrimario,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
+                                const SizedBox(height: 2),
+                                const Text(
                                   'Escríbenos y te responderemos pronto',
                                   style: TextStyle(
                                     fontFamily: 'Atkinson Hyperlegible Next',

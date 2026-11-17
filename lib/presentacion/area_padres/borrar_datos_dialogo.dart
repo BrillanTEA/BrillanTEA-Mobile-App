@@ -7,12 +7,14 @@ import '../registro/bienvenida_page.dart';
 /// Borrar los datos (US1007): opción definitiva del área de padres. Pide otra vez el PIN y, si es
 /// correcto, elimina perfiles, PIN, configuración, favoritos, progreso, seguimiento, notas y copias
 /// temporales del reporte; luego la aplicación vuelve al primer uso.
-Future<void> confirmarBorrarDatos(BuildContext context) async {
+/// Con [retirarConsentimiento] es el retiro del consentimiento (Términos 11.2): hace lo mismo, con
+/// textos que explican que para volver a usar la app hay que aceptar otra vez.
+Future<void> confirmarBorrarDatos(BuildContext context, {bool retirarConsentimiento = false}) async {
   final nav = Navigator.of(context);
   final borrado = await showDialog<bool>(
     context: context,
     barrierDismissible: false,
-    builder: (_) => const _DialogoBorrarDatos(),
+    builder: (_) => _DialogoBorrarDatos(retirarConsentimiento: retirarConsentimiento),
   );
   if (borrado == true) {
     nav.pushAndRemoveUntil(
@@ -23,7 +25,8 @@ Future<void> confirmarBorrarDatos(BuildContext context) async {
 }
 
 class _DialogoBorrarDatos extends StatefulWidget {
-  const _DialogoBorrarDatos();
+  final bool retirarConsentimiento;
+  const _DialogoBorrarDatos({required this.retirarConsentimiento});
 
   @override
   State<_DialogoBorrarDatos> createState() => _DialogoBorrarDatosState();
@@ -83,8 +86,8 @@ class _DialogoBorrarDatosState extends State<_DialogoBorrarDatos> {
   Widget build(BuildContext context) {
     final listo = _pin.text.length == 4 && !_borrando;
     return AlertDialog(
-      title: const Text(
-        '¿Borrar los datos?',
+      title: Text(
+        widget.retirarConsentimiento ? '¿Retirar tu consentimiento?' : '¿Borrar los datos?',
         style: TextStyle(fontFamily: _fuente, fontWeight: FontWeight.w700),
       ),
       content: SingleChildScrollView(
@@ -92,10 +95,15 @@ class _DialogoBorrarDatosState extends State<_DialogoBorrarDatos> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Se eliminarán de este dispositivo los perfiles, el PIN, la configuración, los favoritos, '
-              'el progreso, el seguimiento y las notas. La aplicación volverá al primer uso. '
-              'Esta acción no se puede deshacer.',
+            Text(
+              widget.retirarConsentimiento
+                  ? 'La aplicación dejará de usar los datos del niño o niña. Se eliminarán de este dispositivo '
+                      'los perfiles, el PIN, la configuración, los favoritos, el progreso, el seguimiento y las notas, '
+                      'y la aplicación volverá al inicio. Para usarla otra vez tendrás que aceptar de nuevo los '
+                      'Términos y la Política. Esta acción no se puede deshacer.'
+                  : 'Se eliminarán de este dispositivo los perfiles, el PIN, la configuración, los favoritos, '
+                      'el progreso, el seguimiento y las notas. La aplicación volverá al primer uso. '
+                      'Esta acción no se puede deshacer.',
               style: TextStyle(fontFamily: _fuente, fontSize: 15),
             ),
             const SizedBox(height: 16),
@@ -141,7 +149,8 @@ class _DialogoBorrarDatosState extends State<_DialogoBorrarDatos> {
                   height: 18,
                   child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                 )
-              : const Text('Borrar los datos', style: TextStyle(fontFamily: _fuente, color: Colors.white)),
+              : Text(widget.retirarConsentimiento ? 'Retirar consentimiento' : 'Borrar los datos',
+                  style: const TextStyle(fontFamily: _fuente, color: Colors.white)),
         ),
       ],
     );
