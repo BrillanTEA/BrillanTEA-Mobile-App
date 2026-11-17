@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../dominio/auth_service.dart';
+import '../../dominio/sesion_calma.dart';
 import '../../infraestructura/modo_compilacion.dart';
 import '../area_padres/area_padres_page.dart';
 import '../area_padres/login_pin_page.dart';
@@ -272,6 +273,7 @@ class _InicioPageState extends State<InicioPage> {
   }
 
   void _abrirCalma() {
+    SesionCalma.iniciar();
     Navigator.of(context).push(MaterialPageRoute(
       settings: const RouteSettings(name: CalmaPage.ruta),
       builder: (_) => CalmaPage(

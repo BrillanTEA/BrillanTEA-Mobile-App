@@ -5,7 +5,9 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../dominio/accesibilidad_service.dart';
+import '../../dominio/auth_service.dart';
 import '../../dominio/registro_uso_service.dart';
+import '../../dominio/sesion_calma.dart';
 import '../../infraestructura/servicio_voz.dart';
 import '../vocabulario/emociones_page.dart';
 
@@ -14,6 +16,7 @@ import '../vocabulario/emociones_page.dart';
 /// Flujo:
 ///   Menú → Respirar / Descansar / Aprieta y suelta
 ///        → ¿Cómo te sientes ahora? → Mejor (¡Qué bien!) / Igual (¿Qué quieres hacer?) / Peor (Pedir ayuda)
+///   Pedir ayuda → Soy el adulto · Ver aviso → Aviso para el adulto → Tu adulto ya está contigo
 ///
 /// Íconos e ilustraciones incluidos en assets/images/calma/.
 /// Si falta alguno, se muestra un ícono de respaldo.
@@ -495,6 +498,7 @@ class _CalmaEjercicioPageState extends State<_CalmaEjercicioPage> {
     _restantes = widget.segundosPorFase;
     RegistroUsoService().registrar(RegistroUsoService.calma, _esRespirar ? 'respirar' : 'aprieta',
         etiqueta: _titulo);
+    SesionCalma.registrarIntento(_esRespirar ? 'Respirar despacito' : 'Aprieta y suelta');
     WidgetsBinding.instance.addPostFrameCallback((_) => _empezarFase());
     _reloj = Timer.periodic(const Duration(seconds: 1), (_) => _tic());
   }
@@ -677,7 +681,13 @@ class _TarjetaParaAdulto extends StatelessWidget {
   final String textoBoton;
   final String claveRegistro;
 
+  /// Pedir ayuda: el botón principal va arriba y abre el aviso para el adulto (Figma).
+  final bool primarioArriba;
+  final void Function(BuildContext context)? onPrimario;
+
   const _TarjetaParaAdulto({
+    this.primarioArriba = false,
+    this.onPrimario,
     required this.nav,
     required this.titulo,
     required this.frase,
@@ -726,15 +736,25 @@ class _TarjetaParaAdulto extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           _avisoAdulto(),
-          const SizedBox(height: 44),
-          _botonEscuchar(_fraseHablada),
-          const SizedBox(height: 10),
+          SizedBox(height: primarioArriba ? 20 : 44),
+          if (!primarioArriba) ...[
+            _botonEscuchar(_fraseHablada),
+            const SizedBox(height: 10),
+          ],
           _BotonPrimario(textoBoton, () {
             RegistroUsoService().registrar(RegistroUsoService.calma, claveRegistro, etiqueta: _fraseHablada);
+            if (onPrimario != null) {
+              onPrimario!(context);
+              return;
+            }
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => _ComoTeSientesPage(nav: nav)),
             );
           }),
+          if (primarioArriba) ...[
+            const SizedBox(height: 10),
+            _botonEscuchar(_fraseHablada),
+          ],
         ],
       ),
     );
@@ -754,6 +774,7 @@ class _DescansarPageState extends State<_DescansarPage> {
   void initState() {
     super.initState();
     _Voz.decir('Quiero un descanso');
+    SesionCalma.registrarIntento('Descansar');
   }
 
   @override
@@ -790,6 +811,7 @@ class _PedirAyudaPageState extends State<_PedirAyudaPage> {
   void initState() {
     super.initState();
     _Voz.decir('Necesito ayuda');
+    SesionCalma.pidioAyuda = DateTime.now();
   }
 
   @override
@@ -800,8 +822,12 @@ class _PedirAyudaPageState extends State<_PedirAyudaPage> {
       frase: 'Necesito\nayuda',
       altoTarjeta: 352,
       tamanoFrase: 30,
-      textoBoton: 'Ya me ayudaron',
+      textoBoton: 'Soy el adulto · Ver aviso',
       claveRegistro: 'pedir_ayuda',
+      primarioArriba: true,
+      onPrimario: (ctx) => Navigator.of(ctx).push(
+        MaterialPageRoute(builder: (_) => _AvisoAdultoPage(nav: widget.nav)),
+      ),
       ilustracion: const _Svg('mano_ayuda.svg', 146, 138, respaldo: Icons.back_hand_outlined),
     );
   }
@@ -816,6 +842,7 @@ class _ComoTeSientesPage extends StatelessWidget {
   void _elegir(BuildContext context, String clave, String etiqueta, Widget destino) {
     AccesibilidadService().feedbackInteraccion();
     _Voz.decir(etiqueta);
+    SesionCalma.estadoActual = clave;
     RegistroUsoService().registrar(RegistroUsoService.calma, 'despues_$clave', etiqueta: 'Después: $etiqueta');
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => destino));
   }
@@ -1001,6 +1028,262 @@ class _SiguesIgualPage extends StatelessWidget {
               MaterialPageRoute(builder: (_) => _PedirAyudaPage(nav: nav)),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+// Aviso para el adulto (Figma «Calma · Aviso para el adulto»): resume la sesión y sugiere qué hacer
+
+class _AvisoAdultoPage extends StatefulWidget {
+  final _NavCalma nav;
+  const _AvisoAdultoPage({required this.nav});
+
+  @override
+  State<_AvisoAdultoPage> createState() => _AvisoAdultoPageState();
+}
+
+class _AvisoAdultoPageState extends State<_AvisoAdultoPage> {
+  String _nombre = 'El niño';
+  bool _esNina = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _Voz.parar();
+    _cargarNombre();
+  }
+
+  Future<void> _cargarNombre() async {
+    final nino = await AuthService().getPerfilNino();
+    if (nino != null && mounted) {
+      setState(() {
+        _nombre = nino.nombre.trim().isEmpty ? _nombre : nino.nombre.trim();
+        _esNina = nino.avatar == 'nina';
+      });
+    }
+  }
+
+  String get _haceCuanto {
+    final desde = SesionCalma.pidioAyuda;
+    if (desde == null) return 'hace un momento';
+    final min = DateTime.now().difference(desde).inMinutes;
+    if (min < 1) return 'hace un momento';
+    return min == 1 ? 'hace 1 minuto' : 'hace $min minutos';
+  }
+
+  /// La emoción en minúsculas para la sugerencia «Veo que estás triste».
+  String get _emocionEnFrase {
+    final e = SesionCalma.emocionNombre;
+    if (e == null) return 'mal';
+    final base = e.toLowerCase();
+    if (_esNina && base.endsWith('o')) return '${base.substring(0, base.length - 1)}a';
+    return base;
+  }
+
+  Widget _etiqueta(String texto) => Text(
+        texto,
+        style: const TextStyle(
+          fontFamily: _fuente,
+          fontSize: 11.5,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.4,
+          color: _textoSecundario,
+        ),
+      );
+
+  Widget _paso(int n, String texto) => Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 22,
+              height: 22,
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(color: _tealOscuro, shape: BoxShape.circle),
+              child: Text('$n',
+                  style: const TextStyle(fontFamily: _fuente, fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white)),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(texto, style: const TextStyle(fontFamily: _fuente, fontSize: 14.5, height: 1.35, color: _texto)),
+            ),
+          ],
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    final emocion = SesionCalma.emocionNombre;
+    final intentos = SesionCalma.intentos;
+    return _Pantalla(
+      nav: widget.nav,
+      hijo: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 12),
+          Text('$_nombre necesita ayuda',
+              style: const TextStyle(fontFamily: _fuente, fontSize: 22, fontWeight: FontWeight.w700, color: _texto)),
+          const SizedBox(height: 2),
+          Text('Aviso para el adulto · $_haceCuanto',
+              style: const TextStyle(fontFamily: _fuente, fontSize: 14, color: _textoSecundario)),
+          const SizedBox(height: 14),
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              border: Border.all(color: _borde, width: 1.5),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(14),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 64,
+                        height: 64,
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: _teal, width: 2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: SesionCalma.emocionAsset != null
+                            ? Image.asset(SesionCalma.emocionAsset!, fit: BoxFit.contain)
+                            : const Icon(Icons.sentiment_neutral, color: _teal, size: 40),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _etiqueta('SE SINTIÓ'),
+                            Text(emocion ?? 'Sin elegir',
+                                style: const TextStyle(
+                                    fontFamily: _fuente, fontSize: 22, fontWeight: FontWeight.w700, color: _texto)),
+                            Text(emocion == null ? 'Entró directo a Calma' : 'Lo eligió al empezar',
+                                style: const TextStyle(fontFamily: _fuente, fontSize: 12.5, color: _textoSecundario)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1.5, thickness: 1.5, color: _borde),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _etiqueta('QUÉ INTENTÓ'),
+                      if (intentos.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 6),
+                          child: Text('Todavía ningún ejercicio',
+                              style: TextStyle(fontFamily: _fuente, fontSize: 14.5, color: _texto)),
+                        ),
+                      for (final i in intentos)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 20,
+                                height: 20,
+                                decoration: const BoxDecoration(color: Color(0xFFCFE3D2), shape: BoxShape.circle),
+                                child: const Icon(Icons.check_rounded, size: 15, color: Color(0xFF3F5E48)),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(i, style: const TextStyle(fontFamily: _fuente, fontSize: 14.5, color: _texto)),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1.5, thickness: 1.5, color: _borde),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _etiqueta('AHORA'),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 7),
+                        decoration: BoxDecoration(color: const Color(0xFFEFEAE2), borderRadius: BorderRadius.circular(999)),
+                        child: Text(SesionCalma.textoEstado,
+                            style: const TextStyle(fontFamily: _fuente, fontSize: 15, fontWeight: FontWeight.w700, color: _texto)),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+            decoration: BoxDecoration(color: const Color(0xFFDDE9EC), borderRadius: BorderRadius.circular(16)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('QUÉ PUEDES HACER AHORA',
+                    style: TextStyle(
+                        fontFamily: _fuente, fontSize: 11.5, fontWeight: FontWeight.w700, color: _tealOscuro)),
+                _paso(1, 'Acércate y háblale bajito, con pocas palabras.'),
+                _paso(2, 'Dile: «Veo que estás $_emocionEnFrase. Estoy aquí contigo».'),
+                _paso(3, 'Ofrécele su objeto favorito o un lugar tranquilo.'),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Text('Sugerencias generales. No reemplazan la guía de su especialista.',
+              style: TextStyle(fontFamily: _fuente, fontSize: 11.5, color: _textoSecundario)),
+          const SizedBox(height: 14),
+          _BotonPrimario('Ya estoy con $_nombre', () {
+            RegistroUsoService().registrar(RegistroUsoService.calma, 'adulto_presente', etiqueta: 'El adulto acudió');
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => _AdultoContigoPage(nav: widget.nav)),
+            );
+          }),
+        ],
+      ),
+    );
+  }
+}
+
+// Tu adulto ya está contigo (Figma «Calma · Tu adulto está contigo»)
+
+class _AdultoContigoPage extends StatelessWidget {
+  final _NavCalma nav;
+  const _AdultoContigoPage({required this.nav});
+
+  @override
+  Widget build(BuildContext context) {
+    return _Pantalla(
+      nav: nav,
+      hijo: Column(
+        children: [
+          const SizedBox(height: 96),
+          Container(
+            width: 112,
+            height: 112,
+            decoration: const BoxDecoration(color: Color(0xFFCFE3D2), shape: BoxShape.circle),
+            child: const Icon(Icons.check_rounded, size: 72, color: Color(0xFF3F7A4E)),
+          ),
+          const SizedBox(height: 24),
+          const Text('Tu adulto ya está contigo',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontFamily: _fuente, fontSize: 26, fontWeight: FontWeight.w700, color: _texto)),
+          const SizedBox(height: 6),
+          const Text('Estás a salvo.', style: TextStyle(fontFamily: _fuente, fontSize: 16, color: _textoSecundario)),
+          const SizedBox(height: 120),
+          _BotonPrimario('Listo', () => nav.inicio(context)),
         ],
       ),
     );

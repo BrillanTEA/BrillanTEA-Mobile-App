@@ -4,6 +4,7 @@ import '../../dominio/accesibilidad_service.dart';
 import '../../dominio/auth_service.dart';
 import '../../dominio/favoritos_service.dart';
 import '../../dominio/registro_uso_service.dart';
+import '../../dominio/sesion_calma.dart';
 import '../../infraestructura/servicio_voz.dart';
 import '../calma/calma_page.dart';
 
@@ -223,6 +224,8 @@ class _EmocionesPageState extends State<EmocionesPage> {
   }
 
   void _irACalma() {
+    final em = _respuesta;
+    SesionCalma.iniciar(emocionId: em?.id, emocionNombre: em?.nombre, emocionAsset: em?.assetPath);
     Navigator.of(context).push(MaterialPageRoute(
       settings: const RouteSettings(name: CalmaPage.ruta),
       builder: (_) => const CalmaPage(),
