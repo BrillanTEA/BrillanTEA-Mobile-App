@@ -17,10 +17,12 @@ class PerfilAdulto {
   final String diaNacimiento;
   final String mesNacimiento;
   final String anioNacimiento;
+  /// Ciudad o distrito donde vive el adulto (lista del registro). La columna conserva el nombre
+  /// ciudad_nacimiento para no migrar la base de datos.
   final String ciudadNacimiento;
   final String edad;
   final String sexo; // 'Femenino', 'Masculino', 'Otro'
-  final String parentesco; // 'Madre', 'Padre', 'Tutor legal', etc.
+  final String parentesco; // 'Mamá', 'Papá', 'Abuela o abuelo', etc.
 
   const PerfilAdulto({
     required this.nombres,
@@ -131,7 +133,7 @@ class PerfilNino {
 
 class ResultadoRecuperacion {
   final bool exito;
-  final bool anioValido;
+  final bool nombreValido;
   final bool apellidoValido;
   final bool ciudadValida;
   final int intentosFallidos;
@@ -141,7 +143,7 @@ class ResultadoRecuperacion {
 
   const ResultadoRecuperacion({
     required this.exito,
-    required this.anioValido,
+    required this.nombreValido,
     required this.apellidoValido,
     required this.ciudadValida,
     required this.intentosFallidos,
@@ -362,21 +364,21 @@ class AuthService {
         .trim();
   }
 
-  /// Recuperación de PIN según la tesis (Doc 1 P31 y P45):
-  /// Tres datos estables del adulto:
-  /// 1. Año de nacimiento
-  /// 2. Apellido materno (insensible a tildes, mayúsculas y espacios)
-  /// 3. Ciudad de nacimiento (insensible a tildes, mayúsculas y espacios)
+  /// Recuperación del PIN (US1003): tres datos del perfil del adulto, insensibles a tildes,
+  /// mayúsculas y espacios:
+  /// 1. Nombre
+  /// 2. Apellido
+  /// 3. Ciudad o distrito donde vive
   Future<ResultadoRecuperacion> verificarRespuestasRecuperacionDetallado({
-    required String anioNacimiento,
-    required String apellidoMaterno,
-    required String ciudadNacimiento,
+    required String nombre,
+    required String apellido,
+    required String ciudad,
   }) async {
     if (await isLocked()) {
       final segs = await getRemainingLockSeconds();
       return ResultadoRecuperacion(
         exito: false,
-        anioValido: false,
+        nombreValido: false,
         apellidoValido: false,
         ciudadValida: false,
         intentosFallidos: 3,
@@ -388,29 +390,29 @@ class AuthService {
 
     final adulto = await getPerfilAdulto();
 
-    final normAnio = _normalizarTexto(anioNacimiento);
-    final normApellido = _normalizarTexto(apellidoMaterno);
-    final normCiudad = _normalizarTexto(ciudadNacimiento);
+    final normNombre = _normalizarTexto(nombre);
+    final normApellido = _normalizarTexto(apellido);
+    final normCiudad = _normalizarTexto(ciudad);
 
-    bool anioOk = false;
+    bool nombreOk = false;
     bool apellidoOk = false;
     bool ciudadOk = false;
 
     if (adulto != null) {
-      final anioRegistrado = _normalizarTexto(adulto.anioNacimiento);
-      final apellidoRegistrado = _normalizarTexto(adulto.apellidoMaterno);
+      final nombreRegistrado = _normalizarTexto(adulto.nombres);
+      final apellidoRegistrado = _normalizarTexto(adulto.apellidoPaterno);
       final ciudadRegistrada = _normalizarTexto(adulto.ciudadNacimiento);
 
-      anioOk = normAnio == anioRegistrado;
-      apellidoOk = normApellido == apellidoRegistrado;
-      ciudadOk = normCiudad == ciudadRegistrada;
+      nombreOk = normNombre.isNotEmpty && normNombre == nombreRegistrado;
+      apellidoOk = normApellido.isNotEmpty && normApellido == apellidoRegistrado;
+      ciudadOk = normCiudad.isNotEmpty && normCiudad == ciudadRegistrada;
     }
 
-    if (anioOk && apellidoOk && ciudadOk) {
+    if (nombreOk && apellidoOk && ciudadOk) {
       await _guardarAjuste({'intentos_recuperacion': 0, 'intentos_pin': 0, 'bloqueado_hasta': null});
       return const ResultadoRecuperacion(
         exito: true,
-        anioValido: true,
+        nombreValido: true,
         apellidoValido: true,
         ciudadValida: true,
         intentosFallidos: 0,
@@ -436,7 +438,7 @@ class AuthService {
 
       return ResultadoRecuperacion(
         exito: false,
-        anioValido: anioOk,
+        nombreValido: nombreOk,
         apellidoValido: apellidoOk,
         ciudadValida: ciudadOk,
         intentosFallidos: fallos,
