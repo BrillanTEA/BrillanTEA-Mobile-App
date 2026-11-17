@@ -4,59 +4,11 @@ import '../../dominio/accesibilidad_service.dart';
 import '../../dominio/favoritos_service.dart';
 import '../../dominio/registro_uso_service.dart';
 import '../../infraestructura/servicio_voz.dart';
+import 'vocabulario_catalogo.dart';
+import 'vocabulario_modelo.dart';
 
-class ElementoVocabulario {
-  final String id;
-  final String nombre;
-  final String silabas;
-  final String fraseVoz;
-  final String? assetPath;
-  final String? simboloTexto;
-  final Color? colorVisual;
-  final IconData? iconoForma;
-
-  const ElementoVocabulario({
-    required this.id,
-    required this.nombre,
-    required this.silabas,
-    required this.fraseVoz,
-    this.assetPath,
-    this.simboloTexto,
-    this.colorVisual,
-    this.iconoForma,
-  });
-
-  FavoritoItem toFavoritoItem(String categoriaNombre) {
-    return FavoritoItem(
-      id: id,
-      nombre: nombre,
-      modulo: 'Vocabulario',
-      colorModuloValue: 0xFFA85D77,
-      assetPath: assetPath,
-      simboloTexto: simboloTexto,
-      silabas: silabas,
-      fraseVoz: fraseVoz,
-    );
-  }
-}
-
-class CategoriaVocabulario {
-  final String id;
-  final String nombre;
-  final String subtitulo;
-  final String assetBadge;
-  final List<ElementoVocabulario> elementos;
-
-  const CategoriaVocabulario({
-    required this.id,
-    required this.nombre,
-    required this.subtitulo,
-    required this.assetBadge,
-    required this.elementos,
-  });
-}
-
-/// Módulo Vocabulario: categorías, grilla de pictogramas y detalle ampliado.
+/// Módulo Vocabulario (US701, US702, US705): categorías, grilla con buscador y detalle ampliado.
+/// El contenido está en vocabulario_catalogo.dart.
 class VocabularioPage extends StatefulWidget {
   final VoidCallback? onBack;
 
@@ -80,326 +32,8 @@ class _VocabularioPageState extends State<VocabularioPage> {
   CategoriaVocabulario? _categoriaSeleccionada;
   int _indiceDetalle = -1; // -1: viendo grilla de categoría, >=0: viendo detalle ampliado
 
-  final List<CategoriaVocabulario> _categorias = const [
-    CategoriaVocabulario(
-      id: 'animales',
-      nombre: 'Animales',
-      subtitulo: 'Toca un animal para verlo y escucharlo.',
-      assetBadge: 'assets/images/cat_animales.png',
-      elementos: [
-        ElementoVocabulario(
-          id: 'vocab_animales_perro',
-          nombre: 'PERRO',
-          silabas: 'PE · RRO',
-          fraseVoz: 'Perro',
-          assetPath: 'assets/images/vocab_perro.png',
-        ),
-        ElementoVocabulario(
-          id: 'vocab_animales_gato',
-          nombre: 'GATO',
-          silabas: 'GA · TO',
-          fraseVoz: 'Gato',
-          assetPath: 'assets/images/vocab_gato.png',
-        ),
-        ElementoVocabulario(
-          id: 'vocab_animales_pajaro',
-          nombre: 'PÁJARO',
-          silabas: 'PÁ · JA · RO',
-          fraseVoz: 'Pájaro',
-          assetPath: 'assets/images/vocab_pajaro.png',
-        ),
-        ElementoVocabulario(
-          id: 'vocab_animales_pez',
-          nombre: 'PEZ',
-          silabas: 'PEZ',
-          fraseVoz: 'Pez',
-          assetPath: 'assets/images/vocab_pez.png',
-        ),
-        ElementoVocabulario(
-          id: 'vocab_animales_tigre',
-          nombre: 'TIGRE',
-          silabas: 'TI · GRE',
-          fraseVoz: 'Tigre',
-          assetPath: 'assets/images/vocab_tigre.png',
-        ),
-        ElementoVocabulario(
-          id: 'vocab_animales_elefante',
-          nombre: 'ELEFANTE',
-          silabas: 'E · LE · FAN · TE',
-          fraseVoz: 'Elefante',
-          assetPath: 'assets/images/vocab_elefante.png',
-        ),
-      ],
-    ),
-    CategoriaVocabulario(
-      id: 'colores',
-      nombre: 'Colores',
-      subtitulo: 'Toca un color para verlo y escucharlo.',
-      assetBadge: 'assets/images/cat_colores.png',
-      elementos: [
-        ElementoVocabulario(
-          id: 'vocab_colores_rojo',
-          nombre: 'ROJO',
-          silabas: 'RO · JO',
-          fraseVoz: 'Rojo',
-          colorVisual: Color(0xFFE53935),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_colores_azul',
-          nombre: 'AZUL',
-          silabas: 'A · ZUL',
-          fraseVoz: 'Azul',
-          colorVisual: Color(0xFF1E88E5),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_colores_amarillo',
-          nombre: 'AMARILLO',
-          silabas: 'A · MA · RI · LLO',
-          fraseVoz: 'Amarillo',
-          colorVisual: Color(0xFFFDD835),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_colores_verde',
-          nombre: 'VERDE',
-          silabas: 'VER · DE',
-          fraseVoz: 'Verde',
-          colorVisual: Color(0xFF43A047),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_colores_naranja',
-          nombre: 'NARANJA',
-          silabas: 'NA · RAN · JA',
-          fraseVoz: 'Naranja',
-          colorVisual: Color(0xFFFB8C00),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_colores_morado',
-          nombre: 'MORADO',
-          silabas: 'MO · RA · DO',
-          fraseVoz: 'Morado',
-          colorVisual: Color(0xFF8E24AA),
-        ),
-      ],
-    ),
-    CategoriaVocabulario(
-      id: 'numeros',
-      nombre: 'Números',
-      subtitulo: 'Toca un número para verlo y escucharlo.',
-      assetBadge: 'assets/images/cat_numeros.png',
-      elementos: [
-        ElementoVocabulario(
-          id: 'vocab_num_1',
-          nombre: 'UNO',
-          silabas: 'U · NO',
-          fraseVoz: 'Número uno',
-          simboloTexto: '1',
-          colorVisual: Color(0xFFE53935),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_num_2',
-          nombre: 'DOS',
-          silabas: 'DOS',
-          fraseVoz: 'Número dos',
-          simboloTexto: '2',
-          colorVisual: Color(0xFF1E88E5),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_num_3',
-          nombre: 'TRES',
-          silabas: 'TRES',
-          fraseVoz: 'Número tres',
-          simboloTexto: '3',
-          colorVisual: Color(0xFF43A047),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_num_4',
-          nombre: 'CUATRO',
-          silabas: 'CUA · TRO',
-          fraseVoz: 'Número cuatro',
-          simboloTexto: '4',
-          colorVisual: Color(0xFFFB8C00),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_num_5',
-          nombre: 'CINCO',
-          silabas: 'CIN · CO',
-          fraseVoz: 'Número cinco',
-          simboloTexto: '5',
-          colorVisual: Color(0xFF8E24AA),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_num_6',
-          nombre: 'SEIS',
-          silabas: 'SEIS',
-          fraseVoz: 'Número seis',
-          simboloTexto: '6',
-          colorVisual: Color(0xFF00ACC1),
-        ),
-      ],
-    ),
-    CategoriaVocabulario(
-      id: 'letras',
-      nombre: 'Letras',
-      subtitulo: 'Toca una letra para verla y escucharla.',
-      assetBadge: 'assets/images/cat_letras.png',
-      elementos: [
-        ElementoVocabulario(
-          id: 'vocab_letra_a',
-          nombre: 'LETRA A',
-          silabas: 'A',
-          fraseVoz: 'Letra A',
-          simboloTexto: 'A',
-          colorVisual: Color(0xFFE53935),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_letra_b',
-          nombre: 'LETRA B',
-          silabas: 'BE',
-          fraseVoz: 'Letra B',
-          simboloTexto: 'B',
-          colorVisual: Color(0xFF1E88E5),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_letra_c',
-          nombre: 'LETRA C',
-          silabas: 'CE',
-          fraseVoz: 'Letra C',
-          simboloTexto: 'C',
-          colorVisual: Color(0xFF43A047),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_letra_d',
-          nombre: 'LETRA D',
-          silabas: 'DE',
-          fraseVoz: 'Letra D',
-          simboloTexto: 'D',
-          colorVisual: Color(0xFFFB8C00),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_letra_e',
-          nombre: 'LETRA E',
-          silabas: 'E',
-          fraseVoz: 'Letra E',
-          simboloTexto: 'E',
-          colorVisual: Color(0xFF8E24AA),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_letra_m',
-          nombre: 'LETRA M',
-          silabas: 'E · ME',
-          fraseVoz: 'Letra M',
-          simboloTexto: 'M',
-          colorVisual: Color(0xFF00ACC1),
-        ),
-      ],
-    ),
-    CategoriaVocabulario(
-      id: 'frutas',
-      nombre: 'Frutas',
-      subtitulo: 'Toca una fruta para verla y escucharla.',
-      assetBadge: 'assets/images/cat_frutas.png',
-      elementos: [
-        ElementoVocabulario(
-          id: 'vocab_frutas_manzana',
-          nombre: 'MANZANA',
-          silabas: 'MAN · ZA · NA',
-          fraseVoz: 'Manzana',
-          assetPath: 'assets/pictogramas/manzana_2462.png',
-        ),
-        ElementoVocabulario(
-          id: 'vocab_frutas_platano',
-          nombre: 'PLÁTANO',
-          silabas: 'PLÁ · TA · NO',
-          fraseVoz: 'Plátano',
-          assetPath: 'assets/pictogramas/platano_2530.png',
-        ),
-        ElementoVocabulario(
-          id: 'vocab_frutas_naranja',
-          nombre: 'NARANJA',
-          silabas: 'NA · RAN · JA',
-          fraseVoz: 'Naranja',
-          assetPath: 'assets/pictogramas/naranja_2888.png',
-        ),
-        ElementoVocabulario(
-          id: 'vocab_frutas_zanahoria',
-          nombre: 'ZANAHORIA',
-          silabas: 'ZA · NA · HO · RIA',
-          fraseVoz: 'Zanahoria',
-          assetPath: 'assets/pictogramas/zanahoria_2619.png',
-        ),
-        ElementoVocabulario(
-          id: 'vocab_frutas_sandwich',
-          nombre: 'SÁNDWICH',
-          silabas: 'SÁND · WICH',
-          fraseVoz: 'Sándwich',
-          assetPath: 'assets/pictogramas/sandwich_3383.png',
-        ),
-        ElementoVocabulario(
-          id: 'vocab_frutas_torta',
-          nombre: 'TORTA',
-          silabas: 'TOR · TA',
-          fraseVoz: 'Torta',
-          assetPath: 'assets/pictogramas/torta_2579.png',
-        ),
-      ],
-    ),
-    CategoriaVocabulario(
-      id: 'formas',
-      nombre: 'Formas',
-      subtitulo: 'Toca una forma para verla y escucharla.',
-      assetBadge: 'assets/images/cat_formas.png',
-      elementos: [
-        ElementoVocabulario(
-          id: 'vocab_formas_circulo',
-          nombre: 'CÍRCULO',
-          silabas: 'CÍR · CU · LO',
-          fraseVoz: 'Círculo',
-          iconoForma: Icons.circle,
-          colorVisual: Color(0xFFE53935),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_formas_cuadrado',
-          nombre: 'CUADRADO',
-          silabas: 'CUA · DRA · DO',
-          fraseVoz: 'Cuadrado',
-          iconoForma: Icons.square,
-          colorVisual: Color(0xFF1E88E5),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_formas_triangulo',
-          nombre: 'TRIÁNGULO',
-          silabas: 'TRIÁN · GU · LO',
-          fraseVoz: 'Triángulo',
-          iconoForma: Icons.change_history_rounded,
-          colorVisual: Color(0xFFFDD835),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_formas_estrella',
-          nombre: 'ESTRELLA',
-          silabas: 'ES · TRE · LLA',
-          fraseVoz: 'Estrella',
-          iconoForma: Icons.star_rounded,
-          colorVisual: Color(0xFF43A047),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_formas_corazon',
-          nombre: 'CORAZÓN',
-          silabas: 'CO · RA · ZÓN',
-          fraseVoz: 'Corazón',
-          iconoForma: Icons.favorite_rounded,
-          colorVisual: Color(0xFFE91E63),
-        ),
-        ElementoVocabulario(
-          id: 'vocab_formas_rectangulo',
-          nombre: 'RECTÁNGULO',
-          silabas: 'REC · TÁN · GU · LO',
-          fraseVoz: 'Rectángulo',
-          iconoForma: Icons.crop_landscape_rounded,
-          colorVisual: Color(0xFF00ACC1),
-        ),
-      ],
-    ),
-  ];
+  final List<CategoriaVocabulario> _categorias = categoriasVocabulario;
+  String _busqueda = '';
 
   @override
   void initState() {
@@ -441,7 +75,10 @@ class _VocabularioPageState extends State<VocabularioPage> {
     if (_indiceDetalle >= 0) {
       setState(() => _indiceDetalle = -1);
     } else if (_categoriaSeleccionada != null) {
-      setState(() => _categoriaSeleccionada = null);
+      setState(() {
+        _categoriaSeleccionada = null;
+        _busqueda = '';
+      });
     } else if (widget.onBack != null) {
       widget.onBack!();
     } else if (Navigator.canPop(context)) {
@@ -527,6 +164,7 @@ class _VocabularioPageState extends State<VocabularioPage> {
                         setState(() {
                           _categoriaSeleccionada = cat;
                           _indiceDetalle = -1;
+                          _busqueda = '';
                         });
                         _hablar(cat.nombre);
                       },
@@ -579,8 +217,59 @@ class _VocabularioPageState extends State<VocabularioPage> {
   }
 
   // Vista 2: grilla de la categoría
+  static String _normalizar(String t) => t
+      .toLowerCase()
+      .replaceAll(RegExp('[áà]'), 'a')
+      .replaceAll(RegExp('[éè]'), 'e')
+      .replaceAll(RegExp('[íì]'), 'i')
+      .replaceAll(RegExp('[óò]'), 'o')
+      .replaceAll(RegExp('[úùü]'), 'u');
+
+  List<ElementoVocabulario> _filtrados(CategoriaVocabulario cat) {
+    final q = _normalizar(_busqueda.trim());
+    if (q.isEmpty) return cat.elementos;
+    return cat.elementos
+        .where((e) =>
+            _normalizar(e.nombre).contains(q) ||
+            (e.simboloTexto != null && _normalizar(e.simboloTexto!).startsWith(q)))
+        .toList();
+  }
+
+  Widget _buscador(CategoriaVocabulario cat) {
+    return Container(
+      height: 48,
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      decoration: BoxDecoration(
+        color: const Color(0xFFEFEAE2),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: colorBorde, width: 1.5),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.search_rounded, color: colorTextoSecundario, size: 22),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              onChanged: (v) => setState(() => _busqueda = v),
+              textInputAction: TextInputAction.search,
+              style: const TextStyle(fontFamily: 'Atkinson Hyperlegible Next', fontSize: 16, color: colorTextoPrincipal),
+              decoration: InputDecoration(
+                isCollapsed: true,
+                border: InputBorder.none,
+                hintText: cat.buscador,
+                hintStyle: const TextStyle(fontFamily: 'Atkinson Hyperlegible Next', fontSize: 16, color: colorTextoSecundario),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildGrillaCategoriaView() {
     final cat = _categoriaSeleccionada!;
+    final lista = _filtrados(cat);
+    final esLetra = cat.id == 'letras';
 
     return Scaffold(
       backgroundColor: colorFondo,
@@ -621,6 +310,8 @@ class _VocabularioPageState extends State<VocabularioPage> {
                 ],
               ),
               const SizedBox(height: 16),
+              _buscador(cat),
+              const SizedBox(height: 12),
               Text(
                 cat.subtitulo,
                 style: const TextStyle(
@@ -634,7 +325,7 @@ class _VocabularioPageState extends State<VocabularioPage> {
 
               Expanded(
                 child: GridView.builder(
-                  itemCount: cat.elementos.length,
+                  itemCount: lista.length,
                   physics: const BouncingScrollPhysics(),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
@@ -643,13 +334,14 @@ class _VocabularioPageState extends State<VocabularioPage> {
                     childAspectRatio: 1.0,
                   ),
                   itemBuilder: (context, index) {
-                    final item = cat.elementos[index];
+                    final item = lista[index];
                     final esFav = _favoritosService.esFavorito(item.id);
 
                     return InkWell(
                       onTap: () {
+                        FocusScope.of(context).unfocus();
                         setState(() {
-                          _indiceDetalle = index;
+                          _indiceDetalle = cat.elementos.indexOf(item);
                         });
                         _hablar(item.fraseVoz);
                       },
@@ -668,21 +360,24 @@ class _VocabularioPageState extends State<VocabularioPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   SizedBox(
-                                    width: 100,
-                                    height: 80,
-                                    child: _buildItemVisual(item, size: 76),
+                                    width: 110,
+                                    height: esLetra ? 110 : 80,
+                                    child: _buildItemVisual(item, size: esLetra ? 100 : 76),
                                   ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    item.nombre,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontFamily: 'Atkinson Hyperlegible Next',
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w700,
-                                      color: colorTextoPrincipal,
+                                  if (!esLetra) ...[
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      item.nombre,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      style: const TextStyle(
+                                        fontFamily: 'Atkinson Hyperlegible Next',
+                                        fontSize: 13.5,
+                                        fontWeight: FontWeight.w700,
+                                        color: colorTextoPrincipal,
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ],
                               ),
                             ),
@@ -739,6 +434,7 @@ class _VocabularioPageState extends State<VocabularioPage> {
   // Vista 3: detalle ampliado
   Widget _buildDetalleAmpliadoView() {
     final cat = _categoriaSeleccionada!;
+    final esLetra = cat.id == 'letras';
     final item = cat.elementos[_indiceDetalle];
     final esFav = _favoritosService.esFavorito(item.id);
     final total = cat.elementos.length;
@@ -794,7 +490,7 @@ class _VocabularioPageState extends State<VocabularioPage> {
                         constraints: const BoxConstraints(minHeight: 280),
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: esLetra ? const Color(0xFFEDF3F5) : Colors.white,
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: colorTealPrimario, width: 2.0),
                         ),
@@ -848,6 +544,7 @@ class _VocabularioPageState extends State<VocabularioPage> {
                                     child: _buildItemVisual(item, size: 130),
                                   ),
                                 ),
+                                if (!esLetra) ...[
                                 const SizedBox(height: 20),
                                 Text(
                                   item.nombre,
@@ -873,6 +570,7 @@ class _VocabularioPageState extends State<VocabularioPage> {
                                     color: colorTextoSecundario,
                                   ),
                                 ),
+                                ],
                                 const SizedBox(height: 10),
                               ],
                             ),
@@ -1039,35 +737,22 @@ class _VocabularioPageState extends State<VocabularioPage> {
       );
     }
 
-    if (item.iconoForma != null) {
-      return Icon(
-        item.iconoForma,
-        size: size * 0.85,
-        color: item.colorVisual ?? colorTealPrimario,
-      );
+    if (item.forma != null) {
+      return DibujoForma(forma: item.forma!, tamano: size);
     }
 
+    // Números y letras en negro, como en el Figma («61», «Gg»)
     if (item.simboloTexto != null) {
-      return Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: (item.colorVisual ?? colorTealPrimario).withValues(alpha: 0.15),
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: item.colorVisual ?? colorTealPrimario,
-            width: 3.0,
-          ),
-        ),
-        child: Center(
-          child: Text(
-            item.simboloTexto!,
-            style: TextStyle(
-              fontFamily: 'Atkinson Hyperlegible Next',
-              fontSize: size * 0.52,
-              fontWeight: FontWeight.w800,
-              color: item.colorVisual ?? colorTealPrimario,
-            ),
+      return FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          item.simboloTexto!,
+          style: TextStyle(
+            fontFamily: 'Atkinson Hyperlegible Next',
+            fontSize: size * 0.72,
+            height: 1.0,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
           ),
         ),
       );
@@ -1080,13 +765,7 @@ class _VocabularioPageState extends State<VocabularioPage> {
         decoration: BoxDecoration(
           color: item.colorVisual,
           shape: BoxShape.circle,
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x1F000000),
-              blurRadius: 4,
-              offset: Offset(0, 2),
-            ),
-          ],
+          border: Border.all(color: const Color(0x33000000), width: 1),
         ),
       );
     }
