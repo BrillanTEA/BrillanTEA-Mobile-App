@@ -39,10 +39,10 @@ class _PrivacidadDatosPageState extends State<PrivacidadDatosPage> {
 
   String get _textoFecha {
     final f = _registro?.fecha;
-    if (f == null) return 'Sin registro de aceptación';
+    if (f == null) return 'Sin consentimiento registrado';
     final h = f.hour.toString().padLeft(2, '0');
     final m = f.minute.toString().padLeft(2, '0');
-    return 'Aceptado el ${f.day} ${_meses[f.month - 1]} ${f.year}, $h:$m';
+    return 'El ${f.day} ${_meses[f.month - 1]} ${f.year}, $h:$m';
   }
 
   String get _textoVersion {
@@ -165,7 +165,7 @@ class _PrivacidadDatosPageState extends State<PrivacidadDatosPage> {
                       _filaDocumento('Política de privacidad', politicaDePrivacidad),
                     ]),
                     const SizedBox(height: 22),
-                    _tituloSeccion('REGISTRO DE ACEPTACIÓN'),
+                    _tituloSeccion('CONSENTIMIENTO OTORGADO'),
                     _tarjeta([
                       Semantics(
                         label: '$_textoFecha. $_textoVersion',
