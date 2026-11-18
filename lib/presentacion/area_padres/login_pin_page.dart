@@ -483,7 +483,7 @@ class _LoginPinPageState extends State<LoginPinPage> with WidgetsBindingObserver
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'Tu PIN actual sigue funcionando. Si lo recuerdas, puedes entrar con él.',
+                    'Por protección de los datos y la configuración del menor, el área para padres está bloqueada. Cuando termine el tiempo, podrás ingresar tu PIN.',
                     style: TextStyle(
                       fontFamily: 'Atkinson Hyperlegible Next',
                       fontSize: 13,

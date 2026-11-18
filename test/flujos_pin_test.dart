@@ -47,6 +47,9 @@ void main() {
       await esperarHasta(tester, find.text('Opción bloqueada'));
       expect(await _servicio(tester, () => AuthService().isLocked()), isTrue);
       expect(find.text('Opción bloqueada'), findsOneWidget);
+      // DEF-20: el aviso no dice que el PIN sigue funcionando mientras está bloqueado.
+      expect(find.textContaining('el área para padres está bloqueada'), findsOneWidget);
+      expect(find.textContaining('sigue funcionando'), findsNothing);
       // El contador baja cada segundo.
       await tester.pump(const Duration(seconds: 3));
       await esperar(tester);

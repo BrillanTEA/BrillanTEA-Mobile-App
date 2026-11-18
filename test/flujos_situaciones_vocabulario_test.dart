@@ -1,6 +1,11 @@
+import 'package:brillantea/dominio/documentos_legales.dart';
+import 'package:brillantea/dominio/favoritos_service.dart';
 import 'package:brillantea/presentacion/area_padres/privacidad_datos_page.dart';
+import 'package:brillantea/presentacion/comun/hoja_documento_legal.dart';
 import 'package:brillantea/presentacion/comun/pin_input_cuadros.dart';
 import 'package:brillantea/presentacion/situaciones/situaciones_page.dart';
+import 'package:brillantea/presentacion/vocabulario/emociones_page.dart';
+import 'package:brillantea/presentacion/vocabulario/favoritos_page.dart';
 import 'package:brillantea/presentacion/vocabulario/vocabulario_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -56,6 +61,96 @@ void main() {
     await tocar(tester, find.text('Política de privacidad'));
     await tocar(tester, porEtiqueta('Cerrar'));
     expect(find.text('Privacidad y datos'), findsWidgets);
+  });
+
+  pantalla('«Entendido» queda por encima de la barra de navegación del celular (DEF-22)', (tester) async {
+    const barra = 48.0;
+    tester.view.viewPadding = FakeViewPadding(bottom: barra * tester.view.devicePixelRatio);
+    tester.view.padding = FakeViewPadding(bottom: barra * tester.view.devicePixelRatio);
+    addTearDown(tester.view.resetViewPadding);
+    addTearDown(tester.view.resetPadding);
+    await abrir(
+      tester,
+      Builder(
+        builder: (context) => Scaffold(
+          body: Center(
+            child: TextButton(
+              onPressed: () => mostrarHojaDocumentoLegal(context, politicaDePrivacidad),
+              child: const Text('Abrir hoja'),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tocar(tester, find.text('Abrir hoja'));
+    await esperarHasta(tester, find.byType(HojaDocumentoLegal));
+    final boton = find.widgetWithText(ElevatedButton, 'Entendido');
+    final debajo = tester.getBottomLeft(find.byType(HojaDocumentoLegal)).dy - tester.getBottomLeft(boton).dy;
+    expect(debajo, greaterThanOrEqualTo(barra + 22));
+    await tocar(tester, boton);
+    expect(find.byType(HojaDocumentoLegal), findsNothing);
+  });
+
+  pantalla('Favoritos se reordena por uso al volver a la pestaña (DEF-19)', (tester) async {
+    FavoritosService().limpiarMemoria();
+    await conRegistro(tester);
+    await enApp(tester, () async {
+      final servicio = FavoritosService();
+      await servicio.init();
+      for (final nombre in ['Primero', 'Segundo']) {
+        await servicio.toggleFavorito(FavoritoItem(
+          id: 'fav_$nombre',
+          nombre: nombre,
+          modulo: 'Vocabulario',
+          colorModuloValue: 0xFF3D6D7E,
+          fraseVoz: nombre,
+        ));
+        await Future<void>.delayed(const Duration(milliseconds: 5));
+      }
+    });
+    var visible = true;
+    late StateSetter cambiar;
+    await abrir(
+      tester,
+      StatefulBuilder(builder: (context, setState) {
+        cambiar = setState;
+        return FavoritosPage(visible: visible);
+      }),
+    );
+    bool primeroAntes() {
+      final a = tester.getTopLeft(find.text('Primero').first);
+      final b = tester.getTopLeft(find.text('Segundo').first);
+      return a.dy < b.dy || (a.dy == b.dy && a.dx < b.dx);
+    }
+
+    expect(primeroAntes(), isTrue);
+    await enApp(tester, () async {
+      await FavoritosService().registrarUso('fav_Segundo');
+      await FavoritosService().registrarUso('fav_Segundo');
+    });
+    await esperar(tester);
+    // Mientras está a la vista no se mueve bajo el dedo del niño.
+    expect(primeroAntes(), isTrue);
+
+    cambiar(() => visible = false);
+    await esperar(tester);
+    cambiar(() => visible = true);
+    await esperar(tester);
+    expect(primeroAntes(), isFalse);
+    FavoritosService().limpiarMemoria();
+  });
+
+  pantalla('las emociones quedan centradas en su tarjeta y sin barra lateral (DEF-24)', (tester) async {
+    await conRegistro(tester);
+    await abrir(tester, const EmocionesPage());
+    expect(find.byType(Scrollbar), findsNothing);
+    for (final nombre in ['Alegre', 'Triste']) {
+      final tarjeta = find.ancestor(of: find.text(nombre), matching: find.byType(AnimatedContainer)).first;
+      final imagen = find.descendant(of: tarjeta, matching: find.byType(Image)).first;
+      final centro = tester.getCenter(tarjeta).dx;
+      expect((tester.getCenter(find.text(nombre)).dx - centro).abs(), lessThan(1));
+      expect((tester.getCenter(imagen).dx - centro).abs(), lessThan(1));
+    }
   });
 
   pantalla('tocar un recuadro del PIN borra desde ese dígito', (tester) async {

@@ -61,3 +61,6 @@ descarga/
 *.mobileprovision
 **/GeneratedPluginRegistrant.*
 **/xcuserdata/
+
+# Preferencias locales de Flutter DevTools
+devtools_options.yaml

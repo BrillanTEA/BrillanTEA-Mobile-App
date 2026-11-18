@@ -69,6 +69,9 @@ void main() {
             intento < 2 ? find.text('Respuestas incorrectas') : find.text('Opción bloqueada'));
       }
       expect(find.text('Opción bloqueada'), findsOneWidget);
+      // DEF-20: el aviso explica que también queda bloqueado el ingreso con PIN.
+      expect(find.textContaining('la recuperación y el ingreso con PIN quedan bloqueados'), findsOneWidget);
+      expect(await enApp(tester, () => AuthService().isLocked()), isTrue);
       await tester.pump(const Duration(seconds: 3));
       await esperar(tester);
       await tocar(tester, find.text('Entendido'));

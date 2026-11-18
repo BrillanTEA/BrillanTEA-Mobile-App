@@ -105,6 +105,7 @@ class _InicioPageState extends State<InicioPage> {
         children: [
           _buildInicioBody(),
           FavoritosPage(
+            visible: _tabSeleccionado == 1,
             onBack: () => setState(() => _tabSeleccionado = 0),
           ),
         ],

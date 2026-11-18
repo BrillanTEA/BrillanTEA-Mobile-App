@@ -8,7 +8,11 @@ import '../../infraestructura/servicio_voz.dart';
 class FavoritosPage extends StatefulWidget {
   final VoidCallback? onBack;
 
-  const FavoritosPage({super.key, this.onBack});
+  /// En Inicio, Favoritos es una pestaña que queda montada (IndexedStack): Inicio avisa cuando
+  /// vuelve a mostrarse para que la lista se reordene por uso (US706).
+  final bool visible;
+
+  const FavoritosPage({super.key, this.onBack, this.visible = true});
 
   @override
   State<FavoritosPage> createState() => _FavoritosPageState();
@@ -37,6 +41,14 @@ class _FavoritosPageState extends State<FavoritosPage> {
     _items = _favoritosService.favoritos;
     _favoritosService.addListener(_onFavoritosChanged);
     _favoritosService.init();
+  }
+
+  @override
+  void didUpdateWidget(covariant FavoritosPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.visible && !oldWidget.visible) {
+      setState(() => _items = _favoritosService.favoritos);
+    }
   }
 
   @override
