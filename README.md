@@ -49,9 +49,11 @@ lib/
 
 ## Pruebas y calidad
 
-- `test/` tiene las pruebas unitarias y de widgets: catálogo y rutinas, premios, PIN, formateadores,
-  accesibilidad, migraciones de SQLite, contrato del modelo, comunicación, vocabulario y emociones,
-  tutoriales y documentos legales.
+- `test/` tiene 15 archivos de pruebas unitarias, de integración con SQLite y de widgets: PIN,
+  recuperación y consentimiento, premios y rutinas, favoritos y registro de uso, accesibilidad,
+  catálogo y migraciones de la base, contrato del modelo, comunicación, vocabulario y emociones,
+  tutoriales, documentos legales y 22 pantallas con sus flujos principales. `test/soporte/` crea la
+  base SQLite temporal y simula la voz de Android.
 - `bash tool/qa.sh` ejecuta `flutter analyze` y `flutter test --coverage` y guarda la evidencia en
   `docs/qa/evidencias/<fecha>/` (resumen, salida de las pruebas en texto y JSON, cobertura por capa y entorno).
 - CI: `.github/workflows/ci.yml` repite el análisis y las pruebas en cada push a `develop` o `main` y en

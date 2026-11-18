@@ -22,6 +22,7 @@ verificar con el caso indicado.
 | DEF-14 | Documentos legales | Los Términos y la Política no describían la app real (casillas, versión y correos). | `54c3dc1` fix(legal): align the terms and privacy policy with the app | CP-28, CP-29 | Corregido |
 | DEF-15 | Área de padres | La sección de aceptación de Privacidad y datos tenía un nombre poco claro. | `eedf314` fix(parents): rename the acceptance section of privacy and data | CP-29 | Corregido |
 | DEF-16 | Área de padres | El registro de aceptación no se titulaba «Consentimiento otorgado». | `4f37694` fix(parents): title the consent record "Consentimiento otorgado" | CP-29 | Corregido |
+| DEF-17 | Área de padres | Las filas de los documentos legales en Privacidad y datos y en Ayuda y soporte ocultaban el efecto al tocarlas (ListTile dentro de una tarjeta con fondo); Flutter lo marcaba como error en modo de depuración. Lo detectó la ejecución automatizada `2026-11-17_2028`. | `6745bfd` fix(parents): show the tap effect on the legal document rows | CP-39, CP-40 | Corregido |
 
 ## Cómo registrar un defecto nuevo
 

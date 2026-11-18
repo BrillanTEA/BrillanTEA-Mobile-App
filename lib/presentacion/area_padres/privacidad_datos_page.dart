@@ -71,11 +71,15 @@ class _PrivacidadDatosPageState extends State<PrivacidadDatosPage> {
         ]),
       );
 
-  Widget _filaDocumento(String titulo, DocumentoLegal documento) => ListTile(
-        title: Text(titulo,
-            style: const TextStyle(fontFamily: _fuente, fontSize: 13.5, fontWeight: FontWeight.w600, color: _texto)),
-        trailing: const Icon(Icons.chevron_right_rounded, color: _textoSecundario, size: 26),
-        onTap: () => mostrarHojaDocumentoLegal(context, documento),
+  // Material transparente: la tarjeta tiene fondo propio y, sin él, el efecto al tocar quedaba oculto.
+  Widget _filaDocumento(String titulo, DocumentoLegal documento) => Material(
+        type: MaterialType.transparency,
+        child: ListTile(
+          title: Text(titulo,
+              style: const TextStyle(fontFamily: _fuente, fontSize: 13.5, fontWeight: FontWeight.w600, color: _texto)),
+          trailing: const Icon(Icons.chevron_right_rounded, color: _textoSecundario, size: 26),
+          onTap: () => mostrarHojaDocumentoLegal(context, documento),
+        ),
       );
 
   Widget _icono(IconData icono, Color color, Color fondo) => Container(

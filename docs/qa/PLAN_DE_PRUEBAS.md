@@ -20,7 +20,7 @@ funcionales (RNF) de la Memoria (Tabla 13 y siguientes). Los casos están en
 | Nivel | Herramienta | Qué cubre | Cuándo se ejecuta |
 |---|---|---|---|
 | Análisis estático | `flutter analyze` (reglas de `flutter_lints`) | Errores, advertencias e infos del código Dart. | En cada push y pull request (CI) y con `tool/qa.sh`. |
-| Unitarias y de widgets | `flutter test` (`test/`) | Catálogo, rutinas, premios, PIN, formateadores, accesibilidad, migraciones de SQLite, contrato del modelo, comunicación, vocabulario, emociones, tutoriales y documentos legales. | En cada push y pull request (CI) y con `tool/qa.sh`. |
+| Unitarias, de integración con SQLite y de widgets | `flutter test` (`test/`, 15 archivos) | Servicios de dominio sobre una base SQLite real en una carpeta temporal (PIN, recuperación, consentimiento, premios, rutinas, favoritos, registro de uso, accesibilidad, tutoriales, catálogo y migraciones), contrato del modelo, comunicación, vocabulario, emociones, documentos legales y 22 pantallas con sus flujos principales. | En cada push y pull request (CI) y con `tool/qa.sh`. |
 | Cobertura | `flutter test --coverage` + `tool/resumen_cobertura.sh` | Porcentaje de líneas cubiertas por capa (`presentacion`, `dominio`, `infraestructura`, `datos`). | Igual que las pruebas. |
 | Funcionales manuales | Casos CP marcados como *Manual* | Flujos completos en un celular Android: cámara, voz, PIN, bloqueo, reportes y modo sin conexión. | Antes de cada versión que se entrega para pruebas. |
 | Aceptación QA externa | [CERTIFICADO_QA.md](CERTIFICADO_QA.md) | Revisión independiente de los casos manuales sobre el APK entregado. | Al cerrar la versión. |
@@ -70,25 +70,26 @@ caso. El commit de la corrección es la evidencia de cierre.
 | Requisito | Casos |
 |---|---|
 | RF-01 Captura de imágenes | CP-07 |
-| RF-02 Detección de objetos | CP-01, CP-03, CP-07 |
-| RF-03 Asociación objeto–pictograma | CP-02, CP-08 |
-| RF-04 Rutinas guiadas | CP-09 |
-| RF-05 Pedir algo | CP-10, CP-25 |
-| RF-06 Configuración inicial y PIN | CP-05, CP-18, CP-24, CP-28, CP-29 |
+| RF-02 Detección de objetos | CP-01, CP-03, CP-07, CP-38 |
+| RF-03 Asociación objeto–pictograma | CP-02, CP-08, CP-36 |
+| RF-04 Rutinas guiadas | CP-09, CP-36 |
+| RF-05 Pedir algo | CP-10, CP-25, CP-40 |
+| RF-06 Configuración inicial y PIN | CP-05, CP-18, CP-24, CP-28, CP-29, CP-35, CP-39 |
 | RF-07 Bloqueo de la aplicación | CP-21 |
-| RF-08 Área de padres | CP-17, CP-19, CP-30, CP-33 |
-| RF-09 Vocabulario | CP-26 |
-| RF-10 Favoritos | CP-16 |
-| RF-11 Emociones | CP-13, CP-26 |
-| RF-12 Armar frase | CP-11, CP-25 |
-| RF-13 Responder | CP-12 |
-| RF-14 Situaciones | CP-14 |
-| RF-15 Seguimiento y reporte | CP-20 |
-| RF-16 Accesibilidad | CP-06 |
-| RF-17 Ayuda y soporte | CP-28, CP-34 |
-| RF-18 Calma | CP-15 |
-| RF-19 Premios | CP-04, CP-09, CP-31 |
-| RF-20 Tutoriales | CP-27, CP-32 |
+| RF-08 Área de padres | CP-17, CP-19, CP-30, CP-33, CP-35, CP-39, CP-40 |
+| RF-09 Vocabulario | CP-26, CP-39 |
+| RF-10 Favoritos | CP-16, CP-37, CP-39 |
+| RF-11 Emociones | CP-13, CP-26, CP-39, CP-40 |
+| RF-12 Armar frase | CP-11, CP-25, CP-39 |
+| RF-13 Responder | CP-12, CP-40 |
+| RF-14 Situaciones | CP-14, CP-39 |
+| RF-15 Seguimiento y reporte | CP-20, CP-37, CP-39 |
+| RF-16 Accesibilidad | CP-06, CP-38, CP-39 |
+| RF-17 Ayuda y soporte | CP-28, CP-34, CP-39, CP-40 |
+| RF-18 Calma | CP-15, CP-38, CP-39 |
+| RF-19 Premios | CP-04, CP-09, CP-31, CP-36, CP-39, CP-40 |
+| RF-20 Tutoriales | CP-27, CP-32, CP-38, CP-39, CP-40 |
+| RNF-01 Latencia de inferencia | CP-38 (cálculo de estadísticas); la medición en el celular se reporta en el capítulo 5 |
 | RNF-02 Funcionamiento sin conexión | CP-22 |
 | RNF-04 Privacidad del reporte | CP-20 |
 | RNF-05 Tamaño y versiones del APK | CP-23 |
