@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../dominio/rutinas_app.dart';
+import '../../dominio/rutinas_service.dart';
 import 'rutinas_page.dart';
 
 /// Lista de categorías de rutinas (entrada del módulo Rutinas).
@@ -57,8 +59,36 @@ class _RutinasCategoriasPageState extends State<RutinasCategoriasPage> {
     },
   ];
 
+  final RutinasService _rutinasService = RutinasService();
+
+  /// Rutinas que el adulto desactivó; null mientras se leen de la base de datos.
+  Set<int>? _desactivadas;
+
+  @override
+  void initState() {
+    super.initState();
+    _rutinasService.addListener(_cargarActivas);
+    _cargarActivas();
+  }
+
+  Future<void> _cargarActivas() async {
+    final des = await _rutinasService.getRutinasDesactivadas();
+    if (mounted) setState(() => _desactivadas = des);
+  }
+
+  /// Cuántas rutinas activas tiene la categoría (cambia cuando el adulto activa o desactiva rutinas).
+  String _subtitulo(Map<String, dynamic> cat) {
+    final nombre = cat['nombre'] as String;
+    final des = _desactivadas;
+    if (nombre == 'Juegos' || des == null) return cat['subtitulo'] as String;
+    final activas = rutinasApp.where((r) => r.categoria == nombre && !des.contains(r.id)).length;
+    if (activas == 0) return 'Sin rutinas activas';
+    return activas == 1 ? '1 rutina' : '$activas rutinas';
+  }
+
   @override
   void dispose() {
+    _rutinasService.removeListener(_cargarActivas);
     _searchCtrl.dispose();
     super.dispose();
   }
@@ -70,7 +100,7 @@ class _RutinasCategoriasPageState extends State<RutinasCategoriasPage> {
           categoriaInicial: categoria == 'Juegos' ? null : categoria,
         ),
       ),
-    );
+    ).then((_) => _cargarActivas());
   }
 
   @override
@@ -167,7 +197,7 @@ class _RutinasCategoriasPageState extends State<RutinasCategoriasPage> {
                   itemBuilder: (context, index) {
                     final cat = categoriasFiltradas[index];
                     final String nombre = cat['nombre'] as String;
-                    final String subtitulo = cat['subtitulo'] as String;
+                    final String subtitulo = _subtitulo(cat);
                     final IconData icono = cat['icono'] as IconData;
                     final Color cardBg = cat['colorFondo'] as Color;
 

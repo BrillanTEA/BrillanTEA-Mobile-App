@@ -2,6 +2,7 @@ import 'package:brillantea/datos/base_datos.dart';
 import 'package:brillantea/dominio/rutinas_app.dart';
 import 'package:brillantea/dominio/rutinas_service.dart';
 import 'package:brillantea/presentacion/area_padres/categoria_rutinas_config_page.dart';
+import 'package:brillantea/presentacion/rutinas/rutinas_categorias_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -73,5 +74,19 @@ void main() {
     await escribir(tester, 0, 'zzz');
     expect(find.text('No se encontraron rutinas con los filtros actuales.'), findsOneWidget);
     await tocarSiHay(tester, porEtiqueta('Quitar'));
+  });
+
+  pantalla('cada categoría muestra cuántas rutinas activas tiene (DEF-21)', (tester) async {
+    await conRegistro(tester);
+    await _conRutinas(tester);
+    await abrir(tester, const RutinasCategoriasPage());
+    await esperarHasta(tester, find.text('2 rutinas'));
+    expect(find.text('2 rutinas'), findsOneWidget);
+
+    final higiene = rutinasApp.firstWhere((r) => r.categoria == 'Higiene');
+    await enApp(tester, () => RutinasService().setRutinaActiva(higiene.id, false));
+    await esperarHastaQueNo(tester, find.text('2 rutinas'));
+    expect(find.text('2 rutinas'), findsNothing);
+    expect(find.text('1 rutina'), findsWidgets);
   });
 }
