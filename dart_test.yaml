@@ -1,0 +1,3 @@
+# Límite por prueba: si una prueba se queda esperando, falla al minuto y medio en lugar de
+# detener la ejecución 10 minutos. Las pruebas exploratorias tienen su propio límite de 3 minutos.
+timeout: 90s
