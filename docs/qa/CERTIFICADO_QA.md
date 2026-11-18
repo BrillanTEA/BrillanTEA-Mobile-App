@@ -1,10 +1,12 @@
 # Certificado de aseguramiento de la calidad
 
+> Se completa en el siguiente ciclo del proyecto, junto con la validación con usuarios.
+
 > Plantilla para la revisión QA independiente. La completa y firma quien revisa, no el equipo de
 > desarrollo.
 
 Yo, ______________________________ (nombre), ______________________________ (cargo e institución),
-revisé la aplicación **BrillanTEA**, versión **0.2.0-alpha.1+14** (commit `________`), instalada desde
+revisé la aplicación **BrillanTEA**, versión **__________** (commit `________`), instalada desde
 el APK ______________________ en un celular ______________________ (modelo, versión de Android).
 
 ## Alcance revisado

@@ -1,6 +1,6 @@
 # Casos de prueba
 
-Versión de la app: 0.2.0-alpha.1+14. Los casos automatizados se ejecutan con `flutter test`
+Versión de la app: 0.2.0-alpha.2+15. Los casos automatizados se ejecutan con `flutter test`
 (o `bash tool/qa.sh`); los manuales, en un celular Android según el [plan](PLAN_DE_PRUEBAS.md).
 
 ## Automatizados
