@@ -297,7 +297,9 @@ class _EmocionesPageState extends State<EmocionesPage> {
         child: Scrollbar(
           child: GridView.builder(
             itemCount: EmocionesPage.emociones.length,
-            padding: const EdgeInsets.only(top: 8, right: 8, bottom: 8),
+            // Mismo margen a ambos lados (la estrella de favorito sobresale 8 px) para que la
+            // cuadrícula quede centrada.
+            padding: const EdgeInsets.all(8),
             physics: const BouncingScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
