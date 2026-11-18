@@ -4,6 +4,7 @@ import 'package:brillantea/presentacion/area_padres/privacidad_datos_page.dart';
 import 'package:brillantea/presentacion/comun/hoja_documento_legal.dart';
 import 'package:brillantea/presentacion/comun/pin_input_cuadros.dart';
 import 'package:brillantea/presentacion/situaciones/situaciones_page.dart';
+import 'package:brillantea/presentacion/vocabulario/emociones_page.dart';
 import 'package:brillantea/presentacion/vocabulario/favoritos_page.dart';
 import 'package:brillantea/presentacion/vocabulario/vocabulario_page.dart';
 import 'package:flutter/material.dart';
@@ -137,6 +138,19 @@ void main() {
     await esperar(tester);
     expect(primeroAntes(), isFalse);
     FavoritosService().limpiarMemoria();
+  });
+
+  pantalla('las emociones quedan centradas en su tarjeta y sin barra lateral (DEF-24)', (tester) async {
+    await conRegistro(tester);
+    await abrir(tester, const EmocionesPage());
+    expect(find.byType(Scrollbar), findsNothing);
+    for (final nombre in ['Alegre', 'Triste']) {
+      final tarjeta = find.ancestor(of: find.text(nombre), matching: find.byType(AnimatedContainer)).first;
+      final imagen = find.descendant(of: tarjeta, matching: find.byType(Image)).first;
+      final centro = tester.getCenter(tarjeta).dx;
+      expect((tester.getCenter(find.text(nombre)).dx - centro).abs(), lessThan(1));
+      expect((tester.getCenter(imagen).dx - centro).abs(), lessThan(1));
+    }
   });
 
   pantalla('tocar un recuadro del PIN borra desde ese dígito', (tester) async {

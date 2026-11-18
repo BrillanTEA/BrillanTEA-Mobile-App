@@ -293,22 +293,21 @@ class _EmocionesPageState extends State<EmocionesPage> {
         ),
       ),
       const SizedBox(height: 16),
+      // Sin Scrollbar: la barra se veía como una franja blanca al costado de la cuadrícula (DEF-24).
       Expanded(
-        child: Scrollbar(
-          child: GridView.builder(
-            itemCount: EmocionesPage.emociones.length,
-            // Mismo margen a ambos lados (la estrella de favorito sobresale 8 px) para que la
-            // cuadrícula quede centrada.
-            padding: const EdgeInsets.all(8),
-            physics: const BouncingScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 20,
-              crossAxisSpacing: 16,
-              childAspectRatio: 1,
-            ),
-            itemBuilder: (context, index) => _tarjeta(EmocionesPage.emociones[index]),
+        child: GridView.builder(
+          itemCount: EmocionesPage.emociones.length,
+          // Mismo margen a ambos lados (la estrella de favorito sobresale 8 px) para que la
+          // cuadrícula quede centrada.
+          padding: const EdgeInsets.all(8),
+          physics: const BouncingScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 16,
+            childAspectRatio: 1,
           ),
+          itemBuilder: (context, index) => _tarjeta(EmocionesPage.emociones[index]),
         ),
       ),
     ];
@@ -333,30 +332,34 @@ class _EmocionesPageState extends State<EmocionesPage> {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Image.asset(
-                        em.assetPath,
-                        fit: BoxFit.contain,
-                        filterQuality: FilterQuality.high,
-                        errorBuilder: (c, e, s) =>
-                            const Icon(Icons.mood_rounded, size: 64, color: colorTealPrimario),
+              // Ocupa toda la tarjeta: sin Positioned.fill, la columna tomaba el ancho de la imagen
+              // y quedaba pegada a la izquierda (DEF-24).
+              Positioned.fill(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Image.asset(
+                          em.assetPath,
+                          fit: BoxFit.contain,
+                          filterQuality: FilterQuality.high,
+                          errorBuilder: (c, e, s) =>
+                              const Icon(Icons.mood_rounded, size: 64, color: colorTealPrimario),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      em.nombre,
-                      style: const TextStyle(
-                        fontFamily: _fuente,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        color: colorTextoPrincipal,
+                      const SizedBox(height: 6),
+                      Text(
+                        em.nombre,
+                        style: const TextStyle(
+                          fontFamily: _fuente,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: colorTextoPrincipal,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               Positioned(
