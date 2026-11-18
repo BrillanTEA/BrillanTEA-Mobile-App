@@ -16,7 +16,7 @@ final _camara = RegExp(r'^Cámara$');
 
 /// Datos de uso para que Seguimiento, Favoritos y Premios muestren contenido.
 Future<void> conDatosDeUso(WidgetTester tester) async {
-  await enApp(tester, () async {
+  await tester.runAsync(() async {
     final db = await BaseDatos().db;
     for (final r in rutinasApp) {
       await db.rawInsert('INSERT OR IGNORE INTO rutina (id, nombre) VALUES (?, ?)', [r.id, r.nombre]);

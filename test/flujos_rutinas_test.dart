@@ -15,7 +15,7 @@ import 'soporte/pantallas.dart';
 
 /// Las rutinas 1 a 5 vienen del catálogo; se aseguran para cumplir las claves foráneas.
 Future<void> _conRutinas(WidgetTester tester) async {
-  await enApp(tester, () async {
+  await tester.runAsync(() async {
     final db = await BaseDatos().db;
     for (final r in rutinasApp) {
       await db.rawInsert('INSERT OR IGNORE INTO rutina (id, nombre) VALUES (?, ?)', [r.id, r.nombre]);
@@ -84,7 +84,8 @@ void main() {
     pantalla('una rutina empezada se retoma en el paso guardado y se puede retroceder', (tester) async {
       await conRegistro(tester);
       await _conRutinas(tester);
-      await enApp(tester, () => RutinasService().guardarProgreso(rutinaId: 1, pasoActual: 2, completada: false));
+      await tester.runAsync(
+          () => RutinasService().guardarProgreso(rutinaId: 1, pasoActual: 2, completada: false));
       await abrir(tester, const RutinasPage());
       expect(find.textContaining('CONTINUAR'), findsWidgets);
       await escribir(tester, 0, 'lav');
@@ -102,9 +103,9 @@ void main() {
     pantalla('«Ir a rutina» lista las rutinas del objeto y abre la elegida (RF-03)', (tester) async {
       await conRegistro(tester);
       await _conRutinas(tester);
-      final rutinas = await enApp(tester, () => rutinasQueEmpiezanCon('assets/pictogramas/cano_2414.png'));
+      final rutinas = await tester.runAsync(() => rutinasQueEmpiezanCon('assets/pictogramas/cano_2414.png'));
       await abrir(tester,
-          RutinasConObjetoPage(nombreObjeto: 'Caño', assetObjeto: 'assets/pictogramas/cano_2414.png', rutinas: rutinas));
+          RutinasConObjetoPage(nombreObjeto: 'Caño', assetObjeto: 'assets/pictogramas/cano_2414.png', rutinas: rutinas!));
       expect(find.text('Con esto empieza 1 rutina'), findsOneWidget);
       await tocar(tester, find.text('Lavado de manos'));
       expect(find.byType(RutinasPage), findsOneWidget);

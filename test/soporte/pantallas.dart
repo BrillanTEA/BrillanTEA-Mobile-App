@@ -86,7 +86,7 @@ Future<void> esperarHasta(WidgetTester tester, Finder buscado, {int maxVueltas =
 /// Ejecuta una operación de la app dentro del reloj simulado de la prueba y la deja terminar.
 /// Se usa en lugar de runAsync después de interactuar con la pantalla: si la pantalla dejó una
 /// operación de la base de datos a medias, runAsync esperaría para siempre a que termine.
-Future<T> enApp<T>(WidgetTester tester, Future<T> Function() operacion, {int maxVueltas = 400}) async {
+Future<T> enApp<T>(WidgetTester tester, Future<T> Function() operacion, {int maxVueltas = 150}) async {
   late T resultado;
   Object? error;
   var listo = false;
@@ -161,7 +161,7 @@ Future<void> escribir(WidgetTester tester, int indice, String texto) async {
 }
 
 Future<void> conPerfiles(WidgetTester tester, {PerfilNino nino = ninoPrueba}) async {
-  await enApp(tester, () async {
+  await tester.runAsync(() async {
     await AuthService().actualizarPerfilAdulto(adultoPrueba);
     await AuthService().actualizarPerfilNino(nino);
     await AuthService().setAcuerdoPrivacidadAceptado(true);
@@ -170,14 +170,14 @@ Future<void> conPerfiles(WidgetTester tester, {PerfilNino nino = ninoPrueba}) as
 
 /// Registra el primer uso completo (perfiles y PIN), como al terminar la configuración inicial.
 Future<void> conRegistro(WidgetTester tester, {PerfilNino nino = ninoPrueba}) async {
-  await enApp(tester, () async {
+  await tester.runAsync(() async {
     await AuthService().registrarPrimerUso(adulto: adultoPrueba, pin: pinPrueba, nino: nino);
     await AuthService().setAcuerdoPrivacidadAceptado(true);
   });
 }
 
 Future<void> activarVoz(WidgetTester tester) async {
-  await enApp(tester, () async {
+  await tester.runAsync(() async {
     await AccesibilidadService().setLeerVozAlta(true);
     await Future<void>.delayed(const Duration(milliseconds: 50));
   });
@@ -185,7 +185,7 @@ Future<void> activarVoz(WidgetTester tester) async {
 }
 
 Future<void> desactivarVoz(WidgetTester tester) async {
-  await enApp(tester, () => AccesibilidadService().setLeerVozAlta(false));
+  await tester.runAsync(() => AccesibilidadService().setLeerVozAlta(false));
 }
 
 /// Prueba de una pantalla: ignora solo los desbordes de diseño (la fuente de pruebas dibuja cada

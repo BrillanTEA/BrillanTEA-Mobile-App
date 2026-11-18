@@ -14,7 +14,7 @@ import 'soporte/pantallas.dart';
 // cumplida) (RF-19, US1401 a US1403).
 
 Future<void> _conRutinas(WidgetTester tester) async {
-  await enApp(tester, () async {
+  await tester.runAsync(() async {
     final db = await BaseDatos().db;
     for (final r in rutinasApp) {
       await db.rawInsert('INSERT OR IGNORE INTO rutina (id, nombre) VALUES (?, ?)', [r.id, r.nombre]);
@@ -103,7 +103,7 @@ void main() {
   pantalla('Mis premios celebra cuando el niño llega a la meta del día', (tester) async {
     await conRegistro(tester);
     await _conRutinas(tester);
-    await enApp(tester, () async {
+    await tester.runAsync(() async {
       await PremiosService().guardar(activados: true, periodo: PeriodoPremios.diaria, meta: 3);
       for (final r in rutinasApp) {
         await RutinasService().marcarCompletada(rutinaId: r.id, totalPasos: r.pasos.length);
