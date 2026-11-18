@@ -58,13 +58,18 @@ void main() {
     expect(find.byType(LoginPinPage), findsOneWidget);
   });
 
-  pantalla('el menú de Inicio restablece la app solo si se confirma', (tester) async {
+  pantalla('«Restablecer onboarding» se puede cancelar', (tester) async {
     await conRegistro(tester);
     await abrir(tester, const InicioPage());
     await _abrirMenu(tester);
     await tocar(tester, find.text('Restablecer onboarding (QA)'));
     await tocar(tester, find.text('Cancelar'));
     expect(find.byType(InicioPage), findsOneWidget);
+  });
+
+  pantalla('«Restablecer onboarding» confirmado vuelve a la bienvenida', (tester) async {
+    await conRegistro(tester);
+    await abrir(tester, const InicioPage());
     await _abrirMenu(tester);
     await tocar(tester, find.text('Restablecer onboarding (QA)'));
     await tocar(tester, find.text('Restablecer'));

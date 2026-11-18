@@ -30,13 +30,17 @@ void main() {
       expect(find.byType(NuevoPinRegistroPage), findsOneWidget);
       await esperar(tester);
 
-      final guardar = find.widgetWithText(ElevatedButton, 'Guardar PIN');
-      await tester.tap(guardar.last, warnIfMissed: false);
-      await esperar(tester);
+      // Se pulsa el botón llamando a su acción: durante la transición de pantalla el botón todavía
+      // no tiene posición en la prueba, aunque ya está construido.
+      Future<void> guardar() async {
+        tester.widget<ElevatedButton>(find.widgetWithText(ElevatedButton, 'Guardar PIN').last).onPressed!();
+        await esperar(tester);
+      }
+
+      await guardar();
       expect(find.text('Por favor ingresa los 4 dígitos.'), findsOneWidget);
       await escribir(tester, 0, pinPrueba);
-      await tester.tap(guardar.last, warnIfMissed: false);
-      await esperar(tester);
+      await guardar();
       await esperarHasta(tester, find.text('¡PIN guardado!'));
       expect(await _servicio(tester, () => AuthService().isConfigured()), isTrue);
       expect(await _servicio(tester, () => AuthService().verificarPin(pinPrueba)), isTrue);
