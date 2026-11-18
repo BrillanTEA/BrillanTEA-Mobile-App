@@ -6,9 +6,9 @@
 | Dato | Valor |
 |---|---|
 | Versión de la app | 0.2.0-alpha.1+14 |
-| Commit probado | _(ver `entorno.txt`)_ |
-| Fecha de ejecución | _ |
-| Versión de Flutter | _(ver `entorno.txt`)_ |
+| Commit probado | 6988538 (develop) |
+| Fecha de ejecución de las pruebas automatizadas | 17/11/2026, 18:19 (UTC-5) |
+| Versión de Flutter | 3.47.5 (stable), Dart 3.13.4 |
 | Celular (modelo y Android) | _ |
 | Responsables | _ |
 
@@ -16,18 +16,18 @@
 
 | Verificación | Resultado |
 |---|---|
-| `flutter analyze` | _ |
-| Pruebas aprobadas / fallidas | _ / _ |
-| Cobertura de líneas total | _ % |
+| `flutter analyze` | Sin problemas |
+| Pruebas aprobadas / fallidas | 77 / 0 |
+| Cobertura de líneas total | 5,7 % (469 de 8252 líneas) |
 
-Cobertura por capa (copiar `cobertura.md`):
+Cobertura por capa (de `docs/qa/evidencias/2026-11-17_1819/cobertura.md`; la raíz `lib/main.dart` tiene 19 líneas y 68,4 %):
 
 | Capa | Líneas | Cubiertas | Cobertura |
 |---|---|---|---|
-| presentacion | _ | _ | _ |
-| dominio | _ | _ | _ |
-| infraestructura | _ | _ | _ |
-| datos | _ | _ | _ |
+| presentacion | 6884 | 165 | 2,4 % |
+| dominio | 807 | 117 | 14,5 % |
+| infraestructura | 318 | 20 | 6,3 % |
+| datos | 224 | 154 | 68,8 % |
 
 La misma ejecución queda en GitHub Actions (workflow **CI**, artefacto `evidencias-pruebas`).
 
