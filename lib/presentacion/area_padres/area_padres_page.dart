@@ -1137,18 +1137,22 @@ class AyudaSoportePage extends StatelessWidget {
     required String titulo,
     required DocumentoLegal documento,
   }) {
-    return ListTile(
-      title: Text(
-        titulo,
-        style: const TextStyle(
-          fontFamily: 'Atkinson Hyperlegible Next',
-          fontSize: 13.5,
-          fontWeight: FontWeight.w600,
-          color: colorTextoPrincipal,
+    // Material transparente: la tarjeta tiene fondo propio y, sin él, el efecto al tocar quedaba oculto.
+    return Material(
+      type: MaterialType.transparency,
+      child: ListTile(
+        title: Text(
+          titulo,
+          style: const TextStyle(
+            fontFamily: 'Atkinson Hyperlegible Next',
+            fontSize: 13.5,
+            fontWeight: FontWeight.w600,
+            color: colorTextoPrincipal,
+          ),
         ),
+        trailing: const Icon(Icons.chevron_right_rounded, color: colorTextoSecundario, size: 26),
+        onTap: () => mostrarHojaDocumentoLegal(context, documento),
       ),
-      trailing: const Icon(Icons.chevron_right_rounded, color: colorTextoSecundario, size: 26),
-      onTap: () => mostrarHojaDocumentoLegal(context, documento),
     );
   }
 }
