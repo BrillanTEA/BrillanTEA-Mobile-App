@@ -1,0 +1,11 @@
+Flutter 3.47.5 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 6a19cca564 (9 weeks ago) • 2026-09-17 14:13:22 -0400
+Engine • hash ab598368592da0064197e2bc15c7f5b0a2c6bb1f (revision af7e796e16) (2 months ago) • 2026-09-16 18:35:09.000Z
+Tools • Dart 3.13.4 • DevTools 2.60.0
+
+Commit: ee8bd9f0baa30bcdfd8a025a1bbf0423ed8fb8f6
+Fecha del commit: 2026-11-18 20:21:48 +0000
+Mensaje: docs(qa): record the manual run of 2026-11-18 and defects DEF-19 to DEF-23
+Rama: fix/manual-qa-defects
+version: 0.2.0-alpha.1+14
+Ejecutado: 2026-11-18 15:30:18 -0500

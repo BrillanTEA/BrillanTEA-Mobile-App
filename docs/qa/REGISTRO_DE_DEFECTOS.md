@@ -29,6 +29,7 @@ verificar con el caso indicado.
 | DEF-21 | Rutinas | Las categorías de rutinas tenían subtítulos fijos («2 rutinas») que no cambiaban al desactivar una rutina. Ejecución manual del 18 de noviembre de 2026. | `23b631b` fix(routines): show the active routine count of each category | CP-33 | Corregido |
 | DEF-22 | Interfaz | En las hojas inferiores (documentos legales, reporte y Cámara), el botón final quedaba detrás de la barra de navegación de Android. Observado en el celular durante la ejecución manual. | `bb76735` fix(ui): keep bottom sheet buttons above the system navigation bar | CP-29, CP-20 | Corregido |
 | DEF-23 | Emociones | Las imágenes de las emociones tenían márgenes y tamaños distintos, y la cuadrícula no estaba centrada. Observado en el celular durante la ejecución manual. | `155416d` fix(emotions): give the emotion pictograms the same size and center | CP-13 | Corregido |
+| DEF-24 | Emociones | El contenido de cada tarjeta de emoción quedaba pegado a la izquierda (la columna tomaba el ancho de la imagen) y la barra de desplazamiento se veía como una franja blanca al costado. Observado en el celular al revisar DEF-23. | `7a0e3b8` fix(emotions): center each pictogram in its card and drop the scrollbar | CP-13 | Corregido |
 
 ## Cómo registrar un defecto nuevo
 

@@ -76,7 +76,7 @@ pantalla y falta una verificación humana (voz, red apagada, teclado o cámara).
 | CP-10 | Parcial | La petición se registró con modo avión; falta escuchar la voz y repetir con el Wi-Fi apagado (se mantuvo para adb). | `CP-10_*` |
 | CP-11 | Parcial | La frase se arma bien; falta escuchar la voz. | `CP-11_*` |
 | CP-12 | Parcial | Falta escuchar la voz. | `CP-12_*` |
-| CP-13 | Parcial | Se registra una sola vez y en femenino; falta escuchar la voz. Las imágenes de emociones tenían tamaños distintos (DEF-23). | `CP-13_*` |
+| CP-13 | Parcial | Se registra una sola vez y en femenino; falta escuchar la voz. Las imágenes de emociones tenían tamaños distintos y no estaban centradas (DEF-23 y DEF-24, corregidos). | `CP-13_*` |
 | CP-14 | Parcial | Falta escuchar la voz. | `CP-14_*` |
 | CP-15 | Aprobado | — | `CP-15_*` |
 | CP-16 | Fallido | Favoritos no se reordenaba al volver a la pestaña (DEF-19, corregido; repetir). | `CP-16_*` |
