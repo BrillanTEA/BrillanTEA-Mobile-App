@@ -20,6 +20,7 @@ import '../../infraestructura/perfil_yolo26.dart';
 import '../../infraestructura/servicio_voz.dart';
 import '../../infraestructura/stats.dart';
 import '../rutinas/rutinas_page.dart';
+import 'realidad_aumentada.dart';
 
 /// Umbral del proyecto: latencia de extremo a extremo por frame.
 const double kObjetivoMs = 150;
@@ -28,8 +29,6 @@ const double kObjetivoMs = 150;
 // modo_compilacion.dart. Solo aparece en la versión QA (--dart-define=QA=true).
 
 /// Tamaño de la tarjeta de realidad aumentada que acompaña a cada objeto.
-const double _anchoTarjetaRA = 172;
-const double _altoTarjetaRA = 64;
 
 /// Representa una detección emparejada con el catálogo clínico ARASAAC.
 class DetectedObjectItem {
@@ -1661,44 +1660,18 @@ class _DetectorPageState extends State<DetectorPage>
   Widget _capaRealidadAumentada(Size vista) {
     final frame = _tamanoFrame();
     final hijos = <Widget>[];
-    final ocupadas = <Rect>[];
-    const margen = 8.0;
-    final maxX = max(margen, vista.width - _anchoTarjetaRA - margen);
-    final maxY = max(margen, vista.height - _altoTarjetaRA - margen);
-    for (final det in _detectedItems.take(_maxObjetosSimultaneos)) {
-      final caja = cajaEnVista(det.detection, vista, frame)
-          .intersect(Offset.zero & vista);
-      if (caja.width <= 0 || caja.height <= 0) continue;
+    final dets = _detectedItems.take(_maxObjetosSimultaneos).toList();
+    final ubicaciones = ubicarTarjetasRA(
+        [for (final det in dets) cajaEnVista(det.detection, vista, frame)],
+        vista);
+    for (var i = 0; i < dets.length; i++) {
+      final det = dets[i];
+      final ubicacion = ubicaciones[i];
+      if (ubicacion == null) continue;
+      final caja = ubicacion.caja;
       final clave = det.item.clave;
-      // Caja muy grande (objeto muy cerca, o una caja holgada del modelo, típica de "mochila"):
-      // no se dibuja el marco, que taparía la cámara, y la tarjeta va sobre el centro del objeto.
-      final grande =
-          caja.width * caja.height > 0.40 * vista.width * vista.height;
-      final x =
-          (caja.center.dx - _anchoTarjetaRA / 2).clamp(margen, maxX).toDouble();
-      var y = caja.top - _altoTarjetaRA - 10; // encima del objeto
-      if (grande) {
-        y = (caja.center.dy - _altoTarjetaRA / 2)
-            .clamp(margen, maxY)
-            .toDouble();
-      } else {
-        if (y < margen) y = caja.bottom + 10; // si no cabe arriba, debajo
-        if (y > maxY) {
-          y = (caja.top + 10).clamp(margen, maxY).toDouble(); // dentro, arriba
-        }
-      }
-      var r = Rect.fromLTWH(x, y, _anchoTarjetaRA, _altoTarjetaRA);
-      for (final o in ocupadas) {
-        if (r.overlaps(o.inflate(4))) {
-          y = (o.bottom + 8 <= maxY)
-              ? o.bottom + 8
-              : max(margen, o.top - _altoTarjetaRA - 8);
-          r = Rect.fromLTWH(x, y, _anchoTarjetaRA, _altoTarjetaRA);
-        }
-      }
-      ocupadas.add(r);
       final enfocado = clave == _focusedClave;
-      if (!grande) {
+      if (!ubicacion.grande) {
         hijos.add(AnimatedPositioned(
           key: ValueKey('marco_$clave'),
           duration: const Duration(milliseconds: 140),
@@ -1723,10 +1696,10 @@ class _DetectorPageState extends State<DetectorPage>
       hijos.add(AnimatedPositioned(
         key: ValueKey('tarjeta_$clave'),
         duration: const Duration(milliseconds: 140),
-        left: x,
-        top: y,
-        width: _anchoTarjetaRA,
-        height: _altoTarjetaRA,
+        left: ubicacion.tarjeta.left,
+        top: ubicacion.tarjeta.top,
+        width: kAnchoTarjetaRA,
+        height: kAltoTarjetaRA,
         child: _tarjetaRA(det, enfocado),
       ));
     }
@@ -1987,22 +1960,4 @@ class _BoxPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_BoxPainter old) => old.dets != dets;
-}
-
-/// Convierte una detección (normalizada 0–1 sobre el frame girado) a píxeles de la vista,
-/// teniendo en cuenta el recorte de BoxFit.cover de la vista previa.
-Rect cajaEnVista(Detection d, Size vista, Size? frame) {
-  if (frame == null || frame.width <= 0 || frame.height <= 0) {
-    return Rect.fromLTRB(d.left * vista.width, d.top * vista.height,
-        d.right * vista.width, d.bottom * vista.height);
-  }
-  final escala = max(vista.width / frame.width, vista.height / frame.height);
-  final dx = (vista.width - frame.width * escala) / 2;
-  final dy = (vista.height - frame.height * escala) / 2;
-  return Rect.fromLTRB(
-    dx + d.left * frame.width * escala,
-    dy + d.top * frame.height * escala,
-    dx + d.right * frame.width * escala,
-    dy + d.bottom * frame.height * escala,
-  );
 }
