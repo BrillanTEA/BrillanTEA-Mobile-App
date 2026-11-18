@@ -48,6 +48,8 @@ fi
 ULTIMA=$(grep -oE '\+[0-9]+( ~[0-9]+)?( -[0-9]+)?: (All tests passed!|Some tests failed\.)' "$DIR/flutter_test.txt" | tail -1)
 APROBADAS=$(echo "$ULTIMA" | grep -oE '^\+[0-9]+' | tr -d '+')
 FALLIDAS=$(echo "$ULTIMA" | grep -oE ' -[0-9]+' | tr -d ' -')
+# Si la ejecución se interrumpió o hubo fallas, no se informa como aprobada.
+if [ -n "${FALLIDAS:-}" ] || ! grep -q 'All tests passed!' "$DIR/flutter_test.txt"; then TEST=1; fi
 
 {
   echo "# Resumen de la ejecución de pruebas ($FECHA)"

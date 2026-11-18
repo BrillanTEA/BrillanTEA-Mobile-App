@@ -18,7 +18,7 @@ import 'soporte/pantallas.dart';
 // recuperación del PIN, creación del PIN al registrarse, cambio de PIN y borrado de los datos
 // (RF-06, RF-08, US1003, US1007, US1201 a US1204).
 
-Future<T?> _servicio<T>(WidgetTester tester, Future<T> Function() f) => tester.runAsync(f);
+Future<T> _servicio<T>(WidgetTester tester, Future<T> Function() f) => enApp(tester, f);
 
 Finder _enDialogo(String texto) =>
     find.descendant(of: find.byType(Dialog), matching: find.text(texto));
@@ -100,10 +100,12 @@ void main() {
       await esperarHasta(tester, find.text('Respuestas incorrectas'));
       expect(find.text('Te quedan 2 intentos'), findsOneWidget);
 
+      // «Reintentar» limpia las respuestas; luego se escriben otra vez y se verifica.
+      await tocar(tester, find.text('Reintentar'));
       await escribir(tester, 0, ' maria ');
       await escribir(tester, 1, 'GOMEZ');
       await escribir(tester, 2, 'barranco');
-      await tocar(tester, find.text('Reintentar'));
+      await tocar(tester, find.text('Verificar'));
       await esperarHasta(tester, find.text('¡Identidad verificada!'));
       expect(find.text('¡Identidad verificada!'), findsOneWidget);
 
@@ -125,10 +127,11 @@ void main() {
       await conRegistro(tester);
       await abrirEncima(tester, RestablecerPinPage(onPinRestablecido: () {}));
       for (var intento = 0; intento < 3; intento++) {
+        if (find.text('Reintentar').evaluate().isNotEmpty) await tocar(tester, find.text('Reintentar'));
         await escribir(tester, 0, 'Rosa');
         await escribir(tester, 1, 'Pérez');
         await escribir(tester, 2, 'Lince');
-        await tocar(tester, find.text(intento == 0 ? 'Verificar' : 'Reintentar'));
+        await tocar(tester, find.text('Verificar'));
         await esperarHasta(tester,
             intento < 2 ? find.text('Respuestas incorrectas') : find.text('Opción bloqueada'));
       }
@@ -141,7 +144,7 @@ void main() {
 
   group('PIN del registro y cambio de PIN (US1202, US1204)', () {
     pantalla('«Creando el espacio» lleva a crear el PIN y el PIN guarda el registro', (tester) async {
-      await abrir(tester, const CreandoEspacioPage(perfilAdulto: adultoPrueba, perfilNino: ninoPrueba));
+      await abrirEncima(tester, const CreandoEspacioPage(perfilAdulto: adultoPrueba, perfilNino: ninoPrueba));
       expect(find.textContaining('Mateo'), findsWidgets);
       await tester.pump(const Duration(seconds: 2));
       await esperar(tester);
@@ -163,7 +166,7 @@ void main() {
       await escribir(tester, 0, '13');
       await escribir(tester, 0, '1357');
       await tocar(tester, find.text('Guardar PIN'));
-      await esperarHasta(tester, find.text('Abrir pantalla'));
+      await esperarHastaQueNo(tester, find.byType(CambiarPinPage));
       expect(find.byType(CambiarPinPage), findsNothing);
       expect(await _servicio(tester, () => AuthService().verificarPin('1357')), isTrue);
     });

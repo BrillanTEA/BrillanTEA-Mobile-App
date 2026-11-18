@@ -74,8 +74,8 @@ void main() {
       }
       await esperarHasta(tester, find.text('¡Ganaste una medalla!'));
       expect(find.text('¡Ganaste una medalla!'), findsWidgets);
-      final eventos = await tester.runAsync(() => RegistroUsoService().eventos(DateTime(2000), DateTime(2100)));
-      expect(eventos!.map((e) => e.tipo), containsAll(<String>['rutina_inicio', 'rutina_paso', 'rutina_fin']));
+      final eventos = await enApp(tester, () => RegistroUsoService().eventos(DateTime(2000), DateTime(2100)));
+      expect(eventos.map((e) => e.tipo), containsAll(<String>['rutina_inicio', 'rutina_paso', 'rutina_fin']));
 
       await tocar(tester, find.text('Ver mis premios'));
       expect(find.byType(MisPremiosPage), findsOneWidget);
@@ -105,8 +105,8 @@ void main() {
       await tocar(tester, porEtiqueta('Volver'));
       await tocar(tester, porEtiqueta('Volver'));
       await tocar(tester, porEtiqueta('Volver'));
-      final progreso = await tester.runAsync(() => RutinasService().getProgresoRutina(1));
-      expect(progreso!.completada, isFalse);
+      final progreso = await enApp(tester, () => RutinasService().getProgresoRutina(1));
+      expect(progreso.completada, isFalse);
     });
 
     pantalla('«Ir a rutina» lista las rutinas del objeto y abre la elegida (RF-03)', (tester) async {

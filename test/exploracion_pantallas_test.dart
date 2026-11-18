@@ -75,11 +75,13 @@ void _explorar(String nombre, Widget Function() pagina,
     pila.rutas = 1;
     Future<void> reabrir() => tocar(tester, find.text('Abrir pantalla'));
     await reabrir();
+    final reloj = Stopwatch()..start();
     final toques =
         await explorar(tester, pila, profundidad: profundidad, evitar: _camara, reabrir: reabrir);
+    debugPrint('Exploración de $nombre: $toques toques en ${reloj.elapsed.inSeconds} s');
     expect(toques, greaterThan(0));
     if (conVoz) await desactivarVoz(tester);
-  }, timeout: const Timeout(Duration(minutes: 8)));
+  }, timeout: const Timeout(Duration(minutes: 4)));
 }
 
 /// Pantalla base: la pantalla explorada se abre encima, así sus botones «Volver» tienen a dónde volver.

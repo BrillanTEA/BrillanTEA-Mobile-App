@@ -81,6 +81,37 @@ Future<void> esperarHasta(WidgetTester tester, Finder buscado, {int maxVueltas =
   }
 }
 
+/// Ejecuta una operación de la app dentro del reloj simulado de la prueba y la deja terminar.
+/// Se usa en lugar de runAsync después de interactuar con la pantalla: si la pantalla dejó una
+/// operación de la base de datos a medias, runAsync esperaría para siempre a que termine.
+Future<T> enApp<T>(WidgetTester tester, Future<T> Function() operacion, {int maxVueltas = 150}) async {
+  late T resultado;
+  Object? error;
+  var listo = false;
+  operacion().then((valor) {
+    resultado = valor;
+    listo = true;
+  }, onError: (Object e) {
+    error = e;
+    listo = true;
+  });
+  for (var i = 0; i < maxVueltas && !listo; i++) {
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 20)));
+    await tester.pump(const Duration(milliseconds: 50));
+  }
+  if (error != null) throw error!;
+  if (!listo) throw StateError('La operación de la app no terminó');
+  return resultado;
+}
+
+/// Espera hasta que desaparezca [buscado].
+Future<void> esperarHastaQueNo(WidgetTester tester, Finder buscado, {int maxVueltas = 60}) async {
+  for (var i = 0; i < maxVueltas && buscado.evaluate().isNotEmpty; i++) {
+    await tester.runAsync(() => Future<void>.delayed(const Duration(milliseconds: 100)));
+    await tester.pump(const Duration(milliseconds: 200));
+  }
+}
+
 Future<void> abrir(WidgetTester tester, Widget pagina, {List<NavigatorObserver> observadores = const []}) async {
   await tester.binding.setSurfaceSize(const Size(412, 915));
   await tester.runAsync(() async {
@@ -145,7 +176,11 @@ void pantalla(String descripcion, Future<void> Function(WidgetTester tester) cue
     };
     try {
       await cuerpo(tester);
+      // Deja terminar lo que la pantalla dejó a medias (por ejemplo, guardar en la base de datos)
+      // antes de cerrarla; si no, la base queda ocupada y las pruebas siguientes se quedan esperando.
+      await esperar(tester);
       await tester.pumpWidget(const SizedBox.shrink());
+      await esperar(tester);
       await tester.pump(const Duration(seconds: 2));
     } finally {
       FlutterError.onError = previo;
@@ -190,7 +225,7 @@ Future<int> explorar(
   WidgetTester tester,
   ContadorRutas pila, {
   int profundidad = 2,
-  int maxPorPantalla = 25,
+  int maxPorPantalla = 20,
   RegExp? evitar,
   Future<void> Function()? reabrir,
 }) async {
@@ -226,7 +261,7 @@ Future<int> explorar(
     }
     if (pila.rutas > inicio && profundidad > 1) {
       toques += await explorar(tester, pila,
-          profundidad: profundidad - 1, maxPorPantalla: 8, evitar: evitar);
+          profundidad: profundidad - 1, maxPorPantalla: 6, evitar: evitar);
     }
     var guardia = 0;
     while (pila.rutas > inicio && guardia++ < 6) {
