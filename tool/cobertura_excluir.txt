@@ -1,0 +1,6 @@
+# Archivos que solo funcionan en el celular y que flutter test no puede ejecutar en el computador.
+# Se excluyen solo de la meta de cobertura (>= 85 %); siguen apareciendo en el total global.
+# Se verifican con los casos de prueba manuales de la Cámara y con la evaluación del modelo.
+lib/presentacion/camara/detector_page.dart
+lib/infraestructura/detector_worker.dart
+lib/infraestructura/bloqueo_service.dart

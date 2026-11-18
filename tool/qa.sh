@@ -35,7 +35,14 @@ COBERTURA="sin datos"
 if [ -f coverage/lcov.info ]; then
   cp coverage/lcov.info "$DIR/lcov.info"
   bash tool/resumen_cobertura.sh coverage/lcov.info > "$DIR/cobertura.md"
-  COBERTURA=$(grep '^| \*\*Total' "$DIR/cobertura.md" | awk -F'|' '{gsub(/[ *]/,"",$5); print $5}')
+  COBERTURA=$(grep '^| \*\*Total\*\*' "$DIR/cobertura.md" | awk -F'|' '{gsub(/[ *]/,"",$5); print $5}')
+  COBERTURA_META=$(grep '^| \*\*Total sin' "$DIR/cobertura.md" | awk -F'|' '{gsub(/[ *]/,"",$5); print $5}')
+fi
+META=85
+CUMPLE_META=1
+if [ -n "${COBERTURA_META:-}" ]; then
+  VALOR=$(echo "$COBERTURA_META" | tr -d '%' | tr ',' '.')
+  awk -v v="$VALOR" -v m="$META" 'BEGIN { exit !(v >= m) }' && CUMPLE_META=0
 fi
 
 ULTIMA=$(grep -oE '\+[0-9]+( ~[0-9]+)?( -[0-9]+)?: (All tests passed!|Some tests failed\.)' "$DIR/flutter_test.txt" | tail -1)
@@ -51,7 +58,8 @@ FALLIDAS=$(echo "$ULTIMA" | grep -oE ' -[0-9]+' | tr -d ' -')
   echo "| flutter test | $([ $TEST -eq 0 ] && echo 'Todas las pruebas pasaron' || echo 'Hay pruebas fallidas, ver flutter_test.txt') |"
   echo "| Pruebas aprobadas | ${APROBADAS:-?} |"
   echo "| Pruebas fallidas | ${FALLIDAS:-0} |"
-  echo "| Cobertura de líneas (archivos cargados por las pruebas) | $COBERTURA |"
+  echo "| Cobertura de líneas global (archivos cargados por las pruebas) | $COBERTURA |"
+  echo "| Cobertura sin el código que requiere el celular (meta ≥ $META %) | ${COBERTURA_META:-sin datos} ($([ $CUMPLE_META -eq 0 ] && echo 'cumple' || echo 'no cumple')) |"
   echo
   echo "Entorno: ver entorno.txt. Cobertura por capa: ver cobertura.md."
 } > "$DIR/RESUMEN.md"
@@ -59,4 +67,4 @@ FALLIDAS=$(echo "$ULTIMA" | grep -oE ' -[0-9]+' | tr -d ' -')
 cat "$DIR/RESUMEN.md"
 echo
 echo "Evidencias guardadas en $DIR"
-[ $ANALYZE -eq 0 ] && [ $TEST -eq 0 ]
+[ $ANALYZE -eq 0 ] && [ $TEST -eq 0 ] && [ $CUMPLE_META -eq 0 ]
