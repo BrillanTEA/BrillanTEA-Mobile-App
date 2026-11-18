@@ -3,7 +3,6 @@ import 'package:brillantea/presentacion/area_padres/privacidad_datos_page.dart';
 import 'package:brillantea/presentacion/area_padres/seguimiento_page.dart';
 import 'package:brillantea/presentacion/area_padres/tutoriales_page.dart';
 import 'package:brillantea/presentacion/premios/premios_page.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import 'soporte/exploracion.dart';
 

@@ -3,7 +3,6 @@ import 'package:brillantea/presentacion/area_padres/cambiar_pin_page.dart';
 import 'package:brillantea/presentacion/area_padres/configuracion_cuenta_page.dart';
 import 'package:brillantea/presentacion/area_padres/login_pin_page.dart';
 import 'package:brillantea/presentacion/area_padres/rutinas_activas_config_page.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import 'soporte/exploracion.dart';
 

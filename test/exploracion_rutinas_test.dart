@@ -1,7 +1,6 @@
 import 'package:brillantea/presentacion/premios/premios_page.dart';
 import 'package:brillantea/presentacion/rutinas/rutinas_categorias_page.dart';
 import 'package:brillantea/presentacion/rutinas/rutinas_page.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import 'soporte/exploracion.dart';
 

@@ -1,5 +1,4 @@
 import 'package:brillantea/presentacion/inicio/inicio_page.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import 'soporte/exploracion.dart';
 

@@ -1,6 +1,5 @@
 import 'package:brillantea/presentacion/area_padres/categoria_rutinas_config_page.dart';
 import 'package:brillantea/presentacion/area_padres/perfil_menor_page.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import 'soporte/exploracion.dart';
 import 'soporte/pantallas.dart';

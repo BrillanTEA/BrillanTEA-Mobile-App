@@ -3,7 +3,6 @@ import 'package:brillantea/presentacion/registro/bienvenida_page.dart';
 import 'package:brillantea/presentacion/registro/perfil_nino_page.dart';
 import 'package:brillantea/presentacion/registro/perfil_responsable_page.dart';
 import 'package:brillantea/presentacion/registro/terminos_privacidad_page.dart';
-import 'package:flutter_test/flutter_test.dart';
 
 import 'soporte/exploracion.dart';
 import 'soporte/pantallas.dart';

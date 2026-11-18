@@ -26,8 +26,7 @@ void main() {
     pantalla('«Creando el espacio» lleva a crear el PIN y el PIN guarda el registro', (tester) async {
       await abrirEncima(tester, const CreandoEspacioPage(perfilAdulto: adultoPrueba, perfilNino: ninoPrueba));
       expect(find.textContaining('Mateo'), findsWidgets);
-      await tester.pump(const Duration(seconds: 2));
-      await esperar(tester);
+      await esperarHasta(tester, find.text('Crea un nuevo PIN'));
       expect(find.byType(NuevoPinRegistroPage), findsOneWidget);
 
       await tocar(tester, find.text('Guardar PIN'));
@@ -110,8 +109,7 @@ void main() {
   group('Pantalla de carga (US1501)', () {
     pantalla('la primera vez lleva a «¡Hola!» y a los términos', (tester) async {
       await abrirEncima(tester, const BienvenidaPage());
-      await tester.pump(const Duration(seconds: 2));
-      await esperar(tester);
+      await esperarHasta(tester, find.text('¡Hola!'));
       expect(find.text('¡Hola!'), findsOneWidget);
       await tocar(tester, find.text('Comenzar'));
       expect(find.byType(TerminosPrivacidadPage), findsOneWidget);
@@ -120,8 +118,7 @@ void main() {
     pantalla('con la app configurada lleva al Inicio', (tester) async {
       await conRegistro(tester);
       await abrirEncima(tester, const BienvenidaPage());
-      await tester.pump(const Duration(seconds: 2));
-      await esperar(tester);
+      await esperarHasta(tester, find.byType(InicioPage));
       expect(find.byType(InicioPage), findsOneWidget);
     });
   });

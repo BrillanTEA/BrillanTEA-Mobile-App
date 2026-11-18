@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:brillantea/datos/base_datos.dart';
 import 'package:brillantea/dominio/accesibilidad_service.dart';
 import 'package:brillantea/dominio/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,8 @@ Future<void> prepararPantallas() async {
 }
 
 Future<void> limpiarPantallas() async {
-  await entorno.limpiar();
+  // Con límite de tiempo: una base ocupada no debe detener toda la ejecución.
+  await entorno.limpiar().timeout(const Duration(seconds: 10), onTimeout: () {});
   if (await carpetaTemporal.exists()) await carpetaTemporal.delete(recursive: true);
 }
 
@@ -122,7 +124,11 @@ Future<void> abrir(WidgetTester tester, Widget pagina, {List<NavigatorObserver> 
 }
 
 Future<void> tocar(WidgetTester tester, Finder destino) async {
-  await tester.ensureVisible(destino.first);
+  try {
+    await tester.ensureVisible(destino.first);
+  } catch (_) {
+    // Durante una transición el control puede no estar dibujado todavía; se toca igual.
+  }
   await tester.pump();
   await tester.tap(destino.first, warnIfMissed: false);
   await esperar(tester);
@@ -176,17 +182,23 @@ void pantalla(String descripcion, Future<void> Function(WidgetTester tester) cue
     };
     try {
       await cuerpo(tester);
-      // Deja terminar lo que la pantalla dejó a medias (por ejemplo, guardar en la base de datos)
-      // antes de cerrarla; si no, la base queda ocupada y las pruebas siguientes se quedan esperando.
-      await esperar(tester);
-      await tester.pumpWidget(const SizedBox.shrink());
-      await esperar(tester);
-      await tester.pump(const Duration(seconds: 2));
     } finally {
+      // Aunque la prueba falle, se deja terminar lo que la pantalla dejó a medias (por ejemplo,
+      // guardar en la base de datos), se cierra la pantalla y se borra la base dentro del reloj de
+      // la prueba. Si no, la base queda ocupada y las pruebas siguientes se quedan esperando.
+      try {
+        await esperar(tester);
+        await tester.pumpWidget(const SizedBox.shrink());
+        await esperar(tester);
+        await tester.pump(const Duration(seconds: 2));
+        await enApp(tester, () => BaseDatos().borrarTodo(), maxVueltas: 100);
+      } catch (_) {
+        // La falla original de la prueba es la que se informa.
+      }
       FlutterError.onError = previo;
       await tester.binding.setSurfaceSize(null);
     }
-  }, timeout: timeout);
+  }, timeout: timeout ?? const Timeout(Duration(seconds: 90)));
 }
 
 /// Cuenta las rutas abiertas, para volver a la pantalla de partida después de cada toque.

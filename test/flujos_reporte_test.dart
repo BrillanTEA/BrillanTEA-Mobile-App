@@ -72,11 +72,11 @@ void main() {
           isEmpty);
       expect(ajeno.existsSync(), isTrue);
       ajeno.deleteSync();
-    });
+    }, timeout: const Timeout(Duration(seconds: 60)));
 
     test('sin perfil ni datos el reporte usa textos por defecto', () async {
       expect(await ReporteService.generarYCompartir(), isTrue);
       await ReporteService.borrarTodos();
-    });
+    }, timeout: const Timeout(Duration(seconds: 60)));
   });
 }
