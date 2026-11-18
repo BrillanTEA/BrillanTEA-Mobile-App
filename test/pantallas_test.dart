@@ -1,3 +1,4 @@
+import 'package:brillantea/dominio/accesibilidad_service.dart';
 import 'package:brillantea/dominio/auth_service.dart';
 import 'package:brillantea/dominio/favoritos_service.dart';
 import 'package:brillantea/dominio/registro_uso_service.dart';
@@ -80,6 +81,19 @@ Future<void> _conPerfiles(WidgetTester tester) async {
   });
 }
 
+/// Activa «Leer en voz alta» en Accesibilidad y olvida lo que se dijo al activarla.
+Future<void> _activarVoz(WidgetTester tester) async {
+  await tester.runAsync(() async {
+    await AccesibilidadService().setLeerVozAlta(true);
+    await Future<void>.delayed(const Duration(milliseconds: 100));
+  });
+  entorno.voz.clear();
+}
+
+Future<void> _desactivarVoz(WidgetTester tester) async {
+  await tester.runAsync(() => AccesibilidadService().setLeerVozAlta(false));
+}
+
 /// Prueba de una pantalla: ignora solo los desbordes de diseño y cierra la pantalla al final
 /// para que se cancelen sus temporizadores.
 void _pantalla(String descripcion, Future<void> Function(WidgetTester tester) cuerpo) {
@@ -100,8 +114,9 @@ void _pantalla(String descripcion, Future<void> Function(WidgetTester tester) cu
   });
 }
 
+final entorno = EntornoPrueba();
+
 void main() {
-  final entorno = EntornoPrueba();
   setUp(() async {
     await entorno.preparar();
     FavoritosService().limpiarMemoria();
@@ -189,7 +204,7 @@ void main() {
       expect(find.byType(InicioPage), findsOneWidget);
     });
 
-    _pantalla('Responder dice «Sí» y lo guarda en el registro de uso (US605)', (tester) async {
+    _pantalla('Responder guarda «Sí» y solo lo dice en voz si el adulto lo activó (US605, US1102)', (tester) async {
       await _abrir(tester, const ComunicacionPage());
       expect(find.text('Pedir algo'), findsOneWidget);
       expect(find.text('Armar mi frase'), findsOneWidget);
@@ -198,7 +213,13 @@ void main() {
       final eventos = await tester.runAsync(
           () => RegistroUsoService().eventos(DateTime(2000), DateTime(2100)));
       expect(eventos!.map((e) => e.clave), contains('si'));
+      // La lectura en voz alta viene desactivada (baja estimulación): no se dice nada.
+      expect(entorno.voz.where((l) => l.method == 'speak'), isEmpty);
+
+      await _activarVoz(tester);
+      await _tocar(tester, find.text('Sí'));
       expect(entorno.voz.where((l) => l.method == 'speak'), isNotEmpty);
+      await _desactivarVoz(tester);
     });
 
     _pantalla('Pedir algo muestra las categorías de necesidades (US601)', (tester) async {
@@ -218,8 +239,13 @@ void main() {
       await _conPerfiles(tester);
       await _abrir(tester, const EmocionesPage());
       expect(find.text('Alegre'), findsWidgets);
+      await _activarVoz(tester);
       await _tocar(tester, find.text('Alegre'));
       expect(entorno.voz.where((l) => l.method == 'speak'), isNotEmpty);
+      final eventos = await tester.runAsync(
+          () => RegistroUsoService().eventos(DateTime(2000), DateTime(2100)));
+      expect(eventos!.map((e) => e.clave), contains('alegre'));
+      await _desactivarVoz(tester);
     });
 
     _pantalla('Situaciones abre «Ir al doctor» (US801)', (tester) async {
