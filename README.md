@@ -49,12 +49,15 @@ lib/
 
 ## Pruebas y calidad
 
-- `test/` tiene 15 archivos de pruebas unitarias, de integración con SQLite y de widgets: PIN,
-  recuperación y consentimiento, premios y rutinas, favoritos y registro de uso, accesibilidad,
-  catálogo y migraciones de la base, contrato del modelo, comunicación, vocabulario y emociones,
-  tutoriales, documentos legales y 22 pantallas con sus flujos principales. `test/soporte/` crea la
-  base SQLite temporal y simula la voz de Android.
-- `bash tool/qa.sh` ejecuta `flutter analyze` y `flutter test --coverage` y guarda la evidencia en
+- `test/` tiene 40 archivos de pruebas unitarias, de integración con SQLite, de widgets y
+  exploratorias: PIN, recuperación y consentimiento, premios y rutinas, favoritos y registro de uso,
+  accesibilidad, catálogo y migraciones de la base, contrato del modelo, pre y posprocesamiento de
+  YOLO, realidad aumentada, comunicación, vocabulario y emociones, tutoriales, documentos legales,
+  flujos completos de cada módulo y del área de padres, y una exploración que toca cada control de 36
+  pantallas. `test/soporte/` crea la base SQLite temporal y simula la voz, la carpeta temporal y la
+  hoja de compartir de Android.
+- `bash tool/qa.sh` ejecuta `flutter analyze` y `flutter test --coverage`, comprueba la meta de 85 % de
+  cobertura sin el código que requiere el celular (`tool/cobertura_excluir.txt`) y guarda la evidencia en
   `docs/qa/evidencias/<fecha>/` (resumen, salida de las pruebas en texto y JSON, cobertura por capa y entorno).
 - CI: `.github/workflows/ci.yml` repite el análisis y las pruebas en cada push a `develop` o `main` y en
   cada pull request; el resumen de cobertura y el artefacto `evidencias-pruebas` quedan en *Actions*.

@@ -23,6 +23,7 @@ verificar con el caso indicado.
 | DEF-15 | Área de padres | La sección de aceptación de Privacidad y datos tenía un nombre poco claro. | `eedf314` fix(parents): rename the acceptance section of privacy and data | CP-29 | Corregido |
 | DEF-16 | Área de padres | El registro de aceptación no se titulaba «Consentimiento otorgado». | `4f37694` fix(parents): title the consent record "Consentimiento otorgado" | CP-29 | Corregido |
 | DEF-17 | Área de padres | Las filas de los documentos legales en Privacidad y datos y en Ayuda y soporte ocultaban el efecto al tocarlas (ListTile dentro de una tarjeta con fondo); Flutter lo marcaba como error en modo de depuración. Lo detectó la ejecución automatizada `2026-11-17_2028`. | `6745bfd` fix(parents): show the tap effect on the legal document rows | CP-39, CP-40 | Corregido |
+| DEF-18 | Configuración inicial | La pantalla «Crea un nuevo PIN» del registro calculaba su alto con IntrinsicHeight, pero el PIN en recuadros usa LayoutBuilder, que no admite medidas intrínsecas: en modo de depuración Flutter lanzaba un error de diseño en cada cuadro y en la versión de producción el alto se calculaba sin los recuadros. Lo detectó la prueba de flujo de «Creando el espacio» (ejecuciones automatizadas del 18 de noviembre de 2026). | `9782a3e` fix(registration): lay out the new PIN screen without IntrinsicHeight | CP-43 | Corregido |
 
 ## Cómo registrar un defecto nuevo
 

@@ -124,13 +124,31 @@ Future<void> abrir(WidgetTester tester, Widget pagina, {List<NavigatorObserver> 
 }
 
 Future<void> tocar(WidgetTester tester, Finder destino) async {
-  try {
-    await tester.ensureVisible(destino.first);
-  } catch (_) {
-    // Durante una transición el control puede no estar dibujado todavía; se toca igual.
+  final elementos = destino.evaluate();
+  final objeto = elementos.isEmpty ? null : elementos.first.renderObject;
+  // Durante una transición el control puede no estar dibujado todavía: se toca sin desplazar.
+  if (objeto != null && !objeto.debugNeedsLayout) {
+    try {
+      await tester.ensureVisible(destino.first);
+    } catch (_) {
+      // Se toca igual.
+    }
   }
   await tester.pump();
   await tester.tap(destino.first, warnIfMissed: false);
+  await esperar(tester);
+}
+
+/// Toca [destino] solo si está en la pantalla; devuelve si lo tocó.
+Future<bool> tocarSiHay(WidgetTester tester, Finder destino) async {
+  if (destino.evaluate().isEmpty) return false;
+  await tocar(tester, destino);
+  return true;
+}
+
+/// Cierra la pantalla o el diálogo de arriba.
+Future<void> cerrarArriba(WidgetTester tester) async {
+  tester.state<NavigatorState>(find.byType(Navigator).first).pop();
   await esperar(tester);
 }
 

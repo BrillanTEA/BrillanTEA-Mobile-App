@@ -2,11 +2,6 @@ import 'package:brillantea/dominio/auth_service.dart';
 import 'package:brillantea/presentacion/area_padres/cambiar_pin_page.dart';
 import 'package:brillantea/presentacion/area_padres/perfil_guardado_page.dart';
 import 'package:brillantea/presentacion/comun/dialogo_confirmacion.dart';
-import 'package:brillantea/presentacion/inicio/inicio_page.dart';
-import 'package:brillantea/presentacion/registro/bienvenida_page.dart';
-import 'package:brillantea/presentacion/registro/creando_espacio_page.dart';
-import 'package:brillantea/presentacion/registro/nuevo_pin_registro_page.dart';
-import 'package:brillantea/presentacion/registro/terminos_privacidad_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -23,22 +18,6 @@ void main() {
   tearDown(limpiarPantallas);
 
   group('PIN del registro y cambio de PIN (US1202, US1204)', () {
-    pantalla('«Creando el espacio» lleva a crear el PIN y el PIN guarda el registro', (tester) async {
-      await abrirEncima(tester, const CreandoEspacioPage(perfilAdulto: adultoPrueba, perfilNino: ninoPrueba));
-      expect(find.textContaining('Mateo'), findsWidgets);
-      await esperarHasta(tester, find.text('Crea un nuevo PIN'));
-      expect(find.byType(NuevoPinRegistroPage), findsOneWidget);
-
-      await tocar(tester, find.text('Guardar PIN'));
-      expect(find.text('Por favor ingresa los 4 dígitos.'), findsOneWidget);
-      await escribir(tester, 0, pinPrueba);
-      await tocar(tester, find.text('Guardar PIN'));
-      await esperarHasta(tester, find.text('¡PIN guardado!'));
-      expect(await _servicio(tester, () => AuthService().isConfigured()), isTrue);
-      expect(await _servicio(tester, () => AuthService().verificarPin(pinPrueba)), isTrue);
-      await tocar(tester, find.text('Continuar'));
-    });
-
     pantalla('el PIN nuevo de 4 dígitos reemplaza al anterior', (tester) async {
       await conRegistro(tester);
       await abrirEncima(tester, const CambiarPinPage());
@@ -104,22 +83,5 @@ void main() {
         expect(segundo, isFalse);
       });
     }
-  });
-
-  group('Pantalla de carga (US1501)', () {
-    pantalla('la primera vez lleva a «¡Hola!» y a los términos', (tester) async {
-      await abrirEncima(tester, const BienvenidaPage());
-      await esperarHasta(tester, find.text('¡Hola!'));
-      expect(find.text('¡Hola!'), findsOneWidget);
-      await tocar(tester, find.text('Comenzar'));
-      expect(find.byType(TerminosPrivacidadPage), findsOneWidget);
-    });
-
-    pantalla('con la app configurada lleva al Inicio', (tester) async {
-      await conRegistro(tester);
-      await abrirEncima(tester, const BienvenidaPage());
-      await esperarHasta(tester, find.byType(InicioPage));
-      expect(find.byType(InicioPage), findsOneWidget);
-    });
   });
 }
