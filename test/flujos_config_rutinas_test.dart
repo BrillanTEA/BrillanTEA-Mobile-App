@@ -11,7 +11,7 @@ import 'soporte/pantallas.dart';
 // elegir una por una, salir sin guardar, filtros y búsqueda.
 
 Future<void> _conRutinas(WidgetTester tester) async {
-  await tester.runAsync(() async {
+  await enApp(tester, () async {
     final db = await BaseDatos().db;
     for (final r in rutinasApp) {
       await db.rawInsert('INSERT OR IGNORE INTO rutina (id, nombre) VALUES (?, ?)', [r.id, r.nombre]);
