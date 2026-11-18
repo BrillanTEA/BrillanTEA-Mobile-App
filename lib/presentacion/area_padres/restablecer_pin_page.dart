@@ -382,7 +382,7 @@ class _RestablecerPinPageState extends State<RestablecerPinPage>
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    'Por protección de los datos y configuración del menor, el acceso está temporalmente inhabilitado.',
+                    'Por protección de los datos del menor, la recuperación y el ingreso con PIN quedan bloqueados. Cuando termine el tiempo, podrás intentarlo de nuevo.',
                     style: TextStyle(
                       fontFamily: 'Atkinson Hyperlegible Next',
                       fontSize: 13,
