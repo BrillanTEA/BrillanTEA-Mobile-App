@@ -17,9 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Misma versión que la estación de desarrollo (docs/qa/evidencias/*/entorno.txt): con la última
+      # estable, el análisis puede reportar avisos nuevos que no existen en la versión del proyecto.
       - uses: subosito/flutter-action@v2
         with:
           channel: stable
+          flutter-version: 3.47.5
           cache: true
 
       - name: Versión de Flutter
