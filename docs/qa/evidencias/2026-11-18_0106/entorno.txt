@@ -1,0 +1,11 @@
+Flutter 3.47.5 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision 6a19cca564 (9 weeks ago) • 2026-09-17 14:13:22 -0400
+Engine • hash ab598368592da0064197e2bc15c7f5b0a2c6bb1f (revision af7e796e16) (2 months ago) • 2026-09-16 18:35:09.000Z
+Tools • Dart 3.13.4 • DevTools 2.60.0
+
+Commit: 57ea68625a9e43bbc1da6d373f78d06d7ad2f7ec
+Fecha del commit: 2026-11-18 06:04:53 +0000
+Mensaje: test: add flow and exploratory widget tests toward 85% coverage
+Rama: test/ricardo/coverage-85
+version: 0.2.0-alpha.1+14
+Ejecutado: 2026-11-18 01:06:03 -0500

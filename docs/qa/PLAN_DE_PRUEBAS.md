@@ -20,8 +20,8 @@ funcionales (RNF) de la Memoria (Tabla 13 y siguientes). Los casos están en
 | Nivel | Herramienta | Qué cubre | Cuándo se ejecuta |
 |---|---|---|---|
 | Análisis estático | `flutter analyze` (reglas de `flutter_lints`) | Errores, advertencias e infos del código Dart. | En cada push y pull request (CI) y con `tool/qa.sh`. |
-| Unitarias, de integración con SQLite y de widgets | `flutter test` (`test/`, 15 archivos) | Servicios de dominio sobre una base SQLite real en una carpeta temporal (PIN, recuperación, consentimiento, premios, rutinas, favoritos, registro de uso, accesibilidad, tutoriales, catálogo y migraciones), contrato del modelo, comunicación, vocabulario, emociones, documentos legales y 22 pantallas con sus flujos principales. | En cada push y pull request (CI) y con `tool/qa.sh`. |
-| Cobertura | `flutter test --coverage` + `tool/resumen_cobertura.sh` | Porcentaje de líneas cubiertas por capa (`presentacion`, `dominio`, `infraestructura`, `datos`). | Igual que las pruebas. |
+| Unitarias, de integración con SQLite y de widgets | `flutter test` (`test/`, 40 archivos) | Servicios de dominio sobre una base SQLite real en una carpeta temporal (PIN, recuperación, consentimiento, premios, rutinas, favoritos, registro de uso, accesibilidad, tutoriales, catálogo y migraciones), contrato del modelo, pre y posprocesamiento de YOLO, ubicación de las tarjetas de realidad aumentada, comunicación, vocabulario, emociones, documentos legales, flujos completos de cada módulo y del área de padres, y pruebas exploratorias que tocan cada control de 36 pantallas. | En cada push y pull request (CI) y con `tool/qa.sh`. |
+| Cobertura | `flutter test --coverage` + `tool/resumen_cobertura.sh` | Porcentaje de líneas cubiertas por capa (`presentacion`, `dominio`, `infraestructura`, `datos`). Meta: al menos 85 % sin los archivos de `tool/cobertura_excluir.txt` (cámara, motor de TensorFlow Lite y fijación de pantalla, que solo funcionan en el celular y se verifican con los casos manuales); la cobertura global se informa aparte. `tool/qa.sh` falla si no se cumple. | Igual que las pruebas. |
 | Funcionales manuales | Casos CP marcados como *Manual* | Flujos completos en un celular Android: cámara, voz, PIN, bloqueo, reportes y modo sin conexión. | Antes de cada versión que se entrega para pruebas. |
 | Aceptación QA externa | [CERTIFICADO_QA.md](CERTIFICADO_QA.md) | Revisión independiente de los casos manuales sobre el APK entregado. | Al cerrar la versión. |
 
@@ -41,7 +41,8 @@ funcionales (RNF) de la Memoria (Tabla 13 y siguientes). Los casos están en
 **Salida (versión aprobada):**
 
 1. `flutter analyze` sin problemas.
-2. El 100 % de las pruebas automatizadas aprobadas.
+2. El 100 % de las pruebas automatizadas aprobadas y al menos 85 % de cobertura de líneas sin el código
+   que requiere el celular.
 3. El 100 % de los casos manuales críticos aprobados (CP-07 a CP-10, CP-17 a CP-23, CP-29 y CP-30) y
    al menos el 90 % del total de casos manuales.
 4. Ningún defecto abierto que impida usar un módulo o que exponga datos.
