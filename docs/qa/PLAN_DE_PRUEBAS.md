@@ -1,6 +1,6 @@
 # Plan de pruebas de BrillanTEA
 
-Versión del plan: 1.1 · Versión de la app: 0.2.0-alpha.1+14
+Versión del plan: 1.1 · Versión de la app: 0.2.0-alpha.2+15
 
 Este plan define cómo se verifica que la aplicación cumple los requisitos funcionales (RF) y no
 funcionales (RNF) de la Memoria (Tabla 13 y siguientes). Los casos están en
@@ -46,7 +46,8 @@ funcionales (RNF) de la Memoria (Tabla 13 y siguientes). Los casos están en
 3. El 100 % de los casos manuales críticos aprobados (CP-07 a CP-10, CP-17 a CP-23, CP-29 y CP-30) y
    al menos el 90 % del total de casos manuales.
 4. Ningún defecto abierto que impida usar un módulo o que exponga datos.
-5. Certificado QA firmado.
+5. El certificado QA de un revisor externo no es criterio de salida de esta versión: se obtiene en el
+   siguiente ciclo del proyecto, junto con la validación con usuarios.
 
 **Suspensión:** si falla la instalación, la cámara o el ingreso con PIN, se detiene la ejecución
 manual hasta corregirlo.

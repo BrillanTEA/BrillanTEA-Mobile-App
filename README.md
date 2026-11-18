@@ -63,7 +63,7 @@ lib/
   cada pull request; el resumen de cobertura y el artefacto `evidencias-pruebas` quedan en *Actions*.
 - `docs/qa/` reúne el [plan de pruebas](docs/qa/PLAN_DE_PRUEBAS.md), los
   [casos de prueba](docs/qa/CASOS_DE_PRUEBA.md), el [registro de defectos](docs/qa/REGISTRO_DE_DEFECTOS.md),
-  el [informe de pruebas](docs/qa/INFORME_DE_PRUEBAS.md) y el [certificado QA](docs/qa/CERTIFICADO_QA.md).
+  el [informe de pruebas](docs/qa/INFORME_DE_PRUEBAS.md) y la plantilla del [certificado QA](docs/qa/CERTIFICADO_QA.md), que se completa en el siguiente ciclo.
 
 ## Detección
 

@@ -5,11 +5,11 @@
 
 | Dato | Valor |
 |---|---|
-| Versión de la app | 0.2.0-alpha.1+14 |
-| Commit probado | 56238c6 (rama test/ricardo/domain-widget-tests, integrada en develop) |
-| Fecha de ejecución de las pruebas automatizadas | 17/11/2026, 20:32 (UTC-5) |
+| Versión de la app | 0.2.0-alpha.2+15 (correcciones de la ejecución manual sobre 0.2.0-alpha.1+14) |
+| Commit probado | 01c6fa0 (rama fix/manual-qa-defects, integrada en develop) |
+| Fecha de ejecución de las pruebas automatizadas | 18/11/2026, 15:55 (UTC-5) |
 | Versión de Flutter | 3.47.5 (stable), Dart 3.13.4 |
-| Celular (modelo y Android) | _ |
+| Celular (modelo y Android) | Samsung Galaxy A25 (SM-A256E), Android 16 |
 | Responsables | _ |
 
 ## 1. Pruebas automatizadas
