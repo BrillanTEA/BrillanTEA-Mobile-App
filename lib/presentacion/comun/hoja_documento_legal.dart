@@ -108,8 +108,10 @@ class HojaDocumentoLegal extends StatelessWidget {
             ),
           ),
           Container(height: 1.5, color: _divisorSuave),
+          // La hoja se dibuja detrás de la barra de navegación de Android: se suma su alto para que
+          // «Entendido» quede visible y se pueda tocar.
           Padding(
-            padding: const EdgeInsets.fromLTRB(24, 14, 24, 22),
+            padding: EdgeInsets.fromLTRB(24, 14, 24, 22 + MediaQuery.of(context).viewPadding.bottom),
             child: SizedBox(
               width: double.infinity,
               height: 56,
