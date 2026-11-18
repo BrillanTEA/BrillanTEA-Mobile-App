@@ -14,15 +14,15 @@
 
 ## 1. Pruebas automatizadas
 
-Ejecución final: `docs/qa/evidencias/2026-11-18_0956/` (commit `a99af4a`).
+Ejecución final: `docs/qa/evidencias/2026-11-18_1555/` (commit `01c6fa0`, con las correcciones de la ejecución manual).
 
 | Verificación | Resultado |
 |---|---|
 | `flutter analyze` | Sin problemas |
 | Archivos de prueba | 40 |
-| Pruebas aprobadas / fallidas | 253 / 0 |
-| Cobertura sin el código que requiere el celular (meta ≥ 85 %) | 94,0 % (6842 de 7282 líneas) |
-| Cobertura de líneas global | 82,8 % (6857 de 8278 líneas) |
+| Pruebas aprobadas / fallidas | 257 / 0 |
+| Cobertura sin el código que requiere el celular (meta ≥ 85 %) | 94,0 % (6867 de 7304 líneas) |
+| Cobertura de líneas global | 82,9 % (6882 de 8301 líneas) |
 
 Cobertura por capa (la raíz `lib/main.dart` tiene 19 líneas y 68,4 %):
 
@@ -30,11 +30,11 @@ Cobertura por capa (la raíz `lib/main.dart` tiene 19 líneas y 68,4 %):
 |---|---|---|---|
 | datos | 224 | 206 | 92,0 % |
 | dominio | 807 | 756 | 93,7 % |
-| presentacion | 6896 | 5671 | 82,2 % |
+| presentacion | 6919 | 5696 | 82,3 % |
 | infraestructura | 332 | 211 | 63,6 % |
 
 La diferencia entre las dos coberturas son tres archivos que solo funcionan en el celular
-(`tool/cobertura_excluir.txt`): la pantalla de la Cámara (862 líneas), el motor de TensorFlow Lite
+(`tool/cobertura_excluir.txt`): la pantalla de la Cámara (863 líneas), el motor de TensorFlow Lite
 (115) y la fijación de pantalla (19). Se verifican con los casos manuales (CP-07, CP-21, CP-23) y con
 la evaluación del modelo. Para poder probar el resto en el computador, el pre y posprocesamiento del
 modelo se separó en `procesador_yolo.dart` y la ubicación de las tarjetas de realidad aumentada en
