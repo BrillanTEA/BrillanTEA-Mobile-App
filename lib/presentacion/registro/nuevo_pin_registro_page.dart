@@ -96,8 +96,12 @@ class _NuevoPinRegistroPageState extends State<NuevoPinRegistroPage> {
             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: constraints.maxHeight - 32),
-              child: IntrinsicHeight(
-                child: Column(
+              // Sin IntrinsicHeight: el PIN en recuadros usa LayoutBuilder, que no admite medidas
+              // intrínsecas (DEF-18). La parte de arriba y el botón se separan con spaceBetween.
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
                   children: [
                     Align(
                       alignment: Alignment.centerLeft,
@@ -198,7 +202,10 @@ class _NuevoPinRegistroPageState extends State<NuevoPinRegistroPage> {
                       ),
                     ],
 
-                    const Spacer(),
+                  ],
+                  ),
+                  Column(
+                  children: [
                     const SizedBox(height: 16),
 
                     SizedBox(
@@ -226,7 +233,8 @@ class _NuevoPinRegistroPageState extends State<NuevoPinRegistroPage> {
                     ),
                     const SizedBox(height: 8),
                   ],
-                ),
+                  ),
+                ],
               ),
             ),
           );
