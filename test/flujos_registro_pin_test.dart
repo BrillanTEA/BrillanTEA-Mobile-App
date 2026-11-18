@@ -28,11 +28,15 @@ void main() {
       expect(find.textContaining('Mateo'), findsWidgets);
       await esperarHasta(tester, find.text('Crea un nuevo PIN'));
       expect(find.byType(NuevoPinRegistroPage), findsOneWidget);
+      await esperar(tester);
 
-      await tocar(tester, find.text('Guardar PIN'));
+      final guardar = find.widgetWithText(ElevatedButton, 'Guardar PIN');
+      await tester.tap(guardar.last, warnIfMissed: false);
+      await esperar(tester);
       expect(find.text('Por favor ingresa los 4 dígitos.'), findsOneWidget);
       await escribir(tester, 0, pinPrueba);
-      await tocar(tester, find.text('Guardar PIN'));
+      await tester.tap(guardar.last, warnIfMissed: false);
+      await esperar(tester);
       await esperarHasta(tester, find.text('¡PIN guardado!'));
       expect(await _servicio(tester, () => AuthService().isConfigured()), isTrue);
       expect(await _servicio(tester, () => AuthService().verificarPin(pinPrueba)), isTrue);

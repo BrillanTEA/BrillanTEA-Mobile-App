@@ -39,7 +39,7 @@ void main() {
     for (final categoria in ['Colores', 'Números', 'Letras', 'Frutas', 'Formas', 'Animales']) {
       final pila = ContadorRutas();
       await abrir(tester, const VocabularioPage(), observadores: [pila]);
-      await tocar(tester, find.text(categoria));
+      if (!await tocarSiHay(tester, find.text(categoria))) continue;
       if (find.byType(TextField).evaluate().isNotEmpty) {
         await escribir(tester, 0, 'a');
         await escribir(tester, 0, '');

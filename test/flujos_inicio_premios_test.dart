@@ -23,6 +23,16 @@ Future<void> _conRutinas(WidgetTester tester) async {
   });
 }
 
+Future<void> _abrirMenu(WidgetTester tester) async {
+  tester.state<ScaffoldState>(find.byType(Scaffold).first).openDrawer();
+  await esperar(tester);
+}
+
+Future<void> _abrirPeriodo(WidgetTester tester) async {
+  await tocar(tester, find.byWidgetPredicate(
+      (w) => w is Semantics && (w.properties.label ?? '').startsWith('Período:')));
+}
+
 void main() {
   setUp(prepararPantallas);
   tearDown(limpiarPantallas);
@@ -40,17 +50,22 @@ void main() {
     await tocar(tester, find.text('Inicio'));
   });
 
-  pantalla('el menú de Inicio abre el área de padres y restablece la app', (tester) async {
+  pantalla('el menú de Inicio abre el área de padres', (tester) async {
     await conRegistro(tester);
     await abrir(tester, const InicioPage());
-    await tocar(tester, porEtiqueta('Menú'));
+    await _abrirMenu(tester);
     await tocar(tester, find.text('Área de padres (PIN)'));
     expect(find.byType(LoginPinPage), findsOneWidget);
-    await cerrarArriba(tester);
-    await tocar(tester, porEtiqueta('Menú'));
+  });
+
+  pantalla('el menú de Inicio restablece la app solo si se confirma', (tester) async {
+    await conRegistro(tester);
+    await abrir(tester, const InicioPage());
+    await _abrirMenu(tester);
     await tocar(tester, find.text('Restablecer onboarding (QA)'));
     await tocar(tester, find.text('Cancelar'));
-    await tocar(tester, porEtiqueta('Menú'));
+    expect(find.byType(InicioPage), findsOneWidget);
+    await _abrirMenu(tester);
     await tocar(tester, find.text('Restablecer onboarding (QA)'));
     await tocar(tester, find.text('Restablecer'));
     await esperarHasta(tester, find.byType(BienvenidaPage));
@@ -60,6 +75,7 @@ void main() {
   pantalla('Premios: elegir el período, escribir la meta y guardarla', (tester) async {
     await conRegistro(tester);
     await abrirEncima(tester, const PremiosConfigPage());
+    await _abrirPeriodo(tester);
     await tocar(tester, find.text('Mensual'));
     await escribir(tester, 0, '30');
     await tocar(tester, find.text('Guardar'));
@@ -74,6 +90,7 @@ void main() {
   pantalla('Premios: salir con cambios pregunta antes y desactivar no pide meta', (tester) async {
     await conRegistro(tester);
     await abrirEncima(tester, const PremiosConfigPage());
+    await _abrirPeriodo(tester);
     await tocar(tester, find.text('Diaria'));
     await tocar(tester, porEtiqueta('Volver'));
     expect(find.text('¿Salir sin guardar?'), findsOneWidget);

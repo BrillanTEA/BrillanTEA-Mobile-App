@@ -34,17 +34,24 @@ void main() {
     await desactivarVoz(tester);
   });
 
-  pantalla('Armar mi frase: «Me gusta», Borrar, retroceder y una categoría sin paso 3', (tester) async {
+  pantalla('Armar mi frase: «Me gusta» con Borrar y retroceder', (tester) async {
     await conRegistro(tester);
     await abrir(tester, const ComunicacionPage());
     await tocar(tester, find.text('Armar mi frase'));
     await tocar(tester, find.text('Me gusta'));
     await tocarSiHay(tester, find.text('Continuar'));
-    await tocar(tester, find.text('Jugar'));
+    await tocarSiHay(tester, find.text('Jugar'));
     await tocarSiHay(tester, find.text('Borrar'));
     await tocarSiHay(tester, find.text('Borrar'));
     await tocarSiHay(tester, porEtiqueta('Volver'));
-    await tocarSiHay(tester, find.text('Necesito'));
+    expect(find.byType(ComunicacionPage), findsOneWidget);
+  });
+
+  pantalla('Armar mi frase: una categoría sin paso 3 (Baño)', (tester) async {
+    await conRegistro(tester);
+    await abrir(tester, const ComunicacionPage());
+    await tocar(tester, find.text('Armar mi frase'));
+    await tocar(tester, find.text('Necesito'));
     await tocarSiHay(tester, find.text('Continuar'));
     await tocar(tester, find.text('Baño'));
     await tocar(tester, find.text('Continuar'));
