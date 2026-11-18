@@ -5,7 +5,6 @@ import 'package:brillantea/dominio/rutinas_service.dart';
 import 'package:brillantea/presentacion/area_padres/login_pin_page.dart';
 import 'package:brillantea/presentacion/inicio/inicio_page.dart';
 import 'package:brillantea/presentacion/premios/premios_page.dart';
-import 'package:brillantea/presentacion/registro/bienvenida_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -58,23 +57,13 @@ void main() {
     expect(find.byType(LoginPinPage), findsOneWidget);
   });
 
-  pantalla('«Restablecer onboarding» se puede cancelar', (tester) async {
+  pantalla('la versión oficial no muestra «Restablecer onboarding» en el menú (US1206)', (tester) async {
     await conRegistro(tester);
     await abrir(tester, const InicioPage());
     await _abrirMenu(tester);
-    await tocar(tester, find.text('Restablecer onboarding (QA)'));
-    await tocar(tester, find.text('Cancelar'));
-    expect(find.byType(InicioPage), findsOneWidget);
-  });
-
-  pantalla('«Restablecer onboarding» confirmado vuelve a la bienvenida', (tester) async {
-    await conRegistro(tester);
-    await abrir(tester, const InicioPage());
-    await _abrirMenu(tester);
-    await tocar(tester, find.text('Restablecer onboarding (QA)'));
-    await tocar(tester, find.text('Restablecer'));
-    await esperarHasta(tester, find.byType(BienvenidaPage));
-    expect(find.byType(BienvenidaPage), findsOneWidget);
+    expect(find.text('Área de padres (PIN)'), findsOneWidget);
+    // Solo la versión QA (--dart-define=QA=true) muestra la opción de borrar todo.
+    expect(find.text('Restablecer onboarding (QA)'), findsNothing);
   });
 
   pantalla('Premios: elegir el período, escribir la meta y guardarla', (tester) async {

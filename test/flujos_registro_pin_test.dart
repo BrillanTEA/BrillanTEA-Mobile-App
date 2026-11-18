@@ -2,6 +2,7 @@ import 'package:brillantea/dominio/auth_service.dart';
 import 'package:brillantea/presentacion/area_padres/cambiar_pin_page.dart';
 import 'package:brillantea/presentacion/area_padres/perfil_guardado_page.dart';
 import 'package:brillantea/presentacion/comun/dialogo_confirmacion.dart';
+import 'package:brillantea/presentacion/comun/pin_input_cuadros.dart';
 import 'package:brillantea/presentacion/inicio/inicio_page.dart';
 import 'package:brillantea/presentacion/registro/bienvenida_page.dart';
 import 'package:brillantea/presentacion/registro/creando_espacio_page.dart';
@@ -39,7 +40,7 @@ void main() {
 
       await guardar();
       expect(find.text('Por favor ingresa los 4 dígitos.'), findsOneWidget);
-      await escribir(tester, 0, pinPrueba);
+      tester.widget<PinInputCuadros>(find.byType(PinInputCuadros, skipOffstage: false)).controller.text = pinPrueba;
       await guardar();
       await esperarHasta(tester, find.text('¡PIN guardado!'));
       expect(await _servicio(tester, () => AuthService().isConfigured()), isTrue);
