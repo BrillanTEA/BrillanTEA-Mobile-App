@@ -5,16 +5,17 @@
 
 | Dato | Valor |
 |---|---|
-| Versión de la app | 0.2.0-alpha.2+15 (correcciones de la ejecución manual sobre 0.2.0-alpha.1+14) |
-| Commit probado | 01c6fa0 (rama fix/manual-qa-defects, integrada en develop) |
-| Fecha de ejecución de las pruebas automatizadas | 18/11/2026, 15:55 (UTC-5) |
+| Versión de la app | 0.2.0-alpha.2+15 (correcciones de la ejecución manual; los casos manuales se ejecutaron con 0.2.0-alpha.1+14) |
+| Commit probado | b568309 (develop, etiqueta v0.2.0-alpha.2) |
+| Fecha de ejecución de las pruebas automatizadas | 18/11/2026, 16:53 (UTC-5) |
 | Versión de Flutter | 3.47.5 (stable), Dart 3.13.4 |
 | Celular (modelo y Android) | Samsung Galaxy A25 (SM-A256E), Android 16 |
 | Responsables | _ |
 
 ## 1. Pruebas automatizadas
 
-Ejecución final: `docs/qa/evidencias/2026-11-18_1555/` (commit `01c6fa0`, con las correcciones de la ejecución manual).
+Ejecución final: `docs/qa/evidencias/2026-11-18_1653/` (commit `b568309`, versión 0.2.0-alpha.2+15). Los resultados son
+iguales a los de la ejecución `2026-11-18_1555` (commit `01c6fa0`), hecha con el mismo código antes de cambiar el número de versión.
 
 | Verificación | Resultado |
 |---|---|
