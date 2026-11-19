@@ -36,7 +36,7 @@ Cobertura por capa (la raíz `lib/main.dart` tiene 19 líneas y 68,4 %):
 
 La diferencia entre las dos coberturas son tres archivos que solo funcionan en el celular
 (`tool/cobertura_excluir.txt`): la pantalla de la Cámara (863 líneas), el motor de TensorFlow Lite
-(115) y la fijación de pantalla (19). Se verifican con los casos manuales (CP-07, CP-21, CP-23) y con
+(115) y la fijación de pantalla (19). Se verifican con los casos manuales (CP-08, CP-21, CP-23) y con
 la evaluación del modelo. Para poder probar el resto en el computador, el pre y posprocesamiento del
 modelo se separó en `procesador_yolo.dart` y la ubicación de las tarjetas de realidad aumentada en
 `realidad_aumentada.dart`.
@@ -71,7 +71,6 @@ pantalla y falta una verificación humana (teclado, PDF o panel de la cámara).
 
 | Caso | Resultado | Observación o defecto | Captura |
 |---|---|---|---|
-| CP-07 | No ejecutado | Pendiente: evaluación con los 35 objetos reales (630 pruebas). | — |
 | CP-08 | No ejecutado | Pendiente: apuntar al caño y «Ir a rutina». | — |
 | CP-09 | Aprobado | — | `CP-09_*` |
 | CP-10 | Aprobado | La petición se registra y la frase se escucha sin conexión; voz y funcionamiento con Wi-Fi y datos apagados verificado por Ricardo Barrutia en el celular el 19/11/2026. | `CP-10_*` |

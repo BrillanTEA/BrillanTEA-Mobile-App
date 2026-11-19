@@ -14,7 +14,7 @@ verificar con el caso indicado.
 | DEF-06 | Privacidad | Los PDF temporales de reportes anteriores quedaban en el celular. | `4da2803` fix(privacy): clean stale PDF reports at startup and during data deletion | CP-19, CP-20 | Corregido |
 | DEF-07 | Favoritos | Las tarjetas cambiaban de lugar mientras el niño las tocaba. | `d9c0903` fix(favorites): keep cards in place while the child taps them | CP-16 | Corregido |
 | DEF-08 | Área de padres | La versión oficial mostraba opciones de restablecimiento de prueba y no ofrecía el borrado protegido. | `f1d6e2a` fix(parents): restrict test resets to QA and expose protected data deletion | CP-19, CP-23 | Corregido |
-| DEF-09 | Cámara | Sin reconocimiento no había guía para reintentar y el diagnóstico técnico aparecía en la versión oficial. | `77ca83b` fix(camera): show retry guidance and restrict technical diagnostics to QA | CP-07, CP-23 | Corregido |
+| DEF-09 | Cámara | Sin reconocimiento no había guía para reintentar y el diagnóstico técnico aparecía en la versión oficial. | `77ca83b` fix(camera): show retry guidance and restrict technical diagnostics to QA | CP-23 | Corregido |
 | DEF-10 | Rutinas | Faltaban pictogramas empaquetados de algunos pasos. | `da47a8a` fix(routines): restore the missing packaged step pictograms | CP-01, CP-09 | Corregido |
 | DEF-11 | Seguridad | La recuperación del PIN no usaba los campos actuales del perfil del adulto. | `826b568` fix(auth): align recovery wrapper with the current profile fields | CP-18 | Corregido |
 | DEF-12 | Premios | Algunas metas no se podían lograr con las rutinas de la app. | `7478c49` fix(rewards): keep the goal ranges reachable with the app routines | CP-04, CP-31 | Corregido |

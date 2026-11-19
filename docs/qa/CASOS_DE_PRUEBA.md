@@ -34,8 +34,7 @@ Versión de la app: 0.2.0-alpha.2+15. Los casos automatizados se ejecutan con `f
 
 | ID | Requisito | Precondición | Pasos y entradas | Resultado esperado |
 |---|---|---|---|---|
-| CP-07 | RF-01, RF-02, OE3-I2 | App instalada y permiso de cámara concedido. | Apuntar a cada uno de los 35 objetos a 3 distancias, con 2 iluminaciones y desde 3 ángulos (630 pruebas). | Junto a cada objeto reconocido aparece su tarjeta con el pictograma (como máximo 2 a la vez); la exhaustividad es de al menos 80 %. |
-| CP-08 | RF-03 | Rutina Lavado de manos activa. | Apuntar al caño y tocar su tarjeta. | Se abre el pictograma ampliado con su frase y Escuchar, y el botón «Ir a rutina» lleva a Lavado de manos. |
+| CP-08 | RF-01, RF-03 | Rutina Lavado de manos activa. | Apuntar al caño y tocar su tarjeta. | Se abre el pictograma ampliado con su frase y Escuchar, y el botón «Ir a rutina» lleva a Lavado de manos. |
 | CP-09 | RF-04, RF-19 | Premios activados. | Iniciar Lavado de manos y tocar «¡Terminé!» en cada paso hasta el final. | Cada paso muestra AHORA y DESPUÉS; el temporizador muestra «¡Listo!» y espera el toque; al final aparece el mensaje de felicitación y se suma una medalla. |
 | CP-10 | RF-05 | Modo avión activado. | En Pedir algo, elegir la categoría Comer y luego Pan. | La frase predefinida se reproduce en voz sin conexión y la petición queda registrada. |
 | CP-11 | RF-12 | — | En Armar frase, elegir «me gusta», una categoría y un pictograma. | La primera tarjeta cambia de «Yo» a «A mí» y la aplicación dice «A mí me gusta…» y ofrece repetirla o armar otra. |
@@ -57,3 +56,7 @@ Versión de la app: 0.2.0-alpha.2+15. Los casos automatizados se ejecutan con `f
 | CP-32 | RF-20 | — | En Área de padres > Tutoriales, abrir el de la Cámara y avanzar con Siguiente y Anterior. | Se recorren 7 pantallas con capturas de la app y lectura en voz; «Terminar» vuelve a la lista de tutoriales. |
 | CP-33 | RF-08 | Rutinas configuradas. | Editar las rutinas activas de una categoría, tocar Atrás sin guardar y elegir Descartar; repetir eligiendo Guardar. | Aparece el diálogo de confirmación; con Descartar no cambia nada y con Guardar se aplican los cambios. |
 | CP-34 | RF-17 | App de correo instalada. | En Ayuda y soporte, tocar «Escribir a soporte». | Se abre la app de correo con los dos destinatarios de soporte y el asunto. |
+
+La evaluación con los 35 objetos reales (35 objetos × 3 distancias × 2 iluminaciones × 3 ángulos, 630 pruebas;
+meta de exhaustividad ≥ 80 %) se ejecutará con el modelo final, al cierre de US301, en el siguiente ciclo del
+proyecto. Por eso no figura como caso de esta versión.

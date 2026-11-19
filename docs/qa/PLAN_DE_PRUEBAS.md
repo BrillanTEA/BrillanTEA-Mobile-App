@@ -43,7 +43,7 @@ funcionales (RNF) de la Memoria (Tabla 13 y siguientes). Los casos están en
 1. `flutter analyze` sin problemas.
 2. El 100 % de las pruebas automatizadas aprobadas y al menos 85 % de cobertura de líneas sin el código
    que requiere el celular.
-3. El 100 % de los casos manuales críticos aprobados (CP-07 a CP-10, CP-17 a CP-23, CP-29 y CP-30) y
+3. El 100 % de los casos manuales críticos aprobados (CP-08 a CP-10, CP-17 a CP-23, CP-29 y CP-30) y
    al menos el 90 % del total de casos manuales.
 4. Ningún defecto abierto que impida usar un módulo o que exponga datos.
 5. El certificado QA de un revisor externo no es criterio de salida de esta versión: se obtiene en el
@@ -71,8 +71,8 @@ caso. El commit de la corrección es la evidencia de cierre.
 
 | Requisito | Casos |
 |---|---|
-| RF-01 Captura de imágenes | CP-07 |
-| RF-02 Detección de objetos | CP-01, CP-03, CP-07, CP-38 |
+| RF-01 Captura de imágenes | CP-08 |
+| RF-02 Detección de objetos | CP-01, CP-03, CP-38 |
 | RF-03 Asociación objeto–pictograma | CP-02, CP-08, CP-36 |
 | RF-04 Rutinas guiadas | CP-09, CP-36 |
 | RF-05 Pedir algo | CP-10, CP-25, CP-40 |
