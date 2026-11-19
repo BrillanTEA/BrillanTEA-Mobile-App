@@ -67,31 +67,31 @@ oficial 0.2.0-alpha.1+14 (commit `6b7b536`). Los pasos se ejecutaron por adb con
 (Antigravity), que tomó las capturas; Ricardo Barrutia ejecutó los pasos que requieren el celular en la
 mano (PIN del celular). El detalle de cada caso, con sus capturas, está en
 [RESULTADOS_MANUALES.md](evidencias/2026-11-18_manuales/RESULTADOS_MANUALES.md). «Parcial» indica que se verificó lo visible en
-pantalla y falta una verificación humana (voz, red apagada, teclado o cámara).
+pantalla y falta una verificación humana (teclado, PDF o panel de la cámara).
 
 | Caso | Resultado | Observación o defecto | Captura |
 |---|---|---|---|
 | CP-07 | No ejecutado | Pendiente: evaluación con los 35 objetos reales (630 pruebas). | — |
 | CP-08 | No ejecutado | Pendiente: apuntar al caño y «Ir a rutina». | — |
 | CP-09 | Aprobado | — | `CP-09_*` |
-| CP-10 | Parcial | La petición se registró con modo avión; falta escuchar la voz y repetir con el Wi-Fi apagado (se mantuvo para adb). | `CP-10_*` |
-| CP-11 | Parcial | La frase se arma bien; falta escuchar la voz. | `CP-11_*` |
-| CP-12 | Parcial | Falta escuchar la voz. | `CP-12_*` |
-| CP-13 | Parcial | Se registra una sola vez y en femenino; falta escuchar la voz. Las imágenes de emociones tenían tamaños distintos y no estaban centradas (DEF-23 y DEF-24, corregidos). | `CP-13_*` |
-| CP-14 | Parcial | Falta escuchar la voz. | `CP-14_*` |
+| CP-10 | Aprobado | La petición se registra y la frase se escucha sin conexión; voz y funcionamiento con Wi-Fi y datos apagados verificado por Ricardo Barrutia en el celular el 19/11/2026. | `CP-10_*` |
+| CP-11 | Aprobado | La frase se arma bien y se escucha (verificado por Ricardo Barrutia en el celular el 19/11/2026). | `CP-11_*` |
+| CP-12 | Aprobado | Sí y No se escuchan (verificado por Ricardo Barrutia en el celular el 19/11/2026). | `CP-12_*` |
+| CP-13 | Aprobado | Se registra una sola vez y en femenino; la voz se escucha (verificado por Ricardo Barrutia en el celular el 19/11/2026). Imágenes de emociones corregidas (DEF-23 y DEF-24). | `CP-13_*` |
+| CP-14 | Aprobado | Cada paso se escucha (verificado por Ricardo Barrutia en el celular el 19/11/2026). | `CP-14_*` |
 | CP-15 | Aprobado | — | `CP-15_*` |
 | CP-16 | Fallido | Favoritos no se reordenaba al volver a la pestaña (DEF-19, corregido; repetir). | `CP-16_*` |
 | CP-17 | Aprobado | El aviso del bloqueo decía que el PIN seguía funcionando (DEF-20, corregido). | `CP-17_*` |
 | CP-18 | Parcial | Respuestas sin tildes por limitación de adb; falta probar con tildes desde el teclado. Aviso de bloqueo corregido (DEF-20). | `CP-18_*` |
 | CP-19 | Aprobado | — | `CP-19_*` |
 | CP-20 | Parcial | Se muestra el contenido y la hoja de compartir; falta abrir el PDF y revisar su contenido. | `CP-20_*` |
-| CP-21 | Parcial | No se pudo salir de la app fijada; Ricardo la desfijó con el PIN del celular. Android no permite capturar ese diálogo. | `CP-21_*` |
-| CP-22 | Parcial | Todo funcionó con modo avión; falta repetir con el Wi-Fi apagado y en la Cámara. | `CP-22_*` |
+| CP-21 | Aprobado | No se pudo salir de la app fijada; Android pidió el PIN del celular para desfijarla (verificado por Ricardo Barrutia el 18/11/2026; Android no permite capturar ese diálogo). | `CP-21_*` |
+| CP-22 | Aprobado | Los módulos y el área de padres funcionan con modo avión y sin Wi-Fi ni datos (verificado por Ricardo Barrutia en el celular el 19/11/2026). | `CP-22_*` |
 | CP-23 | Parcial | APK de 75 a 83 MiB; la versión QA muestra «Restablecer onboarding (QA)» y la oficial no; falta revisar el panel técnico de la Cámara. | `CP-23_*` |
 | CP-29 | Aprobado | En la Política de privacidad, «Entendido» quedaba detrás de la barra de navegación (DEF-22, corregido). | `CP-29_*` |
 | CP-30 | Aprobado | — | `CP-30_*` |
 | CP-31 | Aprobado | — | `CP-31_*` |
-| CP-32 | Parcial | Falta escuchar la lectura en voz. | `CP-32_*` |
+| CP-32 | Aprobado | El tutorial se recorre y se escucha (verificado por Ricardo Barrutia en el celular el 19/11/2026). | `CP-32_*` |
 | CP-33 | Aprobado | La categoría seguía diciendo «2 rutinas» (DEF-21, corregido). | `CP-33_*` |
 | CP-34 | Aprobado | — | `CP-34_*` |
 
