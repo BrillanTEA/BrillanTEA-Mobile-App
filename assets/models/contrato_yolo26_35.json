@@ -1,0 +1,211 @@
+{
+  "tipo": "contrato_candidato_35_no_modelo_final",
+  "catalogo_fuente_sha256": "3e46ac651c9c98a4dc77e429457474675f9ae2d6865e5235fbf0010a11d9a747",
+  "n_clases": 35,
+  "clases": [
+    {
+      "id": 0,
+      "clave": "cano",
+      "nombre": "Caño (grifo)"
+    },
+    {
+      "id": 1,
+      "clave": "jabon",
+      "nombre": "Jabón sólido"
+    },
+    {
+      "id": 2,
+      "clave": "toalla",
+      "nombre": "Toalla"
+    },
+    {
+      "id": 3,
+      "clave": "pasta_dental",
+      "nombre": "Pasta dental"
+    },
+    {
+      "id": 4,
+      "clave": "cepillo_de_dientes",
+      "nombre": "Cepillo de dientes"
+    },
+    {
+      "id": 5,
+      "clave": "vaso",
+      "nombre": "Vaso"
+    },
+    {
+      "id": 6,
+      "clave": "ropa",
+      "nombre": "Ropa"
+    },
+    {
+      "id": 7,
+      "clave": "medias",
+      "nombre": "Medias"
+    },
+    {
+      "id": 8,
+      "clave": "zapatos",
+      "nombre": "Zapatos"
+    },
+    {
+      "id": 9,
+      "clave": "cuaderno",
+      "nombre": "Cuaderno"
+    },
+    {
+      "id": 10,
+      "clave": "cartuchera",
+      "nombre": "Cartuchera"
+    },
+    {
+      "id": 11,
+      "clave": "lonchera",
+      "nombre": "Lonchera"
+    },
+    {
+      "id": 12,
+      "clave": "pelota",
+      "nombre": "Pelota"
+    },
+    {
+      "id": 13,
+      "clave": "bloques_de_construccion",
+      "nombre": "Bloques de construcción"
+    },
+    {
+      "id": 14,
+      "clave": "caja_organizadora",
+      "nombre": "Caja organizadora"
+    },
+    {
+      "id": 15,
+      "clave": "manzana",
+      "nombre": "Manzana"
+    },
+    {
+      "id": 16,
+      "clave": "platano",
+      "nombre": "Plátano"
+    },
+    {
+      "id": 17,
+      "clave": "naranja",
+      "nombre": "Naranja"
+    },
+    {
+      "id": 18,
+      "clave": "zanahoria",
+      "nombre": "Zanahoria"
+    },
+    {
+      "id": 19,
+      "clave": "sandwich",
+      "nombre": "Sándwich"
+    },
+    {
+      "id": 20,
+      "clave": "torta",
+      "nombre": "Torta"
+    },
+    {
+      "id": 21,
+      "clave": "cuchara",
+      "nombre": "Cuchara"
+    },
+    {
+      "id": 22,
+      "clave": "tenedor",
+      "nombre": "Tenedor"
+    },
+    {
+      "id": 23,
+      "clave": "tazon",
+      "nombre": "Tazón"
+    },
+    {
+      "id": 24,
+      "clave": "botella",
+      "nombre": "Botella"
+    },
+    {
+      "id": 25,
+      "clave": "mesa",
+      "nombre": "Mesa"
+    },
+    {
+      "id": 26,
+      "clave": "silla",
+      "nombre": "Silla"
+    },
+    {
+      "id": 27,
+      "clave": "cama",
+      "nombre": "Cama"
+    },
+    {
+      "id": 28,
+      "clave": "sofa",
+      "nombre": "Sofá"
+    },
+    {
+      "id": 29,
+      "clave": "televisor",
+      "nombre": "Televisor"
+    },
+    {
+      "id": 30,
+      "clave": "reloj",
+      "nombre": "Reloj"
+    },
+    {
+      "id": 31,
+      "clave": "refrigeradora",
+      "nombre": "Refrigeradora"
+    },
+    {
+      "id": 32,
+      "clave": "mochila",
+      "nombre": "Mochila"
+    },
+    {
+      "id": 33,
+      "clave": "peluche",
+      "nombre": "Peluche"
+    },
+    {
+      "id": 34,
+      "clave": "laptop",
+      "nombre": "Laptop"
+    }
+  ],
+  "entrada": {
+    "dtype": "float32",
+    "shape": [
+      1,
+      3,
+      640,
+      640
+    ],
+    "orden": "RGB NCHW",
+    "rango": [
+      0,
+      1
+    ],
+    "letterbox": 114
+  },
+  "salida_esperada": {
+    "shape": [
+      1,
+      39,
+      8400
+    ],
+    "orden": "[cx,cy,w,h,35 probabilidades de clase] por canal",
+    "normalizacion": "primeros4canales normalizados por640 en LiteRT",
+    "end2end": false,
+    "nms": "Por clase; IoU.7 y max300 para equivalencia con diagnóstico. WorkerFlutterusa.45/max20: medir antes de activar."
+  },
+  "criterios": "35IDs estables, jabón líquido diferido, vasos sin asa, cuaderno de papel, lonchera principal reutilizable",
+  "instalar_automaticamente": false,
+  "sustituye_contrato_previo_por_diagnostico": "El modelo PT guardado usa cabeza no end2end. La primera exportación cambió a end2end y no pasó paridad; conservar sin instalar."
+}

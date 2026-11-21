@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="&#195;&#141;cono mano abierta" clip-path="url(#clip0_0_6)">
+<path id="Vector" d="M69.375 56.25H50.625C38.1986 56.25 28.125 66.3236 28.125 78.75V82.5C28.125 94.9264 38.1986 105 50.625 105H69.375C81.8014 105 91.875 94.9264 91.875 82.5V78.75C91.875 66.3236 81.8014 56.25 69.375 56.25Z" fill="#E3EFED" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" stroke="#28545B"/>
+<path id="Vector_2" d="M41.25 21.5625C41.25 17.9381 38.3119 15 34.6875 15C31.0631 15 28.125 17.9381 28.125 21.5625V64.6875C28.125 68.3119 31.0631 71.25 34.6875 71.25C38.3119 71.25 41.25 68.3119 41.25 64.6875V21.5625Z" fill="#E3EFED" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" stroke="#28545B"/>
+<path id="Vector_3" d="M58.125 14.0625C58.125 10.4381 55.1869 7.5 51.5625 7.5C47.9381 7.5 45 10.4381 45 14.0625V64.6875C45 68.3119 47.9381 71.25 51.5625 71.25C55.1869 71.25 58.125 68.3119 58.125 64.6875V14.0625Z" fill="#E3EFED" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" stroke="#28545B"/>
+<path id="Vector_4" d="M75 14.0625C75 10.4381 72.0619 7.5 68.4375 7.5C64.8131 7.5 61.875 10.4381 61.875 14.0625V64.6875C61.875 68.3119 64.8131 71.25 68.4375 71.25C72.0619 71.25 75 68.3119 75 64.6875V14.0625Z" fill="#E3EFED" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" stroke="#28545B"/>
+<path id="Vector_5" d="M91.875 23.4375C91.875 19.8131 88.9369 16.875 85.3125 16.875C81.6881 16.875 78.75 19.8131 78.75 23.4375V64.6875C78.75 68.3119 81.6881 71.25 85.3125 71.25C88.9369 71.25 91.875 68.3119 91.875 64.6875V23.4375Z" fill="#E3EFED" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" stroke="#28545B"/>
+<path id="Vector_6" d="M30 78.75L13.125 63.75C11.8818 62.5068 10.1957 61.8084 8.4375 61.8084C6.67935 61.8084 4.9932 62.5068 3.75 63.75C2.5068 64.9932 1.80837 66.6793 1.80837 68.4375C1.80837 70.1957 2.5068 71.8818 3.75 73.125L26.25 97.5" fill="#E3EFED" stroke-width="7.5" stroke-linecap="round" stroke-linejoin="round" stroke="#28545B"/>
+</g>
+<defs>
+<clipPath id="clip0_0_6">
+<rect width="120" height="120" fill="white"/>
+</clipPath>
+</defs>
+</svg>

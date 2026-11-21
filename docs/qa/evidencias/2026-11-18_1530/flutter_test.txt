@@ -1,0 +1,1583 @@
+Resolving dependencies...
+Downloading packages...
+  archive 4.5.2 (4.7.1 available)
+  camera 0.12.1 (0.12.2 available)
+  camera_android_camerax 0.7.5+1 (0.7.6+1 available)
+  camera_avfoundation 0.10.3+1 (0.11.1 available)
+  camera_platform_interface 2.14.0 (2.15.1 available)
+  camera_web 0.3.5+6 (0.3.6 available)
+  code_assets 1.2.1 (2.2.0 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  crypto 3.0.7 (3.0.8 available)
+  flutter_lints 5.0.0 (6.0.0 available)
+  flutter_svg 2.3.2 (2.4.0 available)
+  hooks 2.0.2 (2.2.0 available)
+  image 4.12.0 (4.13.1 available)
+  jni 1.1.0 (1.1.2 available)
+  lints 5.1.1 (6.1.0 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.18.3 (1.19.0 available)
+  native_toolchain_c 0.19.2 (0.19.6 available)
+  objective_c 9.5.0 (9.6.4 available)
+  petitparser 7.0.2 (7.1.0 available)
+  posix 6.5.2 (6.5.4 available)
+  qr 3.0.2 (4.0.1 available)
+  record_use 0.6.0 (1.1.1 available)
+  share_plus 11.1.0 (13.3.1 available)
+  share_plus_platform_interface 6.1.0 (7.2.0 available)
+  shared_preferences 2.5.5 (2.5.6 available)
+  shared_preferences_android 2.4.28 (2.5.5 available)
+  shared_preferences_foundation 2.5.7 (2.6.2 available)
+  sqflite 2.4.4+2 (2.4.6 available)
+  sqflite_android 2.4.4+1 (2.4.6 available)
+  sqflite_common 2.5.14 (2.5.17 available)
+  sqflite_darwin 2.4.4+1 (2.4.6 available)
+  sqflite_platform_interface 2.4.2 (2.4.4 available)
+  sqlite3 3.5.2 (3.9.1 available)
+  synchronized 3.5.0 (3.6.1+1 available)
+  test_api 0.7.12 (0.7.15 available)
+  tflite_flutter 0.11.0 (0.12.1 available)
+  vector_graphics 1.2.5 (1.3.1 available)
+  vector_graphics_codec 1.1.13 (1.2.0 available)
+  vector_graphics_compiler 1.3.4 (1.3.6 available)
+  vector_math 2.4.0 (2.4.4 available)
+  vm_service 15.3.0 (15.4.0 available)
+  web 1.1.1 (1.1.2 available)
+  win32 5.15.0 (6.4.0 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+45 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart
+00:00 +0: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Catálogo (OE2-I3: 5 rutinas, 35 objetos y 41 pictogramas) hay 35 objetos con clave única
+00:00 +1: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Catálogo (OE2-I3: 5 rutinas, 35 objetos y 41 pictogramas) hay 5 rutinas
+00:00 +2: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Catálogo (OE2-I3: 5 rutinas, 35 objetos y 41 pictogramas) la carpeta de pictogramas tiene 41 archivos
+00:00 +3: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) cano tiene nombre, frase y pictograma existente
+00:00 +4: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) jabon tiene nombre, frase y pictograma existente
+00:00 +5: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) toalla tiene nombre, frase y pictograma existente
+00:00 +6: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) pasta_dental tiene nombre, frase y pictograma existente
+00:00 +7: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) cepillo_de_dientes tiene nombre, frase y pictograma existente
+00:00 +8: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) vaso tiene nombre, frase y pictograma existente
+00:00 +9: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) ropa tiene nombre, frase y pictograma existente
+00:00 +10: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) medias tiene nombre, frase y pictograma existente
+00:00 +11: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) zapatos tiene nombre, frase y pictograma existente
+00:00 +12: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) cuaderno tiene nombre, frase y pictograma existente
+00:00 +13: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) cartuchera tiene nombre, frase y pictograma existente
+00:00 +14: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) lonchera tiene nombre, frase y pictograma existente
+00:00 +15: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) pelota tiene nombre, frase y pictograma existente
+00:00 +16: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) bloques_de_construccion tiene nombre, frase y pictograma existente
+00:00 +17: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) caja_organizadora tiene nombre, frase y pictograma existente
+00:00 +18: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) manzana tiene nombre, frase y pictograma existente
+00:00 +19: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) platano tiene nombre, frase y pictograma existente
+00:00 +20: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) naranja tiene nombre, frase y pictograma existente
+00:00 +21: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) zanahoria tiene nombre, frase y pictograma existente
+00:00 +22: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) sandwich tiene nombre, frase y pictograma existente
+00:00 +23: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) torta tiene nombre, frase y pictograma existente
+00:00 +24: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) cuchara tiene nombre, frase y pictograma existente
+00:00 +25: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) tenedor tiene nombre, frase y pictograma existente
+00:00 +26: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) tazon tiene nombre, frase y pictograma existente
+00:00 +27: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) botella tiene nombre, frase y pictograma existente
+00:00 +28: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) mesa tiene nombre, frase y pictograma existente
+00:00 +29: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) silla tiene nombre, frase y pictograma existente
+00:00 +30: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) cama tiene nombre, frase y pictograma existente
+00:00 +31: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) sofa tiene nombre, frase y pictograma existente
+00:00 +32: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) televisor tiene nombre, frase y pictograma existente
+00:00 +33: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) reloj tiene nombre, frase y pictograma existente
+00:00 +34: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) refrigeradora tiene nombre, frase y pictograma existente
+00:00 +35: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) mochila tiene nombre, frase y pictograma existente
+00:00 +36: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) peluche tiene nombre, frase y pictograma existente
+00:00 +37: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) laptop tiene nombre, frase y pictograma existente
+00:00 +38: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Asociación objeto → pictograma → frase → rutina (OE3-I3) cada rutina del catálogo tiene su pictograma
+00:00 +39: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Modelo35 y catálogo las 35 etiquetas siguen exactamente el orden de IDs del catálogo
+00:00 +40: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Modelo35 y catálogo cada objeto tiene una sola clase del modelo (id_modelo = su posición)
+00:00 +41: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Rutinas de la app son 5 y cada paso tiene nombre, frase y pictograma existente
+00:00 +42: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Rutinas de la app pasos, etiquetas y cierre como en el Figma
+00:00 +43: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Rutinas de la app «Ir a rutina» solo con el objeto del primer paso (Ir a comer, ninguno)
+00:00 +44: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Rutinas de la app los pasos están numerados en orden
+00:00 +45: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Premios la semana empieza el lunes
+00:00 +46: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Premios las metas se pueden lograr con las 5 rutinas y el valor por defecto es válido
+00:00 +47: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Premios la meta fuera de rango da el mensaje del Figma
+00:00 +48: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/catalogo_test.dart: Premios el período empieza hoy, el lunes o el día 1
+00:02 +49: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/tutoriales_test.dart: Tutoriales de 7 pantallas por módulo (US1502) los seis módulos con tutorial por pasos están completos
+00:02 +50: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/tutoriales_test.dart: Tutoriales de 7 pantallas por módulo (US1502) la captura de cada paso está empaquetada
+00:02 +51: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/tutoriales_test.dart: Tutoriales de 7 pantallas por módulo (US1502) Situaciones conserva su tutorial de detalle
+00:02 +52: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Acceso con PIN
+00:05 +52: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Bienvenida
+Exploración de Bienvenida: 2 toques en 0 s
+00:05 +52: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Acceso con PIN
+Exploración de Acceso con PIN: 6 toques en 0 s
+00:05 +53: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Acceso con PIN
+00:05 +54: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Acceso con PIN
+00:05 +54: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Términos y privacidad
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:05 +55: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_calma_test.dart: exploración: Calma
+00:05 +55: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Área de padres
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:06 +56: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_calma_test.dart: exploración: Calma
+00:06 +56: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_registro_pin_test.dart: PIN del registro y cambio de PIN (US1202, US1204) «Perfil guardado» confirma el nombre del niño
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:06 +56: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_calma_test.dart: exploración: Calma
+Exploración de Calma: 12 toques en 1 s
+00:06 +57: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_calma_test.dart: exploración: Calma
+00:06 +57: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_comunicacion_test.dart: Armar mi frase: «Me gusta» con Borrar y retroceder
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:06 +58: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_calma_test.dart: exploración: Calma
+00:06 +59: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Términos y privacidad
+Exploración de Términos y privacidad: 7 toques en 0 s
+00:07 +60: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Términos y privacidad
+00:07 +60: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_registro_pin_test.dart: PIN del registro y cambio de PIN (US1202, US1204) «Perfil guardado» sin nombre usa uno por defecto
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:07 +61: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Área de padres
+00:07 +61: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Perfil del responsable
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:08 +61: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Área de padres
+Exploración de Área de padres: 16 toques en 1 s
+00:08 +62: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_carga_primera_vez_test.dart: la primera vez lleva a «¡Hola!» y a los términos
+00:08 +62: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Configuración de cuenta
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:08 +63: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_carga_primera_vez_test.dart: la primera vez lleva a «¡Hola!» y a los términos
+00:08 +63: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_registro_pin_test.dart: Diálogo de confirmación el diálogo «guardar» devuelve la opción elegida
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:09 +64: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_comunicacion_test.dart: Armar mi frase: «Me gusta» con Borrar y retroceder
+00:09 +65: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Perfil del responsable
+00:09 +65: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_comunicacion_test.dart: Armar mi frase: una categoría sin paso 3 (Baño)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:10 +66: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Perfil del responsable
+00:10 +66: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) con el PIN correcto va al destino pedido
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:10 +66: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Perfil del responsable
+Exploración de Perfil del responsable: 17 toques en 1 s
+00:10 +66: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Configuración de cuenta
+Exploración de Configuración de cuenta: 8 toques en 0 s
+00:10 +67: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Perfil del responsable
+00:10 +67: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_registro_pin_test.dart: Diálogo de confirmación el diálogo «aviso» devuelve la opción elegida
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:10 +68: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_rutinas_test.dart: Rutina guiada de principio a fin (RF-04, RF-19, US501 a US506) Lavado de manos: pasos, temporizador, medalla y vuelta a la lista
+00:10 +68: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Perfil del niño
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:11 +69: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_rutinas_test.dart: Rutina guiada de principio a fin (RF-04, RF-19, US501 a US506) Lavado de manos: pasos, temporizador, medalla y vuelta a la lista
+00:11 +69: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Cambiar PIN
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:11 +70: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_rutinas_test.dart: Rutina guiada de principio a fin (RF-04, RF-19, US501 a US506) Lavado de manos: pasos, temporizador, medalla y vuelta a la lista
+00:11 +70: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_comunicacion_test.dart: Responder «No» y las subcategorías de Pedir algo (US601, US605)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:12 +71: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_rutinas_test.dart: Rutina guiada de principio a fin (RF-04, RF-19, US501 a US506) Lavado de manos: pasos, temporizador, medalla y vuelta a la lista
+00:12 +71: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:12 +72: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_rutinas_test.dart: Rutina guiada de principio a fin (RF-04, RF-19, US501 a US506) Lavado de manos: pasos, temporizador, medalla y vuelta a la lista
+00:12 +72: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Cambiar PIN
+Exploración de Cambiar PIN: 2 toques en 0 s
+00:12 +72: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Perfil del niño
+Exploración de Perfil del niño: 9 toques en 0 s
+00:12 +73: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_rutinas_test.dart: Rutina guiada de principio a fin (RF-04, RF-19, US501 a US506) Lavado de manos: pasos, temporizador, medalla y vuelta a la lista
+00:12 +73: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Rutinas activas
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:13 +74: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_rutinas_test.dart: Rutina guiada de principio a fin (RF-04, RF-19, US501 a US506) Lavado de manos: pasos, temporizador, medalla y vuelta a la lista
+00:13 +74: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Invitación a los tutoriales
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:14 +75: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Inicio abre cada módulo y vuelve (sin la Cámara)
+00:14 +75: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_rutinas_test.dart: Rutina guiada de principio a fin (RF-04, RF-19, US501 a US506) una rutina empezada se retoma en el paso guardado y se puede retroceder
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:14 +76: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Inicio abre cada módulo y vuelve (sin la Cámara)
+00:14 +76: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_registro_test.dart: exploración: Invitación a los tutoriales
+Exploración de Invitación a los tutoriales: 14 toques en 0 s
+00:14 +76: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_acceso_test.dart: exploración: Rutinas activas
+Exploración de Rutinas activas: 10 toques en 0 s
+00:15 +77: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:15 +77: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: el menú de Inicio abre el área de padres
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:15 +78: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:15 +79: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:15 +80: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:15 +80: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/base_datos_migration_test.dart: fresh v8 records the accepted document version and date
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:15 +81: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:16 +81: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Accesibilidad
+Exploración de Accesibilidad: 18 toques en 1 s
+00:16 +82: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:16 +83: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:16 +84: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:16 +85: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:16 +86: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:16 +86: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Ayuda y soporte
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:16 +87: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:16 +88: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:16 +89: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:16 +90: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:16 +91: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:16 +91: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: la versión oficial no muestra «Restablecer onboarding» en el menú (US1206)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:16 +92: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:16 +92: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_rutinas_test.dart: Rutina guiada de principio a fin (RF-04, RF-19, US501 a US506) «Ir a rutina» lista las rutinas del objeto y abre la elegida (RF-03)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:17 +93: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:17 +94: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:17 +95: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:17 +96: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:17 +97: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:17 +98: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:17 +99: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:17 +100: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:17 +101: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:18 +102: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:18 +102: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: elegir el período, escribir la meta y guardarla
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:18 +103: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:18 +103: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_rutinas_test.dart: Rutina guiada de principio a fin (RF-04, RF-19, US501 a US506) con varias rutinas del objeto muestra el plural
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:18 +103: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_comunicacion_test.dart: exploración: Comunicación
+Exploración de Comunicación: 10 toques en 0 s
+00:18 +103: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Ayuda y soporte
+Exploración de Ayuda y soporte: 14 toques en 1 s
+00:18 +104: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:18 +104: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Registro del primer uso (US902, US903) actualiza los perfiles del niño y del adulto (US1004)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:18 +105: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:18 +105: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Registro del primer uso (US902, US903) los perfiles pasan a fila y a JSON sin perder datos
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:18 +106: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:18 +106: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Acceso con PIN (US1001, US1002) sin PIN registrado no se entra con ningún PIN
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:18 +107: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:18 +107: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Acceso con PIN (US1001, US1002) el PIN correcto entra y reinicia los intentos fallidos
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:19 +108: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:19 +108: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_comunicacion_test.dart: exploración: Emociones
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:19 +109: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:19 +109: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Seguimiento
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:19 +110: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:19 +110: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Acceso con PIN (US1001, US1002) tras 3 PIN incorrectos se bloquea 5 minutos, aun con el PIN correcto
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:19 +111: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) tres PIN incorrectos bloquean el acceso 5 minutos
+00:19 +112: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas por categoría
+00:19 +112: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) «¿Olvidaste tu PIN?» abre la verificación de identidad
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:19 +112: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas por categoría
+Exploración de Rutinas por categoría: 12 toques en 1 s
+00:20 +113: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas por categoría
+00:20 +113: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Acceso con PIN (US1001, US1002) al vencer el bloqueo se reinician los intentos y se puede entrar
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:20 +114: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: elegir el período, escribir la meta y guardarla
+00:20 +114: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Higiene
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:20 +115: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: elegir el período, escribir la meta y guardarla
+00:20 +116: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: elegir el período, escribir la meta y guardarla
+00:20 +117: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: elegir el período, escribir la meta y guardarla
+00:20 +118: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: elegir el período, escribir la meta y guardarla
+00:20 +119: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: elegir el período, escribir la meta y guardarla
+00:20 +120: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_comunicacion_test.dart: exploración: Emociones
+00:20 +120: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:20 +120: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_comunicacion_test.dart: exploración: Emociones
+Exploración de Emociones: 7 toques en 0 s
+00:20 +121: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_comunicacion_test.dart: exploración: Emociones
+00:20 +121: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Acceso con PIN (US1001, US1002) un PIN guardado con el formato antiguo se convierte a PBKDF2
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:21 +121: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Seguimiento
+Exploración de Seguimiento: 8 toques en 0 s
+00:21 +122: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_comunicacion_test.dart: exploración: Emociones
+00:21 +122: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Acceso con PIN (US1001, US1002) cambiar el PIN invalida el anterior (US1006)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:21 +123: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Seguimiento
+00:21 +123: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_comunicacion_test.dart: exploración: Favoritos
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:21 +124: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) «¿Olvidaste tu PIN?» abre la verificación de identidad
+00:21 +124: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Seguimiento sin datos
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:21 +125: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Higiene
+00:21 +125: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_pin_test.dart: Acceso al área de padres (RF-08) «Volver» sale del acceso con PIN
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:21 +126: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Higiene
+00:21 +126: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Recuperación del PIN (US1003) acepta nombre, apellido y ciudad sin importar tildes, mayúsculas ni espacios
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:22 +127: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Higiene
+00:22 +127: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Recuperación del PIN (US1003) indica los intentos que quedan y bloquea al tercer intento fallido
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:22 +128: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Higiene
+00:22 +128: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Recuperación del PIN (US1003) sin perfil del adulto ninguna respuesta es válida
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:22 +129: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Higiene
+00:22 +129: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Consentimiento y borrado (US901, US1007) aceptar guarda la fecha y la versión; retirarlo las borra
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:22 +130: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Higiene
+00:22 +130: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/auth_service_test.dart: Consentimiento y borrado (US901, US1007) borrar los datos deja la app como recién instalada
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:22 +131: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Higiene
+Exploración de Rutinas de Higiene: 8 toques en 0 s
+00:22 +132: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+00:22 +132: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Ropa
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:22 +132: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_comunicacion_test.dart: exploración: Favoritos
+Exploración de Favoritos: 5 toques en 0 s
+00:23 +133: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+00:23 +133: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Seguimiento sin datos
+Exploración de Seguimiento sin datos: 6 toques en 0 s
+00:23 +134: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+00:23 +135: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+00:23 +135: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Premios
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:23 +136: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+00:23 +137: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+00:23 +138: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+00:23 +139: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+00:23 +140: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+00:23 +141: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+00:23 +142: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+00:23 +143: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Premios: salir con cambios pregunta antes y desactivar no pide meta
+00:24 +144: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_config_rutinas_test.dart: «Desactivar todas» y «Activar todas» piden confirmación y se guardan
+00:24 +144: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_inicio_premios_test.dart: Mis premios celebra cuando el niño llega a la meta del día
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:24 +144: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Ropa
+Exploración de Rutinas de Ropa: 8 toques en 0 s
+00:24 +145: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_config_rutinas_test.dart: «Desactivar todas» y «Activar todas» piden confirmación y se guardan
+00:24 +145: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Comida
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:25 +145: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Premios
+Exploración de Premios: 6 toques en 0 s
+00:25 +145: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_inicio_test.dart: exploración: Inicio
+Exploración de Inicio: 18 toques en 0 s
+00:25 +146: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_inicio_test.dart: exploración: Inicio
+00:25 +146: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_config_rutinas_test.dart: elegir una por una y salir sin guardar
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:25 +147: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_inicio_test.dart: exploración: Inicio
+00:25 +148: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_inicio_test.dart: exploración: Inicio
+00:25 +148: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Tutoriales
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:25 +149: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:26 +150: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:26 +151: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:26 +152: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:26 +153: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:26 +154: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:26 +154: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Comida
+Exploración de Rutinas de Comida: 8 toques en 0 s
+00:27 +155: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:27 +155: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Hogar
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:27 +156: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:27 +156: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_reporte_test.dart: Reporte de seguimiento en PDF (RF-15, RNF-04) genera el PDF en la carpeta temporal, lo comparte y borra las copias
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+Helvetica-Bold has no Unicode support see https://github.com/DavBfr/dart_pdf/wiki/Fonts-Management
+Helvetica has no Unicode support see https://github.com/DavBfr/dart_pdf/wiki/Fonts-Management
+00:27 +157: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:27 +157: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_reporte_test.dart: Reporte de seguimiento en PDF (RF-15, RNF-04) sin perfil ni datos el reporte usa textos por defecto
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+Helvetica-Bold has no Unicode support see https://github.com/DavBfr/dart_pdf/wiki/Fonts-Management
+Helvetica has no Unicode support see https://github.com/DavBfr/dart_pdf/wiki/Fonts-Management
+00:27 +158: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:27 +158: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Tutoriales
+Exploración de Tutoriales: 14 toques en 1 s
+00:27 +159: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:27 +159: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_calma_test.dart: Calma (RF-18, US1301 a US1304) Aprieta y suelta e «Igual» permiten hacer calma otra vez
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:27 +160: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:27 +160: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_config_rutinas_test.dart: filtrar por estado y buscar sin resultados
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:28 +161: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) con PIN incorrecto no borra y con el correcto deja la app como nueva
+00:28 +161: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Privacidad y datos
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:28 +162: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Hogar
+00:28 +162: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) retirar el consentimiento se puede cancelar
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:28 +162: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Rutinas de Hogar
+Exploración de Rutinas de Hogar: 8 toques en 0 s
+00:29 +163: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Rutinas activas de Higiene
+00:29 +163: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:29 +163: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Rutinas activas de Higiene
+Exploración de Rutinas activas de Higiene: 7 toques en 0 s
+00:29 +164: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Rutinas activas de Higiene
+00:29 +164: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_calma_test.dart: Calma (RF-18, US1301 a US1304) «Peor» pide ayuda y el adulto ve el aviso con lo que intentó el niño
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:30 +164: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_otros_test.dart: exploración: Privacidad y datos
+Exploración de Privacidad y datos: 10 toques en 0 s
+00:30 +165: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Rutinas activas de Higiene
+00:30 +165: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:30 +166: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_config_rutinas_test.dart: filtrar por estado y buscar sin resultados
+00:30 +166: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Rutinas activas de Ropa
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:30 +166: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_vocabulario_test.dart: exploración: Vocabulario
+Exploración de Vocabulario: 8 toques en 0 s
+00:30 +167: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_config_rutinas_test.dart: filtrar por estado y buscar sin resultados
+00:30 +168: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_vocabulario_test.dart: exploración: Vocabulario
+00:30 +168: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_config_rutinas_test.dart: cada categoría muestra cuántas rutinas activas tiene (DEF-21)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:30 +169: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:30 +169: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_vocabulario_test.dart: exploración: Situaciones
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:31 +170: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:31 +170: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/servicios_app_test.dart: Repositorio local SQLite (US401, US1205) migra una sola vez los datos que versiones anteriores guardaban en SharedPreferences
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:31 +171: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:31 +171: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/servicios_app_test.dart: Repositorio local SQLite (US401, US1205) borrar la base deja solo los valores iniciales
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:31 +172: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:31 +172: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/servicios_app_test.dart: Catálogo (RF-02, RF-03) lee las rutinas, los 35 objetos y el pictograma de contexto desde SQLite
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:31 +173: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:31 +173: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/servicios_app_test.dart: Accesibilidad (US1011, US1102) empieza con baja estimulación y guarda cada ajuste en SQLite
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:31 +174: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:31 +174: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/servicios_app_test.dart: Accesibilidad (US1011, US1102) la lectura en voz alta usa el motor de voz solo si está activada
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:31 +175: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:31 +175: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/servicios_app_test.dart: Tutoriales, Calma y medición de latencia cada tutorial se marca como visto una sola vez (US1502)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:31 +176: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:31 +176: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/servicios_app_test.dart: Tutoriales, Calma y medición de latencia la sesión de Calma recuerda la emoción, los intentos y cómo se siente (US1303)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:31 +177: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:31 +177: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/servicios_app_test.dart: Tutoriales, Calma y medición de latencia las estadísticas de latencia usan una ventana móvil (RNF-01)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:31 +178: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:31 +179: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:31 +179: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Rutinas activas de Ropa
+Exploración de Rutinas activas de Ropa: 7 toques en 0 s
+00:32 +179: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+Exploración de Mis premios: 8 toques en 1 s
+00:32 +180: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:32 +180: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Rutinas activas de Comida
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:32 +181: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:32 +181: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_calma_test.dart: Calma (RF-18, US1301 a US1304) Descansar y «Pedir ayuda» desde «Sigues igual»
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:32 +182: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:32 +182: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/premios_rutinas_test.dart: Premios (US1401, US1402, US1403) guarda el período y lleva la meta al rango de ese período
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:32 +183: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:32 +183: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/premios_rutinas_test.dart: Premios (US1401, US1402, US1403) una meta antigua fuera de rango o un período desconocido se corrigen al leer
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:32 +184: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:32 +184: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/premios_rutinas_test.dart: Premios (US1401, US1402, US1403) cuenta una medalla por rutina terminada dentro del período
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:32 +185: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:32 +185: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/premios_rutinas_test.dart: Premios (US1401, US1402, US1403) textos y mensajes de cada período
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:32 +186: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:32 +186: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/premios_rutinas_test.dart: Rutinas: avance y configuración (US501, US506, US1005) guarda el avance del día y lo marca como terminado
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:32 +187: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_rutinas_test.dart: exploración: Mis premios
+00:32 +187: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/premios_rutinas_test.dart: Rutinas: avance y configuración (US501, US506, US1005) activa y desactiva rutinas sueltas y por categoría
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:32 +188: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:32 +189: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:32 +189: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/premios_rutinas_test.dart: Rutinas: avance y configuración (US501, US506, US1005) «Ir a rutina» solo ofrece rutinas activas que empiezan con el objeto (US405)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:32 +190: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:32 +190: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/premios_rutinas_test.dart: Rutinas: avance y configuración (US501, US506, US1005) el avance del día pasa a JSON y vuelve
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:32 +191: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:32 +191: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/premios_rutinas_test.dart: Rutinas: avance y configuración (US501, US506, US1005) el catálogo de rutinas agrupa cada rutina en su categoría
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:32 +192: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:33 +192: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_vocabulario_test.dart: exploración: Situaciones
+Exploración de Situaciones: 10 toques en 1 s
+00:33 +193: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:33 +194: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:33 +194: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/favoritos_registro_test.dart: Favoritos (RF-10, US706) al volver a abrir la app recupera los favoritos y su uso desde SQLite
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:33 +195: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:33 +195: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/favoritos_registro_test.dart: Favoritos (RF-10, US706) un favorito pasa a JSON y a fila sin perder datos
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:33 +196: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:33 +196: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/favoritos_registro_test.dart: Registro de uso y seguimiento (RF-15, US1008) guarda los eventos con su fecha y los filtra por período
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:33 +197: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:33 +197: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/favoritos_registro_test.dart: Registro de uso y seguimiento (RF-15, US1008) guarda las notas para el especialista, de la más reciente a la más antigua
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:33 +198: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:33 +198: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/favoritos_registro_test.dart: Registro de uso y seguimiento (RF-15, US1008) el resumen cuenta rutinas, peticiones, emociones y lo más usado
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:33 +199: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:33 +199: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/favoritos_registro_test.dart: Registro de uso y seguimiento (RF-15, US1008) la semana actual incluye lo de hoy y la semana anterior queda vacía
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:33 +200: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:34 +201: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_borrado_test.dart: Borrado de los datos y retiro del consentimiento (US1007, US901) tres PIN incorrectos en el borrado bloquean el PIN
+00:34 +201: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Rutinas activas de Comida
+Exploración de Rutinas activas de Comida: 7 toques en 0 s
+00:34 +202: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) pide las tres respuestas, cuenta los intentos y crea un PIN nuevo
+00:34 +203: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) pide las tres respuestas, cuenta los intentos y crea un PIN nuevo
+00:34 +203: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Rutinas activas de Hogar
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:34 +204: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) pide las tres respuestas, cuenta los intentos y crea un PIN nuevo
+00:34 +205: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) pide las tres respuestas, cuenta los intentos y crea un PIN nuevo
+00:34 +206: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) pide las tres respuestas, cuenta los intentos y crea un PIN nuevo
+00:34 +207: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) pide las tres respuestas, cuenta los intentos y crea un PIN nuevo
+00:34 +208: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) pide las tres respuestas, cuenta los intentos y crea un PIN nuevo
+00:36 +209: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) pide las tres respuestas, cuenta los intentos y crea un PIN nuevo
+00:36 +209: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Términos y privacidad se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:36 +209: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Rutinas activas de Hogar
+Exploración de Rutinas activas de Hogar: 7 toques en 0 s
+00:36 +210: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) pide las tres respuestas, cuenta los intentos y crea un PIN nuevo
+00:36 +210: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Perfil del menor
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:36 +211: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) pide las tres respuestas, cuenta los intentos y crea un PIN nuevo
+00:36 +211: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Perfil del responsable se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:37 +212: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: una situación se recorre hasta «¡Muy bien!», se lee otra vez y se elige otra
+00:37 +212: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) tres respuestas equivocadas bloquean la opción
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:37 +213: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: una situación se recorre hasta «¡Muy bien!», se lee otra vez y se elige otra
+00:37 +213: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Perfil del niño se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:38 +214: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: una situación se recorre hasta «¡Muy bien!», se lee otra vez y se elige otra
+00:38 +214: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Acceso con PIN se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:38 +214: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Perfil del menor
+Exploración de Perfil del menor: 7 toques en 0 s
+00:38 +215: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: una situación se recorre hasta «¡Muy bien!», se lee otra vez y se elige otra
+00:38 +215: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Verifica que eres tú se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:39 +216: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: una situación se recorre hasta «¡Muy bien!», se lee otra vez y se elige otra
+00:39 +216: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Perfil de la menor
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:39 +217: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: una situación se recorre hasta «¡Muy bien!», se lee otra vez y se elige otra
+00:39 +217: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Área de padres se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:40 +218: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) tres respuestas equivocadas bloquean la opción
+00:40 +218: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: cada categoría de Vocabulario muestra y busca sus pictogramas
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:40 +219: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) tres respuestas equivocadas bloquean la opción
+00:40 +219: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Configuración de cuenta se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:40 +220: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_recuperacion_pin_test.dart: Recuperación del PIN (US1203) tres respuestas equivocadas bloquean la opción
+00:40 +220: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Cambiar PIN se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:41 +220: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Perfil de la menor
+Exploración de Perfil de la menor: 7 toques en 0 s
+00:41 +221: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/exploracion_padres_config_test.dart: exploración: Perfil de la menor
+00:41 +222: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: cada categoría de Vocabulario muestra y busca sus pictogramas
+00:41 +223: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: cada categoría de Vocabulario muestra y busca sus pictogramas
+00:41 +223: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Rutinas activas se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:42 +224: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: cada categoría de Vocabulario muestra y busca sus pictogramas
+00:42 +224: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Rutinas activas de Higiene se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:43 +225: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: cada categoría de Vocabulario muestra y busca sus pictogramas
+00:43 +225: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Perfil del menor se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:43 +226: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: cada categoría de Vocabulario muestra y busca sus pictogramas
+00:43 +226: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Accesibilidad se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:44 +227: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: cada categoría de Vocabulario muestra y busca sus pictogramas
+00:44 +227: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Ayuda y soporte se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:45 +228: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: cada categoría de Vocabulario muestra y busca sus pictogramas
+00:45 +229: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Seguimiento se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:45 +229: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: los documentos legales se abren en una hoja y se cierran
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:46 +230: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: los documentos legales se abren en una hoja y se cierran
+00:46 +230: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Mis premios se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:46 +231: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: los documentos legales se abren en una hoja y se cierran
+00:46 +231: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Rutinas se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:47 +232: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: los documentos legales se abren en una hoja y se cierran
+00:47 +232: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Rutina de Higiene se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:47 +233: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Rutina de Higiene se dibuja con datos de prueba
+00:47 +233: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: «Entendido» queda por encima de la barra de navegación del celular (DEF-22)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:48 +234: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: «Entendido» queda por encima de la barra de navegación del celular (DEF-22)
+00:48 +234: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Vocabulario se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:48 +235: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: «Entendido» queda por encima de la barra de navegación del celular (DEF-22)
+00:48 +235: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Favoritos se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:48 +236: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Favoritos se dibuja con datos de prueba
+00:49 +236: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: Favoritos se reordena por uso al volver a la pestaña (DEF-19)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:49 +237: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: Favoritos se reordena por uso al volver a la pestaña (DEF-19)
+00:49 +237: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Calma se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:50 +238: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: Favoritos se reordena por uso al volver a la pestaña (DEF-19)
+00:50 +238: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Pantallas que se abren sin errores Situaciones se dibuja con datos de prueba
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:50 +239: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: Favoritos se reordena por uso al volver a la pestaña (DEF-19)
+00:50 +239: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Privacidad y datos muestra el consentimiento otorgado con su versión (US901)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:50 +240: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Privacidad y datos muestra el consentimiento otorgado con su versión (US901)
+00:51 +240: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: tocar un recuadro del PIN borra desde ese dígito
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:52 +241: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/flujos_situaciones_vocabulario_test.dart: tocar un recuadro del PIN borra desde ese dígito
+00:52 +241: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Premios muestra el rango de la meta del período elegido (US1402)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:52 +242: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Premios muestra el rango de la meta del período elegido (US1402)
+00:52 +243: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Mis premios muestra la meta de la semana (US1401)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:53 +244: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla el tutorial de la Cámara se recorre en 7 pantallas (US1502)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:56 +245: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla la invitación a los tutoriales lleva al Inicio con «Más tarde» (US1501)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:58 +246: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Responder guarda «Sí» y solo lo dice en voz si el adulto lo activó (US605, US1102)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+00:59 +247: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Pedir algo muestra las categorías de necesidades (US601)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+01:00 +248: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Armar mi frase se abre desde Comunicación (US603)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+01:01 +249: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Emociones dice la emoción al tocarla (US703)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+01:03 +250: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Situaciones abre «Ir al doctor» (US801)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+01:04 +251: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Rutinas muestra las cuatro categorías (US501)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+01:05 +252: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Vocabulario abre la categoría Animales (US701)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+01:06 +253: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Ayuda y soporte muestra los dos correos de soporte (RF-17)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+01:06 +254: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Área de padres abre Privacidad y datos (US1007)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+01:07 +255: /Users/richiabv/Development/tesis-tea/_publicacion_git/BrillanTEA-Mobile-App/test/pantallas_test.dart: Flujos de pantalla Favoritos muestra lo que el niño marcó (US706)
+*** sqflite warning ***
+
+You are changing sqflite default factory.
+Be aware of the potential side effects. Any library using sqflite
+will have this factory as the default for all operations.
+
+*** sqflite warning ***
+
+01:09 +256: All tests passed!

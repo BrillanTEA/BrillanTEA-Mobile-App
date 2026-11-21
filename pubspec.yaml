@@ -1,0 +1,42 @@
+name: brillantea
+description: BrillanTEA, aplicación asistiva para niños con TEA nivel 2 (visión computacional en el dispositivo y voz sin conexión).
+publish_to: none
+version: 0.2.0-alpha.2+15
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  camera: ^0.12.1
+  tflite_flutter: ^0.11.0
+  flutter_tts: ^4.2.0
+  shared_preferences: ^2.5.5
+  crypto: ^3.0.7
+  sqflite: ^2.4.2         # Registro de uso y notas (base de datos local SQLite)
+  pdf: ^3.11.3            # Reporte de seguimiento en PDF (RF-15)
+  path_provider: ^2.1.5   # Carpeta temporal privada para el PDF
+  share_plus: ^11.0.0     # Hoja de compartir de Android
+  flutter_svg: ^2.0.17    # Íconos vectoriales exportados de Figma (Calma y Premios)
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  sqflite_common_ffi: ^2.4.7
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/models/
+    - assets/labels_coco.txt
+    - assets/catalogo.json
+    - assets/pictogramas/
+    - assets/pictogramas/rutinas/
+    - assets/images/
+    - assets/images/calma/
+    - assets/images/comunicacion/
+    - assets/images/premios/
+    - assets/images/situaciones/
+    - assets/images/tutoriales/
